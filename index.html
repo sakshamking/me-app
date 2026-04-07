@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="M+E">
+<meta name="theme-color" content="#000000">
+<link rel="manifest" href="manifest.json">
+<title>M+E</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+:root { --accent: #ff3b5c; --dim: rgba(255,255,255,0.35); --bg: #000; --card: #0d0d0d; --border: rgba(255,255,255,0.06); }
+
+body {
+  background: var(--bg); color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+  min-height: 100dvh; -webkit-user-select: none; user-select: none;
+  overflow-x: hidden;
+}
+
+.view { display: none; width: 100%; max-width: 430px; margin: 0 auto; min-height: 100dvh; }
+.view.active { display: flex; flex-direction: column; }
+
+/* ========== INTAKE VIEW ========== */
+#v-intake { padding: env(safe-area-inset-top, 48px) 20px 40px; }
+.brand { text-align: center; padding: 12px 0 8px; }
+.brand-name { font-size: 13px; font-weight: 500; letter-spacing: 8px; color: var(--dim); font-family: 'SF Mono', 'Menlo', monospace; }
+.brand-sub { font-size: 11px; color: rgba(255,255,255,0.15); margin-top: 4px; letter-spacing: 2px; }
+
+.field { margin-bottom: 16px; }
+.field label { display: block; font-size: 11px; font-weight: 600; letter-spacing: 2px; color: rgba(255,255,255,0.2); margin-bottom: 8px; text-transform: uppercase; }
+.field input, .field textarea, .field select {
+  width: 100%; padding: 12px 16px; border: 1px solid var(--border); border-radius: 12px;
+  background: var(--card); color: #fff; font-size: 15px; font-family: inherit;
+  -webkit-appearance: none; outline: none; transition: border-color 0.2s;
+}
+.field input:focus, .field textarea:focus { border-color: rgba(255,255,255,0.2); }
+.field textarea { resize: none; height: 56px; }
+.field select { background: var(--card); color: #ccc; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  padding: 8px 16px; border-radius: 20px; font-size: 13px; font-weight: 500;
+  background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.35);
+  border: 1px solid var(--border); cursor: pointer;
+  -webkit-tap-highlight-color: transparent; transition: all 0.2s;
+}
+.chip.active { background: rgba(255,59,92,0.15); color: var(--accent); border-color: rgba(255,59,92,0.4); }
+
+.time-row { display: flex; gap: 10px; }
+.time-row .field { flex: 1; }
+
+#start-btn {
+  display: block; width: 100%; padding: 16px; font-size: 17px; font-weight: 600;
+  background: var(--accent); color: #fff; border: none; border-radius: 14px;
+  cursor: pointer; margin-top: 20px; opacity: 0.25; pointer-events: none;
+  transition: opacity 0.3s; -webkit-tap-highlight-color: transparent;
+}
+#start-btn.ready { opacity: 1; pointer-events: auto; }
+
+.intake-status { text-align: center; font-size: 11px; color: rgba(255,255,255,0.15); margin-top: 10px; }
+
+/* ========== SESSION VIEW ========== */
+#v-session {
+  padding: env(safe-area-inset-top, 20px) 0 0; position: relative; overflow: hidden;
+}
+
+/* Ambient glow */
+.glow {
+  position: fixed; top: 50%; left: 50%; width: 350px; height: 350px;
+  transform: translate(-50%, -50%); border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,59,92,0.06) 0%, transparent 70%);
+  transition: all 3s ease; pointer-events: none; z-index: 0;
+}
+
+/* Session header */
+.sess-header {
+  text-align: center; padding: 12px 20px; position: relative; z-index: 2;
+}
+.sess-intent-tags { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-top: 6px; }
+.sess-tag { padding: 4px 12px; border: 1px solid var(--border); border-radius: 14px; font-size: 11px; color: rgba(255,255,255,0.3); }
+.sess-timer { font-size: 11px; color: rgba(255,255,255,0.15); font-variant-numeric: tabular-nums; margin-top: 4px; }
+.calibration-bar {
+  height: 2px; background: rgba(255,255,255,0.06); border-radius: 1px;
+  margin: 8px 40px 0; overflow: hidden;
+}
+.calibration-fill { height: 100%; background: var(--accent); transition: width 0.5s; width: 0%; }
+
+/* YouTube player */
+.player-section { padding: 12px 16px; position: relative; z-index: 2; }
+.player-wrap {
+  width: 100%; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden;
+  background: rgba(255,255,255,0.03);
+}
+.player-wrap iframe { width: 100%; height: 100%; border: 0; }
+
+/* Track info */
+.track-info { text-align: center; padding: 8px 20px; position: relative; z-index: 2; }
+.track-title { font-size: 16px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.track-artist { font-size: 13px; color: var(--dim); margin-top: 2px; }
+
+/* Controls */
+.controls { display: flex; align-items: center; justify-content: center; gap: 32px; padding: 12px 0; position: relative; z-index: 2; }
+.ctrl-btn { background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; padding: 8px; -webkit-tap-highlight-color: transparent; }
+.ctrl-btn:active { transform: scale(0.9); }
+.ctrl-btn svg { width: 24px; height: 24px; fill: currentColor; }
+.ctrl-play {
+  width: 56px; height: 56px; border-radius: 50%; background: var(--accent);
+  border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+}
+.ctrl-play:active { transform: scale(0.92); }
+.ctrl-play svg { width: 24px; height: 24px; fill: #fff; }
+
+/* Nudge overlay */
+#nudge-overlay {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  display: flex; align-items: center; justify-content: center;
+  pointer-events: none; z-index: 10;
+}
+#nudge-text {
+  font-size: 28px; font-weight: 200; letter-spacing: 4px; text-align: center;
+  opacity: 0; transition: opacity 1.5s ease; color: #fff;
+  text-shadow: 0 0 40px rgba(255,59,92,0.3);
+}
+#nudge-text.visible { opacity: 1; }
+
+/* State badges (minimal, bottom of session) */
+.state-bar {
+  display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;
+  padding: 8px 20px; position: relative; z-index: 2;
+}
+.state-badge {
+  padding: 4px 10px; border-radius: 10px; font-size: 10px; font-weight: 600;
+  background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.2);
+  font-family: 'SF Mono', monospace; letter-spacing: 0.5px;
+}
+.state-badge.hi { color: var(--accent); background: rgba(255,59,92,0.1); }
+
+/* Queue */
+.queue-section { padding: 0 16px 32px; position: relative; z-index: 2; }
+.queue-label { font-size: 10px; font-weight: 600; letter-spacing: 2px; color: rgba(255,255,255,0.12); margin-bottom: 6px; }
+.queue-item {
+  display: flex; align-items: center; padding: 8px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.03); cursor: pointer;
+}
+.queue-item:active { opacity: 0.5; }
+.queue-art { width: 44px; height: 33px; border-radius: 4px; background: rgba(255,255,255,0.04); overflow: hidden; margin-right: 10px; flex-shrink: 0; }
+.queue-art img { width: 100%; height: 100%; object-fit: cover; }
+.queue-title { font-size: 13px; color: rgba(255,255,255,0.6); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.queue-artist { font-size: 11px; color: rgba(255,255,255,0.2); }
+.queue-item.active .queue-title { color: var(--accent); }
+
+/* Session status line */
+.sess-status { text-align: center; font-size: 11px; color: rgba(255,255,255,0.1); padding: 4px; position: relative; z-index: 2; }
+
+/* ========== DEBUG OVERLAY ========== */
+#debug-toggle {
+  position: fixed; top: env(safe-area-inset-top, 12px); right: 12px;
+  padding: 4px 10px; border: 1px solid rgba(255,255,255,0.08); border-radius: 12px;
+  background: transparent; color: rgba(255,255,255,0.15); font-size: 10px;
+  cursor: pointer; z-index: 20; font-family: 'SF Mono', monospace;
+}
+#debug-panel {
+  display: none; position: fixed; bottom: 0; left: 0; right: 0;
+  max-height: 45vh; overflow-y: auto; z-index: 15;
+  background: rgba(0,0,0,0.92); border-top: 1px solid rgba(255,255,255,0.08);
+  padding: 12px 16px; font-size: 11px; font-family: 'SF Mono', monospace;
+  color: rgba(255,255,255,0.5); backdrop-filter: blur(20px);
+}
+#debug-panel.open { display: block; }
+.dbg-row { display: flex; justify-content: space-between; padding: 3px 0; border-bottom: 1px solid rgba(255,255,255,0.03); }
+.dbg-label { color: rgba(255,255,255,0.25); }
+.dbg-val { color: rgba(255,255,255,0.6); }
+.dbg-val.accent { color: var(--accent); }
+.dbg-section { color: rgba(255,59,92,0.4); font-size: 10px; letter-spacing: 2px; margin-top: 8px; margin-bottom: 4px; }
+.dbg-log { max-height: 120px; overflow-y: auto; margin-top: 8px; }
+.dbg-log-entry { padding: 2px 0; color: rgba(255,255,255,0.3); font-size: 10px; border-bottom: 1px solid rgba(255,255,255,0.02); }
+
+/* End session button */
+#end-btn {
+  display: block; margin: 16px auto; padding: 8px 24px; border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px; background: transparent; color: rgba(255,255,255,0.2);
+  font-size: 12px; cursor: pointer; position: relative; z-index: 2;
+}
+
+/* Hidden video for face detection */
+#face-video { position: fixed; top: -9999px; left: -9999px; width: 160px; height: 120px; }
+#face-canvas { display: none; }
+</style>
+</head>
+<body>
+
+<!-- ========== INTAKE VIEW ========== -->
+<div id="v-intake" class="view active">
+  <div class="brand">
+    <div class="brand-name">M + E</div>
+    <div class="brand-sub">YOUR SESSION</div>
+  </div>
+
+  <div class="field">
+    <label>WHERE ARE YOU</label>
+    <input type="text" id="f-location" placeholder="Hotel room, home, office...">
+  </div>
+
+  <div class="field">
+    <label>WHAT'S HAPPENING AROUND YOU</label>
+    <textarea id="f-situation" placeholder="Sitting in bed, lights dimmed..."></textarea>
+  </div>
+
+  <div class="field">
+    <label>BEFORE THIS</label>
+    <div class="chips" data-field="before">
+      <div class="chip" data-v="work">Work</div>
+      <div class="chip" data-v="social">Socializing</div>
+      <div class="chip" data-v="travel">Travelling</div>
+      <div class="chip" data-v="exercise">Exercise</div>
+      <div class="chip" data-v="eating">Eating</div>
+      <div class="chip" data-v="nothing">Nothing</div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>WHAT DO YOU WANT</label>
+    <div class="chips" data-field="intent">
+      <div class="chip" data-v="unwind">Unwind</div>
+      <div class="chip" data-v="energy">Energy</div>
+      <div class="chip" data-v="focus">Focus</div>
+      <div class="chip" data-v="feel">Feel something</div>
+      <div class="chip" data-v="escape">Escape</div>
+      <div class="chip" data-v="sleep_prep">Wind down</div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label>MUSIC VIBE</label>
+    <div class="chips" data-field="vibe">
+      <div class="chip" data-v="electronic">Electronic</div>
+      <div class="chip" data-v="ambient">Ambient</div>
+      <div class="chip" data-v="bollywood">Bollywood</div>
+      <div class="chip" data-v="classical">Classical</div>
+      <div class="chip" data-v="mixed">Surprise me</div>
+    </div>
+  </div>
+
+  <div class="time-row">
+    <div class="field">
+      <label>SESSION LENGTH</label>
+      <select id="f-sleep-hours">
+        <option value="0.5">30 min</option>
+        <option value="1">1 hour</option>
+        <option value="2" selected>2 hours</option>
+        <option value="3">3 hours</option>
+      </select>
+    </div>
+    <div class="field">
+      <label>WAKE UP AT</label>
+      <input type="time" id="f-wakeup" value="09:00">
+    </div>
+  </div>
+
+  <div class="field">
+    <label>ANYTHING ELSE</label>
+    <textarea id="f-freetext" placeholder="Feeling tired but wired, had coffee 2 hours ago..."></textarea>
+  </div>
+
+  <button id="start-btn" onclick="beginSession()">Begin Session</button>
+  <div class="intake-status" id="intake-status">Select your intent to begin</div>
+</div>
+
+<!-- ========== SESSION VIEW ========== -->
+<div id="v-session" class="view">
+  <div class="glow" id="glow"></div>
+
+  <div class="sess-header">
+    <div class="brand-name" style="font-size:11px;">M + E</div>
+    <div class="sess-intent-tags" id="sess-tags"></div>
+    <div class="sess-timer" id="sess-timer">00:00</div>
+    <div class="calibration-bar" id="cal-bar"><div class="calibration-fill" id="cal-fill"></div></div>
+  </div>
+
+  <div class="player-section">
+    <div class="player-wrap"><div id="ytPlayer"></div></div>
+  </div>
+
+  <div class="track-info">
+    <div class="track-title" id="trackTitle">Starting...</div>
+    <div class="track-artist" id="trackArtist"></div>
+  </div>
+
+  <div class="controls">
+    <button class="ctrl-btn" id="btnPrev"><svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg></button>
+    <button class="ctrl-play" id="btnPlay"><svg viewBox="0 0 24 24" id="playIcon"><path d="M8 5v14l11-7z"/></svg></button>
+    <button class="ctrl-btn" id="btnNext"><svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg></button>
+  </div>
+
+  <div class="state-bar" id="state-bar">
+    <div class="state-badge" id="sb-energy">Energy: --</div>
+    <div class="state-badge" id="sb-immersion">Immersion: --</div>
+    <div class="state-badge" id="sb-trajectory">Traj: --</div>
+  </div>
+
+  <div class="sess-status" id="sess-status">Warming up...</div>
+
+  <div class="queue-section" id="queue-section" style="display:none">
+    <div class="queue-label">UP NEXT</div>
+    <div id="queue-list"></div>
+  </div>
+
+  <button id="end-btn" onclick="endSession()">End Session</button>
+</div>
+
+<!-- Nudge overlay (always present) -->
+<div id="nudge-overlay"><div id="nudge-text"></div></div>
+
+<!-- Debug toggle + panel -->
+<button id="debug-toggle" style="display:none" onclick="toggleDebug()">DBG</button>
+<div id="debug-panel">
+  <div class="dbg-section">ENGINE STATE</div>
+  <div id="dbg-state"></div>
+  <div class="dbg-section">SENSORS</div>
+  <div id="dbg-sensors"></div>
+  <div class="dbg-section">LOG</div>
+  <div class="dbg-log" id="dbg-log"></div>
+</div>
+
+<!-- Hidden face detection elements -->
+<video id="face-video" playsinline autoplay muted></video>
+<canvas id="face-canvas"></canvas>
+
+<!-- ========== SCRIPTS ========== -->
+<!-- face-api.js for face detection -->
+<script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+<!-- YouTube IFrame API -->
+<script src="https://www.youtube.com/iframe_api"></script>
+<!-- M+E Engine -->
+<script src="engine.js"></script>
+
+<script>
+// ============================================================
+// M+E PILOT V3 — Phone-Native App
+// ============================================================
+
+const YT_API_KEY = 'AIzaSyAfJITiaEinEztRvBrs8CpEjFqSWg-grI8';
+const GITHUB_REPO = 'sakshamking/me-app';
+
+// ==================== GLOBALS ====================
+let engine = null;
+let ytSearch = null;
+let logger = null;
+let faceAnalyzer = null;
+let ytPlayer = null;
+let playerReady = false;
+let currentQueue = [];
+let currentIndex = 0;
+let sessionActive = false;
+let chipSelections = {};
+let debugOpen = false;
+let sessionTimerId = null;
+let sensorSendId = null;
+let faceDetectId = null;
+let faceModelLoaded = false;
+
+// Sensor state
+let motionData = { ax: 0, ay: 0, az: 0, gx: 0, gy: 0, gz: 0 };
+let orientData = { alpha: 0, beta: 0, gamma: 0 };
+
+const $ = id => document.getElementById(id);
+
+// ==================== CHIP SELECTION ====================
+document.querySelectorAll('.chips').forEach(group => {
+  const field = group.dataset.field;
+  group.querySelectorAll('.chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      chip.classList.toggle('active');
+      chipSelections[field] = [...group.querySelectorAll('.chip.active')].map(c => c.dataset.v);
+      checkReady();
+    });
+  });
+});
+
+function checkReady() {
+  const loc = $('f-location').value.trim();
+  const hasIntent = (chipSelections.intent || []).length > 0;
+  $('start-btn').className = (loc && hasIntent) ? 'ready' : '';
+  $('intake-status').textContent = !loc ? 'Enter your location' : !hasIntent ? 'Select your intent' : 'Ready';
+}
+$('f-location').addEventListener('input', checkReady);
+
+// ==================== YOUTUBE PLAYER ====================
+window.onYouTubeIframeAPIReady = function() {
+  ytPlayer = new YT.Player('ytPlayer', {
+    height: '100%', width: '100%',
+    playerVars: {
+      autoplay: 0, controls: 1, modestbranding: 1, rel: 0,
+      playsinline: 1, iv_load_policy: 3, fs: 0
+    },
+    events: {
+      onReady: () => { playerReady = true; },
+      onStateChange: onPlayerState
+    }
+  });
+};
+
+function onPlayerState(event) {
+  const st = event.data;
+  if (st === YT.PlayerState.PLAYING) {
+    $('playIcon').innerHTML = '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>';
+    const info = ytPlayer.getVideoData();
+    $('trackTitle').textContent = info.title || 'Playing';
+    $('trackArtist').textContent = info.author || '';
+    if (engine) engine.setCurrentTrack({ title: info.title, artist: info.author, id: info.video_id });
+    if (logger) logger.log('play', { track: info.title, artist: info.author });
+  } else if (st === YT.PlayerState.PAUSED) {
+    $('playIcon').innerHTML = '<path d="M8 5v14l11-7z"/>';
+  } else if (st === YT.PlayerState.ENDED) {
+    if (currentIndex < currentQueue.length - 1) {
+      currentIndex++;
+      playTrack(currentQueue[currentIndex]);
+      renderQueue();
+    } else {
+      // Queue ended — get more music from engine
+      loadMoreMusic();
+    }
+  }
+}
+
+function playTrack(track) {
+  if (!ytPlayer || !playerReady || !track) return;
+  ytPlayer.loadVideoById(track.id);
+  $('trackTitle').textContent = track.title;
+  $('trackArtist').textContent = track.artist;
+}
+
+function playPauseToggle() {
+  if (!ytPlayer || !playerReady) return;
+  const st = ytPlayer.getPlayerState();
+  if (st === YT.PlayerState.PLAYING) ytPlayer.pauseVideo();
+  else if (st === YT.PlayerState.PAUSED) ytPlayer.playVideo();
+  else if (currentQueue.length > 0) playTrack(currentQueue[currentIndex]);
+}
+
+// ==================== MUSIC LOADING ====================
+async function loadInitialMusic(queries) {
+  $('sess-status').textContent = 'Finding music...';
+  if (!ytSearch) ytSearch = new YouTubeSearch(YT_API_KEY);
+
+  let allTracks = [];
+  for (const q of queries) {
+    let tracks = await ytSearch.search(q.query, q.count + 5);
+    tracks = engine.filterYouTubeResults(tracks);
+    if (tracks.length > 0) {
+      allTracks = allTracks.concat(tracks.slice(0, q.count));
+    }
+  }
+
+  // If no results from search, use fallbacks
+  if (allTracks.length === 0) {
+    const intent = chipSelections.intent?.[0] || 'unwind';
+    const intervention = intent === 'energy' ? 'STIMULATE' : intent === 'focus' ? 'TRANSITION' : 'REGULATE';
+    allTracks = ytSearch.getFallbackTracks(intervention);
+  }
+
+  currentQueue = shuffle(allTracks);
+  currentIndex = 0;
+  renderQueue();
+
+  if (currentQueue.length > 0) {
+    playTrack(currentQueue[0]);
+    $('sess-status').textContent = `${currentQueue.length} tracks queued`;
+  } else {
+    $('sess-status').textContent = 'No tracks found — try different vibe';
+  }
+}
+
+async function loadMoreMusic() {
+  if (!engine || !ytSearch) return;
+  const q = engine.getNextSearchQuery();
+  if (!q) return;
+
+  let tracks = await ytSearch.search(q.query, 10);
+  tracks = engine.filterYouTubeResults(tracks);
+  if (tracks.length === 0) {
+    const fallbackType = q.energy >= 6 ? 'STIMULATE' : q.energy >= 4 ? 'TRANSITION' : 'REGULATE';
+    tracks = ytSearch.getFallbackTracks(fallbackType);
+  }
+
+  currentQueue = currentQueue.concat(shuffle(tracks));
+  renderQueue();
+  if (currentQueue.length > currentIndex + 1) {
+    currentIndex++;
+    playTrack(currentQueue[currentIndex]);
+  }
+}
+
+function renderQueue() {
+  if (currentQueue.length <= 1) { $('queue-section').style.display = 'none'; return; }
+  $('queue-section').style.display = 'block';
+  let html = '';
+  for (let i = 0; i < Math.min(currentQueue.length, currentIndex + 6); i++) {
+    const t = currentQueue[i];
+    const isActive = i === currentIndex;
+    html += `<div class="queue-item ${isActive ? 'active' : ''}" onclick="jumpTo(${i})">
+      <div class="queue-art"><img src="${t.thumb || `https://i.ytimg.com/vi/${t.id}/default.jpg`}" loading="lazy"></div>
+      <div><div class="queue-title">${t.title}</div><div class="queue-artist">${t.artist}</div></div>
+    </div>`;
+  }
+  $('queue-list').innerHTML = html;
+}
+
+function jumpTo(idx) {
+  currentIndex = idx;
+  playTrack(currentQueue[idx]);
+  renderQueue();
+}
+
+function shuffle(a) { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+// ==================== SENSORS ====================
+async function startSensors() {
+  // Motion
+  try {
+    if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
+      const perm = await DeviceMotionEvent.requestPermission();
+      if (perm !== 'granted') return;
+    }
+    window.addEventListener('devicemotion', e => {
+      const a = e.accelerationIncludingGravity || {};
+      motionData.ax = a.x || 0; motionData.ay = a.y || 0; motionData.az = a.z || 0;
+      const r = e.rotationRate || {};
+      motionData.gx = r.alpha || 0; motionData.gy = r.beta || 0; motionData.gz = r.gamma || 0;
+    });
+  } catch (e) {}
+
+  // Orientation
+  try {
+    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+      await DeviceOrientationEvent.requestPermission();
+    }
+    window.addEventListener('deviceorientation', e => {
+      orientData.alpha = e.alpha || 0; orientData.beta = e.beta || 0; orientData.gamma = e.gamma || 0;
+    });
+  } catch (e) {}
+
+  // Feed sensor data to engine every 1s
+  sensorSendId = setInterval(() => {
+    if (!engine || !engine.active) return;
+    const r = v => Math.round(v * 100) / 100;
+    engine.ingestSensorData({
+      accel: { x: r(motionData.ax), y: r(motionData.ay), z: r(motionData.az) },
+      gyro: { x: r(motionData.gx), y: r(motionData.gy), z: r(motionData.gz) },
+      orient: { alpha: r(orientData.alpha), beta: r(orientData.beta), gamma: r(orientData.gamma) }
+    });
+  }, 1000);
+}
+
+// ==================== FACE DETECTION ====================
+async function startFaceDetection() {
+  if (typeof faceapi === 'undefined') {
+    // face-api.js not loaded yet, retry
+    setTimeout(startFaceDetection, 2000);
+    return;
+  }
+
+  try {
+    const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/model/';
+    await Promise.all([
+      faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+      faceapi.nets.faceLandmark68TinyNet.loadFromUri(MODEL_URL),
+      faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL)
+    ]);
+    faceModelLoaded = true;
+  } catch (e) {
+    console.warn('Face models failed to load:', e);
+    return;
+  }
+
+  // Start front camera
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'user', width: { ideal: 160 }, height: { ideal: 120 } }
+    });
+    const video = $('face-video');
+    video.srcObject = stream;
+    await new Promise(resolve => { video.onloadedmetadata = () => { video.play().then(resolve); }; });
+
+    faceAnalyzer = new FaceAnalyzer();
+
+    // Run detection every 3s (battery-friendly)
+    faceDetectId = setInterval(async () => {
+      if (!engine || !engine.active || !faceModelLoaded) return;
+      try {
+        const detection = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
+          .withFaceLandmarks(true) // useTinyModel
+          .withFaceExpressions();
+        if (detection) {
+          const faceData = faceAnalyzer.analyze(detection);
+          engine.ingestFaceData(faceData);
+          if (logger) logger.log('face_data', faceData);
+        }
+      } catch (e) { /* skip frame */ }
+    }, 3000);
+  } catch (e) {
+    console.warn('Camera access denied:', e);
+    // Engine will work with sensors only — graceful degradation
+  }
+}
+
+// ==================== ENGINE EVENTS ====================
+function setupEngineHandlers() {
+  engine.on('state', data => {
+    if (data.type === 'state_update') {
+      updateStateUI(data);
+      updateDebugState(data);
+    }
+    if (data.type === 'calibration' && data.status === 'complete') {
+      $('cal-bar').style.display = 'none';
+      $('sess-status').textContent = 'Calibrated — listening';
+    }
+  });
+
+  engine.on('command', cmd => {
+    if (cmd.type === 'nudge') showNudge(cmd.text);
+    if (cmd.type === 'haptic') triggerHaptic(cmd.pattern);
+    if (cmd.type === 'music') handleMusicCommand(cmd);
+  });
+
+  engine.on('log', entry => {
+    if (logger) logger.log(entry.type, entry);
+    addDebugLog(entry);
+  });
+
+  engine.on('intervention', decision => {
+    if (logger) logger.log('intervention', decision);
+  });
+}
+
+function updateStateUI(data) {
+  const { energy, immersion, trajectory } = data.state;
+  $('sb-energy').textContent = `Energy: ${energy.level}`;
+  $('sb-energy').className = 'state-badge' + (energy.level === 'high' ? ' hi' : '');
+  $('sb-immersion').textContent = `Immersion: ${immersion.level}`;
+  $('sb-immersion').className = 'state-badge' + (immersion.level === 'engaged' || immersion.level === 'absorbed' ? ' hi' : '');
+  $('sb-trajectory').textContent = `Traj: ${trajectory.direction}`;
+  $('sb-trajectory').className = 'state-badge' + (trajectory.direction === 'improving' ? ' hi' : '');
+
+  // Update calibration bar
+  if (data.calibration && !data.calibration.calibrated) {
+    $('cal-fill').style.width = `${Math.round(data.calibration.progress * 100)}%`;
+  }
+
+  // Update glow based on energy
+  const glowIntensity = Math.round(energy.value * 15);
+  $('glow').style.background = `radial-gradient(circle, rgba(255,59,92,${glowIntensity / 100}) 0%, transparent 70%)`;
+}
+
+function handleMusicCommand(cmd) {
+  if (!ytPlayer || !playerReady) return;
+  switch (cmd.command) {
+    case 'skip':
+      if (currentIndex < currentQueue.length - 1) {
+        currentIndex++;
+        playTrack(currentQueue[currentIndex]);
+        renderQueue();
+      } else loadMoreMusic();
+      break;
+    case 'volume':
+      const vol = Math.max(0, Math.min(100, ytPlayer.getVolume() + (cmd.delta || 0)));
+      ytPlayer.setVolume(vol);
+      break;
+    case 'search_and_play':
+      if (cmd.query) {
+        ytSearch.search(cmd.query.query, 5).then(tracks => {
+          tracks = engine.filterYouTubeResults(tracks);
+          if (tracks.length > 0) {
+            currentQueue.splice(currentIndex + 1, 0, ...tracks);
+            currentIndex++;
+            playTrack(currentQueue[currentIndex]);
+            renderQueue();
+          }
+        });
+      }
+      break;
+  }
+}
+
+// ==================== NUDGE + HAPTIC ====================
+function showNudge(text) {
+  if (!text) return;
+  const el = $('nudge-text');
+  el.textContent = text;
+  el.classList.add('visible');
+  // Pulse glow
+  $('glow').style.background = 'radial-gradient(circle, rgba(255,59,92,0.2) 0%, transparent 70%)';
+  setTimeout(() => {
+    el.classList.remove('visible');
+    $('glow').style.background = 'radial-gradient(circle, rgba(255,59,92,0.06) 0%, transparent 70%)';
+  }, 4000);
+}
+
+function triggerHaptic(pattern) {
+  if (!navigator.vibrate) return;
+  switch (pattern) {
+    case 'light': navigator.vibrate(50); break;
+    case 'medium': navigator.vibrate(100); break;
+    case 'heavy': navigator.vibrate([100, 50, 100]); break;
+    case 'double': navigator.vibrate([50, 30, 50]); break;
+  }
+}
+
+// ==================== SESSION LIFECYCLE ====================
+async function beginSession() {
+  const context = {
+    location: $('f-location').value.trim(),
+    situation: $('f-situation').value.trim(),
+    before: chipSelections.before || [],
+    intent: chipSelections.intent || [],
+    vibe: chipSelections.vibe || [],
+    sleep_in_hours: $('f-sleep-hours').value,
+    wakeup_time: $('f-wakeup').value,
+    freetext: $('f-freetext').value.trim(),
+    time_context: getTimeContext(),
+    submitted_at: new Date().toISOString()
+  };
+
+  // Save intake to localStorage for next time
+  try { localStorage.setItem('me_last_intake', JSON.stringify(context)); } catch(e) {}
+
+  // Switch views
+  $('v-intake').classList.remove('active');
+  $('v-session').classList.add('active');
+  $('debug-toggle').style.display = 'block';
+
+  // Show intent tags
+  (context.intent || []).forEach(i => {
+    const tag = document.createElement('span');
+    tag.className = 'sess-tag';
+    tag.textContent = i;
+    $('sess-tags').appendChild(tag);
+  });
+
+  // Initialize engine
+  engine = new MEEngine();
+  ytSearch = new YouTubeSearch(YT_API_KEY);
+  logger = new SessionLogger({ githubRepo: GITHUB_REPO });
+
+  setupEngineHandlers();
+  const { queries } = engine.startSession(context);
+  logger.startSession(engine.sessionId);
+  logger.log('intake', context);
+  sessionActive = true;
+
+  // Start session timer
+  const startTime = Date.now();
+  sessionTimerId = setInterval(() => {
+    const elapsed = Date.now() - startTime;
+    const min = Math.floor(elapsed / 60000);
+    const sec = Math.floor((elapsed % 60000) / 1000);
+    $('sess-timer').textContent = `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
+  }, 1000);
+
+  // Start sensors (needs user gesture — we have it from button tap)
+  await startSensors();
+
+  // Start face detection
+  startFaceDetection();
+
+  // Load initial music
+  await loadInitialMusic(queries);
+}
+
+async function endSession() {
+  if (!sessionActive) return;
+  sessionActive = false;
+
+  if (engine) {
+    const summary = engine.stopSession();
+    if (logger) await logger.endSession(summary);
+  }
+
+  if (sessionTimerId) { clearInterval(sessionTimerId); sessionTimerId = null; }
+  if (sensorSendId) { clearInterval(sensorSendId); sensorSendId = null; }
+  if (faceDetectId) { clearInterval(faceDetectId); faceDetectId = null; }
+
+  // Stop face camera
+  const video = $('face-video');
+  if (video.srcObject) {
+    video.srcObject.getTracks().forEach(t => t.stop());
+    video.srcObject = null;
+  }
+
+  // Stop YouTube
+  if (ytPlayer && playerReady) {
+    try { ytPlayer.stopVideo(); } catch(e) {}
+  }
+
+  $('sess-status').textContent = 'Session ended. Data saved.';
+  $('end-btn').textContent = 'Session saved';
+  $('end-btn').disabled = true;
+}
+
+function getTimeContext() {
+  const h = new Date().getHours();
+  if (h >= 22 || h < 4) return 'late_night';
+  if (h < 8) return 'early_morning';
+  if (h < 12) return 'morning';
+  if (h < 17) return 'afternoon';
+  return 'evening';
+}
+
+// ==================== DEBUG PANEL ====================
+function toggleDebug() {
+  debugOpen = !debugOpen;
+  $('debug-panel').className = debugOpen ? 'open' : '';
+  $('debug-toggle').textContent = debugOpen ? 'CLOSE' : 'DBG';
+}
+
+function updateDebugState(data) {
+  if (!debugOpen) return;
+  const { state, raw, calibration, arc, cooldown } = data;
+  let html = '';
+  html += `<div class="dbg-row"><span class="dbg-label">Energy</span><span class="dbg-val">${state.energy.level} (${state.energy.value}) [${state.energy.confidence}]</span></div>`;
+  html += `<div class="dbg-row"><span class="dbg-label">Immersion</span><span class="dbg-val">${state.immersion.level} (${state.immersion.value}) [${state.immersion.confidence}]</span></div>`;
+  html += `<div class="dbg-row"><span class="dbg-label">Trajectory</span><span class="dbg-val">${state.trajectory.direction} (${state.trajectory.value})</span></div>`;
+  html += `<div class="dbg-row"><span class="dbg-label">Calibration</span><span class="dbg-val ${calibration.calibrated ? 'accent' : ''}">${calibration.calibrated ? 'COMPLETE' : Math.round(calibration.progress * 100) + '%'}</span></div>`;
+  html += `<div class="dbg-row"><span class="dbg-label">Arc Target</span><span class="dbg-val">${arc.target} @ ${arc.sessionMinutes}m</span></div>`;
+  html += `<div class="dbg-row"><span class="dbg-label">Cooldown</span><span class="dbg-val">${cooldown.remaining}s (${cooldown.failures} fails)</span></div>`;
+  $('dbg-state').innerHTML = html;
+
+  // Sensors
+  const r = v => Math.round(v * 10) / 10;
+  let sHtml = '';
+  sHtml += `<div class="dbg-row"><span class="dbg-label">Accel</span><span class="dbg-val">${r(motionData.ax)}, ${r(motionData.ay)}, ${r(motionData.az)}</span></div>`;
+  sHtml += `<div class="dbg-row"><span class="dbg-label">Gyro</span><span class="dbg-val">${r(motionData.gx)}, ${r(motionData.gy)}, ${r(motionData.gz)}</span></div>`;
+  sHtml += `<div class="dbg-row"><span class="dbg-label">Face</span><span class="dbg-val">${raw.eyes} / ${raw.headPose} / ${raw.nod}</span></div>`;
+  sHtml += `<div class="dbg-row"><span class="dbg-label">Readings</span><span class="dbg-val">F:${raw.faceReadings} S:${raw.sensorReadings}</span></div>`;
+  $('dbg-sensors').innerHTML = sHtml;
+}
+
+const debugLogEntries = [];
+function addDebugLog(entry) {
+  debugLogEntries.push(entry);
+  if (debugLogEntries.length > 50) debugLogEntries.shift();
+  if (!debugOpen) return;
+  $('dbg-log').innerHTML = debugLogEntries.slice(-20).reverse()
+    .map(e => `<div class="dbg-log-entry">[${e.type}] ${e.message || JSON.stringify(e.state || {})}</div>`).join('');
+}
+
+// ==================== CONTROLS ====================
+$('btnPlay').addEventListener('click', playPauseToggle);
+$('btnNext').addEventListener('click', () => {
+  if (currentQueue.length === 0) return;
+  if (logger) logger.log('skip', { track: $('trackTitle').textContent });
+  currentIndex = (currentIndex + 1) % currentQueue.length;
+  playTrack(currentQueue[currentIndex]);
+  renderQueue();
+});
+$('btnPrev').addEventListener('click', () => {
+  if (currentQueue.length === 0) return;
+  currentIndex = currentIndex > 0 ? currentIndex - 1 : currentQueue.length - 1;
+  playTrack(currentQueue[currentIndex]);
+  renderQueue();
+});
+
+// ==================== LOAD SAVED INTAKE ====================
+function loadSavedIntake() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('me_last_intake'));
+    if (!saved) return;
+    if (saved.location) $('f-location').value = saved.location;
+    if (saved.situation) $('f-situation').value = saved.situation;
+    if (saved.freetext) $('f-freetext').value = saved.freetext;
+    if (saved.sleep_in_hours) $('f-sleep-hours').value = saved.sleep_in_hours;
+    if (saved.wakeup_time) $('f-wakeup').value = saved.wakeup_time;
+    ['before', 'intent', 'vibe'].forEach(field => {
+      const vals = saved[field] || [];
+      if (!vals.length) return;
+      chipSelections[field] = vals;
+      const group = document.querySelector(`.chips[data-field="${field}"]`);
+      if (!group) return;
+      group.querySelectorAll('.chip').forEach(chip => {
+        if (vals.includes(chip.dataset.v)) chip.classList.add('active');
+      });
+    });
+    checkReady();
+  } catch (e) {}
+}
+
+// ==================== EXPORT (for console) ====================
+window.MEGetLog = () => SessionLogger.getAllSessions();
+window.MEExport = () => SessionLogger.exportAll();
+window.MEStatus = () => engine ? engine.getStatus() : 'No active session';
+
+// ==================== INIT ====================
+loadSavedIntake();
+</script>
+</body>
+</html>

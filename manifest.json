@@ -1,0 +1,17 @@
+{
+  "name": "M+E",
+  "short_name": "M+E",
+  "description": "Music + Experience — AI-powered personalized sessions",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#000000",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'><rect width='192' height='192' fill='%23000'/><text x='96' y='110' font-size='48' fill='%23ff3b5c' text-anchor='middle' font-family='SF Mono,monospace' font-weight='200'>M+E</text></svg>",
+      "sizes": "192x192",
+      "type": "image/svg+xml"
+    }
+  ]
+}
