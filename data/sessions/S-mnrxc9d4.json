@@ -1,0 +1,1192 @@
+[
+  {
+    "event": "session_start",
+    "sessionId": "S-mnrxc9d4",
+    "startedAt": "2026-04-09T20:23:09.929Z",
+    "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.4 Mobile/15E148 Safari/604.1",
+    "ts": "2026-04-09T20:23:09.929Z"
+  },
+  {
+    "event": "intake",
+    "location": "In hotel room with office colleagues",
+    "situation": "We are drunk and smoking up and wanting to chill and bond as new people",
+    "before": [
+      "social",
+      "eating"
+    ],
+    "intent": [
+      "energy",
+      "feel"
+    ],
+    "vibe": [
+      "electronic"
+    ],
+    "sleep_in_hours": "1",
+    "wakeup_time": "13:00",
+    "freetext": "I will run this session to get energy so that I am motivated and charged up for the workday",
+    "time_context": "late_night",
+    "submitted_at": "2026-04-09T20:23:09.925Z",
+    "ts": "2026-04-09T20:23:09.929Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:23:14.932Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5.1,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:23:19.930Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5.1,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:23:24.929Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "improving"
+    },
+    "engagement": 50,
+    "arcTarget": 5.2,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:23:29.945Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "improving"
+    },
+    "engagement": 50,
+    "arcTarget": 5.2,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:23:34.931Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "improving"
+    },
+    "engagement": 50,
+    "arcTarget": 5.3,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:23:39.932Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "improving"
+    },
+    "engagement": 50,
+    "arcTarget": 5.3,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:23:44.933Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5.4,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:23:49.937Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5.4,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:23:54.941Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5.5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:23:59.945Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5.5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:24:04.949Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "detached",
+      "trajectory": "declining"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:24:09.953Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "declining"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:24:14.957Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "declining"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:24:19.961Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:24:24.964Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:24:29.968Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:24:34.972Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:24:39.976Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "declining"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:24:44.980Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "observing",
+      "trajectory": "declining"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:24:49.984Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "declining"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:24:54.988Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:24:59.991Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:25:04.995Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "calibration_complete",
+    "type": "calibration_complete",
+    "message": "Baseline calibration complete",
+    "baseline": {
+      "engagement": {
+        "mean": null,
+        "std": 0
+      },
+      "eyeOpenRatio": {
+        "mean": null,
+        "std": 0
+      },
+      "headStability": {
+        "mean": null,
+        "std": 0
+      },
+      "movement": {
+        "mean": 0.29629189930044136,
+        "std": 0.4424290974248496
+      },
+      "heartRate": null,
+      "browActivity": {
+        "mean": null,
+        "std": 0
+      },
+      "nodActivity": {
+        "mean": null,
+        "std": 0
+      },
+      "sampleCount": 116,
+      "calibratedAt": 1775766310000
+    },
+    "ts": "2026-04-09T20:25:10.000Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:25:10.001Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:25:15.002Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:25:20.007Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:26:08.867Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:26:13.866Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:26:18.870Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:26:23.873Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:26:28.878Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:26:33.882Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "detached",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:26:38.886Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "detached",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:26:43.890Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "detached",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:26:48.893Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "detached",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:26:53.897Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "declining"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:26:58.901Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "declining"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:27:03.905Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "intervention_fired",
+    "type": "intervention_fired",
+    "message": "[transition/subtle] declining_mid",
+    "decision": {
+      "category": "transition",
+      "intensity": "subtle",
+      "reason": "declining_mid",
+      "text": null,
+      "action": "music_arc_align",
+      "haptic": null,
+      "state": {
+        "energy": "medium",
+        "immersion": "observing",
+        "trajectory": "declining"
+      },
+      "timestamp": 1775766428909
+    },
+    "ts": "2026-04-09T20:27:08.910Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "intervention",
+    "category": "transition",
+    "intensity": "subtle",
+    "reason": "declining_mid",
+    "text": null,
+    "action": "music_arc_align",
+    "haptic": null,
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "declining"
+    },
+    "timestamp": 1775766428909,
+    "ts": "2026-04-09T20:27:08.910Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "declining"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 1,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:27:08.913Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "declining"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 1,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:27:13.913Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "declining"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 1,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:27:18.916Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 1,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:27:23.921Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 1,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:27:28.925Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "detached",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 1,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:27:33.928Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "detached",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 1,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:27:39.029Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 1,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:27:44.779Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 1,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:27:50.750Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 1,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:27:56.755Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 1,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:28:02.793Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "feedback",
+    "type": "feedback",
+    "message": "\"declining_mid\" scored: positive",
+    "outcome": {
+      "intervention": {
+        "category": "transition",
+        "intensity": "subtle",
+        "reason": "declining_mid",
+        "text": null,
+        "action": "music_arc_align"
+      },
+      "preState": {
+        "energy": 0.55,
+        "immersion": 0.44,
+        "trajectory": -0.015,
+        "trajectoryDir": "declining"
+      },
+      "postState": {
+        "energy": 0.45,
+        "immersion": 0.7,
+        "trajectory": 0.016,
+        "trajectoryDir": "improving"
+      },
+      "outcome": {
+        "outcome": "positive",
+        "score": 2,
+        "factors": [
+          "stabilized"
+        ]
+      },
+      "timestamp": 1775766428910,
+      "measuredAt": 1775766568803
+    },
+    "ts": "2026-04-09T20:29:28.804Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "improving"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:29:28.804Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "improving"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:29:33.807Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "improving"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:29:38.810Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "play",
+    "track": "TECHNO MIX 2024 | PEAK TIME TECHNO!!! | Mixed by EJ",
+    "artist": "Electro Junkiee",
+    "ts": "2026-04-09T20:29:40.778Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "detached",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:29:43.814Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "detached",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:29:48.819Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "detached",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:29:53.822Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:29:58.827Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 67,
+    "ts": "2026-04-09T20:30:01.718Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 67,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:30:03.831Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 67,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:30:08.834Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 67,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:30:13.838Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "improving"
+    },
+    "engagement": 67,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:30:18.842Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "improving"
+    },
+    "engagement": 67,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:30:23.847Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "improving"
+    },
+    "engagement": 67,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:30:28.850Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 67,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:30:33.854Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Open",
+    "engagement": 67,
+    "ts": "2026-04-09T20:30:37.501Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 67,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:30:38.857Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 67,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:30:43.861Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 67,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:30:48.866Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 67,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:30:53.870Z",
+    "sessionId": "S-mnrxc9d4"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "improving"
+    },
+    "engagement": 67,
+    "arcTarget": 5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-09T20:30:58.873Z",
+    "sessionId": "S-mnrxc9d4"
+  }
+]
