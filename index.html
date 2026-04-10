@@ -186,12 +186,36 @@ body {
   font-size: 12px; cursor: pointer; position: relative; z-index: 2;
 }
 
+
 /* Hidden video for face detection */
 #face-video { position: fixed; top: -9999px; left: -9999px; width: 160px; height: 120px; }
 #face-canvas { display: none; }
+
+/* Token config overlay */
+#v-config {
+  position: fixed; inset: 0; z-index: 9999; background: var(--bg);
+  display: none; flex-direction: column; justify-content: center; align-items: center;
+  padding: 40px 24px;
+}
+#v-config .brand-name { font-size: 13px; font-weight: 500; letter-spacing: 8px; color: var(--dim); font-family: 'SF Mono', 'Menlo', monospace; }
+#v-config .config-msg { font-size: 13px; color: var(--dim); text-align: center; margin: 16px 0 24px; line-height: 1.5; }
+#v-config input { width: 100%; max-width: 380px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--card); color: #fff; font-size: 14px; font-family: 'SF Mono', monospace; outline: none; }
+#v-config input:focus { border-color: rgba(255,255,255,0.2); }
+#v-config button { margin-top: 16px; padding: 12px 32px; border: none; border-radius: 12px; background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; }
+#v-config .config-status { font-size: 11px; color: var(--dim); margin-top: 12px; }
+#v-config .sync-status { font-size: 11px; color: rgba(255,255,255,0.25); margin-top: 8px; }
 </style>
 </head>
 <body>
+
+<!-- ========== TOKEN CONFIG (one-time) ========== -->
+<div id="v-config">
+  <div class="brand-name">M + E</div>
+  <div class="config-msg">One-time setup. Paste your GitHub token<br>so session data syncs automatically.</div>
+  <input type="text" id="f-token" placeholder="github_pat_..." autocomplete="off" spellcheck="false">
+  <button onclick="saveGitHubToken()">Connect</button>
+  <div class="config-status" id="config-status"></div>
+</div>
 
 <!-- ========== INTAKE VIEW ========== -->
 <div id="v-intake" class="view active">
@@ -268,6 +292,7 @@ body {
 
   <button id="start-btn" onclick="beginSession()">Begin Session</button>
   <div class="intake-status" id="intake-status">Select your intent to begin</div>
+
 </div>
 
 <!-- ========== SESSION VIEW ========== -->
@@ -345,6 +370,54 @@ body {
 
 const YT_API_KEY = 'AIzaSyAfJITiaEinEztRvBrs8CpEjFqSWg-grI8';
 const GITHUB_REPO = 'sakshamking/me-app';
+
+// ==================== GITHUB TOKEN CONFIG ====================
+function getGitHubToken() { return localStorage.getItem('me_github_token') || null; }
+
+function checkGitHubSetup() {
+  const token = getGitHubToken();
+  if (!token) {
+    $('v-config').style.display = 'flex';
+    $('v-intake').classList.remove('active');
+  } else {
+    // Sync any un-pushed sessions in background
+    SessionLogger.syncPending(GITHUB_REPO, token).then(r => {
+      if (r.synced > 0) console.log(`Synced ${r.synced} pending session(s) to GitHub`);
+    });
+  }
+}
+
+async function saveGitHubToken() {
+  const token = $('f-token').value.trim();
+  if (!token || !token.startsWith('github_pat_')) {
+    $('config-status').textContent = 'Token must start with github_pat_';
+    return;
+  }
+  $('config-status').textContent = 'Verifying...';
+  try {
+    const resp = await fetch(`https://api.github.com/repos/${GITHUB_REPO}`, {
+      headers: { 'Authorization': `token ${token}` }
+    });
+    if (!resp.ok) { $('config-status').textContent = 'Token rejected — check permissions'; return; }
+    const repo = await resp.json();
+    if (!repo.permissions || !repo.permissions.push) { $('config-status').textContent = 'Token needs write access'; return; }
+  } catch (e) { $('config-status').textContent = 'Network error — try again'; return; }
+
+  localStorage.setItem('me_github_token', token);
+  $('config-status').textContent = 'Connected!';
+
+  // Sync any pending sessions
+  const r = await SessionLogger.syncPending(GITHUB_REPO, token);
+  if (r.synced > 0) $('config-status').textContent = `Connected! Synced ${r.synced} session(s).`;
+
+  setTimeout(() => {
+    $('v-config').style.display = 'none';
+    $('v-intake').classList.add('active');
+  }, 800);
+}
+
+// Run on load
+document.addEventListener('DOMContentLoaded', checkGitHubSetup);
 
 // ==================== GLOBALS ====================
 let engine = null;
@@ -744,7 +817,7 @@ async function beginSession() {
   // Initialize engine
   engine = new MEEngine();
   ytSearch = new YouTubeSearch(YT_API_KEY);
-  logger = new SessionLogger({ githubRepo: GITHUB_REPO });
+  logger = new SessionLogger({ githubRepo: GITHUB_REPO, githubToken: getGitHubToken() });
 
   setupEngineHandlers();
   const { queries } = engine.startSession(context);
