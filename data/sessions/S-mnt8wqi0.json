@@ -1,0 +1,459 @@
+[
+  {
+    "event": "session_start",
+    "sessionId": "S-mnt8wqi0",
+    "startedAt": "2026-04-10T18:34:47.209Z",
+    "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.4 Mobile/15E148 Safari/604.1",
+    "ts": "2026-04-10T18:34:47.209Z"
+  },
+  {
+    "event": "intake",
+    "location": "At home watching tv",
+    "situation": "Tv is on and I am vibe coding",
+    "before": [
+      "eating"
+    ],
+    "intent": [
+      "feel"
+    ],
+    "vibe": [
+      "mixed"
+    ],
+    "sleep_in_hours": "1",
+    "wakeup_time": "11:00",
+    "freetext": "I will run this session to do a pilot",
+    "time_context": "late_night",
+    "submitted_at": "2026-04-10T18:34:47.206Z",
+    "ts": "2026-04-10T18:34:47.209Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 3,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:34:52.215Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 3,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:34:57.210Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 49,
+    "ts": "2026-04-10T18:35:00.026Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 49,
+    "arcTarget": 3.1,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:35:02.211Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "improving"
+    },
+    "engagement": 49,
+    "arcTarget": 3.1,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:35:07.209Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 60,
+    "ts": "2026-04-10T18:35:08.773Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "improving"
+    },
+    "engagement": 55,
+    "arcTarget": 3.1,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:35:12.211Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "play",
+    "track": "HVME - Goosebumps (8D AUDIO) 🎧",
+    "artist": "8D TUNES",
+    "ts": "2026-04-10T18:35:16.723Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "improving"
+    },
+    "engagement": 55,
+    "arcTarget": 3.1,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:35:17.216Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 55,
+    "arcTarget": 3.2,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:35:22.217Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 55,
+    "arcTarget": 3.2,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:35:27.224Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 55,
+    "arcTarget": 3.2,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:35:32.225Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 55,
+    "arcTarget": 3.2,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:35:37.230Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 55,
+    "arcTarget": 3.3,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:35:42.233Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 55,
+    "arcTarget": 3.3,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:35:47.238Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 55,
+    "arcTarget": 3.3,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:35:52.242Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 55,
+    "arcTarget": 3.3,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:35:57.245Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 55,
+    "arcTarget": 3.3,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:36:02.249Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 55,
+    "arcTarget": 3.4,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:36:07.253Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 55,
+    "arcTarget": 3.4,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:36:12.257Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 55,
+    "arcTarget": 3.4,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:36:17.261Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 62,
+    "ts": "2026-04-10T18:36:20.853Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 57,
+    "arcTarget": 3.5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:36:22.265Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 50,
+    "ts": "2026-04-10T18:36:23.855Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 55,
+    "arcTarget": 3.5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:36:27.269Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 47,
+    "ts": "2026-04-10T18:36:29.868Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 54,
+    "arcTarget": 3.5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:36:32.272Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 64,
+    "ts": "2026-04-10T18:36:32.859Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 64,
+    "ts": "2026-04-10T18:36:35.884Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 58,
+    "arcTarget": 3.6,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:36:37.276Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 58,
+    "arcTarget": 3.6,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:36:42.280Z",
+    "sessionId": "S-mnt8wqi0"
+  }
+]
