@@ -1276,7 +1276,7 @@ class YouTubeSearch {
 }
 
 // ============================================================
-// SESSION LOGGER — localStorage + GitHub API commit
+// SESSION LOGGER — localStorage + GitHub auto-commit
 // ============================================================
 
 class SessionLogger {
@@ -1286,6 +1286,9 @@ class SessionLogger {
     this.githubRepo = options.githubRepo || null;   // 'owner/repo'
     this.githubToken = options.githubToken || null;
     this.autoSaveInterval = null;
+    this.githubSaveInterval = null;
+    this._fileShas = {};  // track GitHub file SHAs for updates
+    this._githubSaving = false;
   }
 
   startSession(sessionId) {
@@ -1294,6 +1297,10 @@ class SessionLogger {
     this.log('session_start', { sessionId, startedAt: new Date().toISOString(), userAgent: navigator.userAgent });
     // Auto-save to localStorage every 30s
     this.autoSaveInterval = setInterval(() => this._saveToLocalStorage(), 30000);
+    // Auto-save to GitHub every 2 min (if token available)
+    if (this.githubRepo && this.githubToken) {
+      this.githubSaveInterval = setInterval(() => this._saveToGitHub(), 120000);
+    }
   }
 
   log(event, data) {
@@ -1304,8 +1311,13 @@ class SessionLogger {
   async endSession(summary) {
     this.log('session_end', { summary });
     if (this.autoSaveInterval) { clearInterval(this.autoSaveInterval); this.autoSaveInterval = null; }
+    if (this.githubSaveInterval) { clearInterval(this.githubSaveInterval); this.githubSaveInterval = null; }
     this._saveToLocalStorage();
-    if (this.githubRepo && this.githubToken) await this._saveToGitHub();
+    this._markSynced(this.sessionId, false);
+    if (this.githubRepo && this.githubToken) {
+      const ok = await this._saveToGitHub();
+      if (ok) this._markSynced(this.sessionId, true);
+    }
     return this.events;
   }
 
@@ -1313,7 +1325,6 @@ class SessionLogger {
     try {
       const key = `me_session_${this.sessionId}`;
       localStorage.setItem(key, JSON.stringify(this.events));
-      // Also maintain session index
       const index = JSON.parse(localStorage.getItem('me_sessions_index') || '[]');
       if (!index.includes(this.sessionId)) {
         index.push(this.sessionId);
@@ -1322,27 +1333,94 @@ class SessionLogger {
     } catch (e) { /* storage full */ }
   }
 
+  _markSynced(sessionId, synced) {
+    try {
+      const syncMap = JSON.parse(localStorage.getItem('me_sessions_synced') || '{}');
+      syncMap[sessionId] = synced;
+      localStorage.setItem('me_sessions_synced', JSON.stringify(syncMap));
+    } catch (e) {}
+  }
+
   async _saveToGitHub() {
-    if (!this.githubRepo || !this.githubToken) return;
+    if (!this.githubRepo || !this.githubToken || this._githubSaving) return false;
+    this._githubSaving = true;
     try {
       const filename = `data/sessions/${this.sessionId}.json`;
       const content = btoa(unescape(encodeURIComponent(JSON.stringify(this.events, null, 2))));
       const url = `https://api.github.com/repos/${this.githubRepo}/contents/${filename}`;
-      await fetch(url, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `token ${this.githubToken}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-          message: `Session ${this.sessionId} — ${this.events.length} events`,
-          content: content
-        })
-      });
+      const headers = { 'Authorization': `token ${this.githubToken}`, 'Content-Type': 'application/json' };
+
+      // Check if file exists (need SHA for updates)
+      let sha = this._fileShas[filename];
+      if (!sha) {
+        try {
+          const existing = await fetch(url, { headers });
+          if (existing.ok) {
+            const data = await existing.json();
+            sha = data.sha;
+          }
+        } catch (e) {}
+      }
+
+      const body = {
+        message: `Session ${this.sessionId} — ${this.events.length} events`,
+        content: content
+      };
+      if (sha) body.sha = sha;
+
+      const resp = await fetch(url, { method: 'PUT', headers, body: JSON.stringify(body) });
+      if (resp.ok) {
+        const result = await resp.json();
+        this._fileShas[filename] = result.content.sha;
+        this._githubSaving = false;
+        return true;
+      }
+      console.warn('GitHub save response:', resp.status);
     } catch (e) { console.warn('GitHub save failed:', e); }
+    this._githubSaving = false;
+    return false;
   }
 
-  // Export all sessions from localStorage
+  // Sync any un-pushed sessions from localStorage to GitHub
+  static async syncPending(githubRepo, githubToken) {
+    if (!githubRepo || !githubToken) return { synced: 0, failed: 0 };
+    const index = JSON.parse(localStorage.getItem('me_sessions_index') || '[]');
+    const syncMap = JSON.parse(localStorage.getItem('me_sessions_synced') || '{}');
+    let synced = 0, failed = 0;
+
+    for (const id of index) {
+      if (syncMap[id] === true) continue;  // already synced
+      const events = JSON.parse(localStorage.getItem(`me_session_${id}`) || '[]');
+      if (events.length === 0) continue;
+
+      try {
+        const filename = `data/sessions/${id}.json`;
+        const content = btoa(unescape(encodeURIComponent(JSON.stringify(events, null, 2))));
+        const url = `https://api.github.com/repos/${githubRepo}/contents/${filename}`;
+        const headers = { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' };
+
+        // Check if file already exists
+        let sha = null;
+        try {
+          const existing = await fetch(url, { headers });
+          if (existing.ok) { sha = (await existing.json()).sha; }
+        } catch (e) {}
+
+        const body = { message: `Session ${id} — ${events.length} events (sync)`, content };
+        if (sha) body.sha = sha;
+
+        const resp = await fetch(url, { method: 'PUT', headers, body: JSON.stringify(body) });
+        if (resp.ok) {
+          syncMap[id] = true;
+          synced++;
+        } else { failed++; }
+      } catch (e) { failed++; }
+    }
+
+    localStorage.setItem('me_sessions_synced', JSON.stringify(syncMap));
+    return { synced, failed };
+  }
+
   static getAllSessions() {
     const index = JSON.parse(localStorage.getItem('me_sessions_index') || '[]');
     return index.map(id => ({
