@@ -455,5 +455,298 @@
     "cooldown": 60000,
     "ts": "2026-04-10T18:36:42.280Z",
     "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "calibration_complete",
+    "type": "calibration_complete",
+    "message": "Baseline calibration complete",
+    "baseline": {
+      "engagement": {
+        "mean": 56.57142857142857,
+        "std": 7.007284839103269
+      },
+      "eyeOpenRatio": {
+        "mean": 0.7857142857142857,
+        "std": 0.24743582965269675
+      },
+      "headStability": {
+        "mean": 0.7000000000000001,
+        "std": 1.1102230246251565e-16
+      },
+      "movement": {
+        "mean": 0.18181678510000057,
+        "std": 0.23649259243470075
+      },
+      "heartRate": null,
+      "browActivity": {
+        "mean": 1,
+        "std": 0
+      },
+      "nodActivity": {
+        "mean": 0,
+        "std": 0
+      },
+      "sampleCount": 117,
+      "calibratedAt": 1775846207285
+    },
+    "ts": "2026-04-10T18:36:47.285Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 58,
+    "arcTarget": 3.6,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:36:47.286Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 76,
+    "ts": "2026-04-10T18:36:50.895Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 3.6,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:36:52.288Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 3.7,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:36:57.292Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 3.7,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:37:02.295Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 3.7,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:37:07.300Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 3.8,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:37:12.303Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 3.8,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:37:17.308Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 3.8,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:37:22.312Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 3.8,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:37:27.315Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 3.9,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-10T18:37:32.319Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "engine_stop",
+    "type": "engine_stop",
+    "message": "Engine stopped",
+    "summary": {
+      "sessionId": "S-mnt8wqi0",
+      "duration": 3,
+      "calibration": "complete",
+      "finalState": {
+        "energy": {
+          "level": "high",
+          "value": 0.63,
+          "confidence": 0.87
+        },
+        "immersion": {
+          "level": "engaged",
+          "value": 0.51,
+          "confidence": 0.87
+        },
+        "trajectory": {
+          "direction": "flat",
+          "value": 0.005,
+          "volatility": 0.04,
+          "confidence": 0.5150368859922794,
+          "windowSize": 18
+        },
+        "raw": {
+          "currentEngagement": 76,
+          "avgEngagement30s": 61,
+          "eyes": "Open",
+          "headPose": "Up",
+          "nod": "None",
+          "brow": "Raised",
+          "faceReadings": 8,
+          "sensorReadings": 60
+        },
+        "timestamp": 1775846252319
+      },
+      "interventions": {
+        "total": 0,
+        "stats": {},
+        "recentOutcomes": []
+      },
+      "arcAdaptations": 0,
+      "profile": "feel"
+    },
+    "ts": "2026-04-10T18:37:35.066Z",
+    "sessionId": "S-mnt8wqi0"
+  },
+  {
+    "event": "session_end",
+    "summary": {
+      "sessionId": "S-mnt8wqi0",
+      "duration": 3,
+      "calibration": "complete",
+      "finalState": {
+        "energy": {
+          "level": "high",
+          "value": 0.63,
+          "confidence": 0.87
+        },
+        "immersion": {
+          "level": "engaged",
+          "value": 0.51,
+          "confidence": 0.87
+        },
+        "trajectory": {
+          "direction": "flat",
+          "value": 0.005,
+          "volatility": 0.04,
+          "confidence": 0.5150368859922794,
+          "windowSize": 18
+        },
+        "raw": {
+          "currentEngagement": 76,
+          "avgEngagement30s": 61,
+          "eyes": "Open",
+          "headPose": "Up",
+          "nod": "None",
+          "brow": "Raised",
+          "faceReadings": 8,
+          "sensorReadings": 60
+        },
+        "timestamp": 1775846252319
+      },
+      "interventions": {
+        "total": 0,
+        "stats": {},
+        "recentOutcomes": []
+      },
+      "arcAdaptations": 0,
+      "profile": "feel"
+    },
+    "ts": "2026-04-10T18:37:35.066Z",
+    "sessionId": "S-mnt8wqi0"
   }
 ]
