@@ -1,0 +1,5743 @@
+[
+  {
+    "event": "session_start",
+    "sessionId": "S-mnpktgsx",
+    "startedAt": "2026-04-08T04:57:05.362Z",
+    "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 18_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/26.4 Mobile/15E148 Safari/604.1",
+    "ts": "2026-04-08T04:57:05.362Z"
+  },
+  {
+    "event": "intake",
+    "location": "in a cab",
+    "situation": "going to office",
+    "before": [
+      "eating"
+    ],
+    "intent": [
+      "energy"
+    ],
+    "vibe": [
+      "electronic"
+    ],
+    "sleep_in_hours": "0.5",
+    "wakeup_time": "09:00",
+    "freetext": "I will run this session to get energy so that I am motivated and charged up for the workday",
+    "time_context": "morning",
+    "submitted_at": "2026-04-08T04:57:05.356Z",
+    "ts": "2026-04-08T04:57:05.362Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 50,
+    "arcTarget": 5.1,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:57:10.367Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 74,
+    "ts": "2026-04-08T04:57:12.325Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 60,
+    "ts": "2026-04-08T04:57:14.653Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 67,
+    "arcTarget": 5.2,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:57:15.364Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 72,
+    "ts": "2026-04-08T04:57:17.658Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 69,
+    "arcTarget": 5.3,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:57:20.363Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 53,
+    "ts": "2026-04-08T04:57:23.654Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 65,
+    "arcTarget": 5.4,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:57:25.369Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 68,
+    "ts": "2026-04-08T04:57:26.637Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 74,
+    "ts": "2026-04-08T04:57:29.657Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 67,
+    "arcTarget": 5.5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:57:30.365Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Open",
+    "engagement": 67,
+    "ts": "2026-04-08T04:57:32.657Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "play",
+    "track": "Oliver Huntemann | Techno Peak Time Sunset Mix | 4K By @EPHIMERA Tulum",
+    "artist": "EPHIMERA Tulum",
+    "ts": "2026-04-08T04:57:33.539Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 66,
+    "arcTarget": 5.6,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:57:35.365Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Open",
+    "engagement": 76,
+    "ts": "2026-04-08T04:57:38.673Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 68,
+    "arcTarget": 5.7,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:57:40.370Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 53,
+    "ts": "2026-04-08T04:57:41.669Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 69,
+    "ts": "2026-04-08T04:57:44.669Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 68,
+    "arcTarget": 5.8,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:57:45.373Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 49,
+    "ts": "2026-04-08T04:57:47.681Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 65,
+    "arcTarget": 5.9,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:57:50.378Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 63,
+    "ts": "2026-04-08T04:57:53.689Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 63,
+    "arcTarget": 6,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:57:55.383Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 63,
+    "ts": "2026-04-08T04:57:56.685Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 75,
+    "ts": "2026-04-08T04:57:59.693Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 62,
+    "arcTarget": 6,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:58:00.385Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 75,
+    "ts": "2026-04-08T04:58:02.705Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 66,
+    "arcTarget": 6.1,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:58:05.390Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Open",
+    "engagement": 73,
+    "ts": "2026-04-08T04:58:05.693Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 71,
+    "ts": "2026-04-08T04:58:08.720Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 70,
+    "arcTarget": 6.2,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:58:10.395Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 59,
+    "ts": "2026-04-08T04:58:11.717Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 61,
+    "ts": "2026-04-08T04:58:14.713Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 69,
+    "arcTarget": 6.3,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:58:15.398Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 62,
+    "ts": "2026-04-08T04:58:17.717Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 67,
+    "arcTarget": 6.4,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:58:20.402Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 62,
+    "ts": "2026-04-08T04:58:20.701Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 65,
+    "ts": "2026-04-08T04:58:23.725Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 63,
+    "arcTarget": 6.5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:58:25.406Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 60,
+    "ts": "2026-04-08T04:58:26.732Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Open",
+    "engagement": 71,
+    "ts": "2026-04-08T04:58:29.733Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 64,
+    "arcTarget": 6.6,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:58:30.410Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 50,
+    "ts": "2026-04-08T04:58:32.744Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 62,
+    "arcTarget": 6.7,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:58:35.413Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 61,
+    "ts": "2026-04-08T04:58:35.712Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 46,
+    "ts": "2026-04-08T04:58:38.751Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 6.8,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:58:40.417Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 70,
+    "ts": "2026-04-08T04:58:41.737Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 58,
+    "ts": "2026-04-08T04:58:44.753Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 6.9,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:58:45.421Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 53,
+    "ts": "2026-04-08T04:58:47.741Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 56,
+    "arcTarget": 7,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:58:50.424Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 48,
+    "ts": "2026-04-08T04:58:50.720Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 55,
+    "ts": "2026-04-08T04:58:53.759Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 55,
+    "arcTarget": 7.1,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:58:55.429Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 80,
+    "ts": "2026-04-08T04:58:56.760Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 51,
+    "ts": "2026-04-08T04:58:59.780Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 58,
+    "arcTarget": 7.2,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:59:00.433Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 55,
+    "ts": "2026-04-08T04:59:02.780Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "calibration_complete",
+    "type": "calibration_complete",
+    "message": "Baseline calibration complete",
+    "baseline": {
+      "engagement": {
+        "mean": 62.91428571428571,
+        "std": 9.17565545676299
+      },
+      "eyeOpenRatio": {
+        "mean": 0.7428571428571429,
+        "std": 0.24989793835051283
+      },
+      "headStability": {
+        "mean": 0.6999999999999996,
+        "std": 3.3306690738754696e-16
+      },
+      "movement": {
+        "mean": 0.3178604533631092,
+        "std": 0.4017631033537678
+      },
+      "heartRate": null,
+      "browActivity": {
+        "mean": 1,
+        "std": 0
+      },
+      "nodActivity": {
+        "mean": 0,
+        "std": 0
+      },
+      "sampleCount": 117,
+      "calibratedAt": 1775624345436
+    },
+    "ts": "2026-04-08T04:59:05.436Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 57,
+    "arcTarget": 7.3,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:59:05.436Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 74,
+    "ts": "2026-04-08T04:59:05.792Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 55,
+    "ts": "2026-04-08T04:59:08.792Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 62,
+    "arcTarget": 7.4,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:59:10.440Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 74,
+    "ts": "2026-04-08T04:59:11.796Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 56,
+    "ts": "2026-04-08T04:59:14.792Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 7.5,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:59:15.446Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 57,
+    "ts": "2026-04-08T04:59:17.804Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 62,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:59:20.450Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 61,
+    "ts": "2026-04-08T04:59:20.812Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 53,
+    "ts": "2026-04-08T04:59:23.812Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "intervention_fired",
+    "type": "intervention_fired",
+    "message": "[stimulate/subtle] energy_below_arc",
+    "decision": {
+      "category": "stimulate",
+      "intensity": "subtle",
+      "reason": "energy_below_arc",
+      "text": null,
+      "action": "music_shift_up",
+      "haptic": "light",
+      "state": {
+        "energy": "medium",
+        "immersion": "engaged",
+        "trajectory": "flat"
+      },
+      "timestamp": 1775624365454
+    },
+    "ts": "2026-04-08T04:59:25.454Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "intervention",
+    "category": "stimulate",
+    "intensity": "subtle",
+    "reason": "energy_below_arc",
+    "text": null,
+    "action": "music_shift_up",
+    "haptic": "light",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "timestamp": 1775624365454,
+    "ts": "2026-04-08T04:59:25.454Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 7.7,
+    "interventionPending": 1,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:59:25.457Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 55,
+    "ts": "2026-04-08T04:59:26.820Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 70,
+    "ts": "2026-04-08T04:59:29.907Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 7.8,
+    "interventionPending": 1,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:59:30.456Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "play",
+    "track": "DIOR | Shubh | Sped up + Bass boosted",
+    "artist": "Musical Magus",
+    "ts": "2026-04-08T04:59:31.115Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 62,
+    "ts": "2026-04-08T04:59:32.812Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 60,
+    "arcTarget": 7.9,
+    "interventionPending": 1,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:59:35.460Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 61,
+    "ts": "2026-04-08T04:59:35.831Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Open",
+    "engagement": 45,
+    "ts": "2026-04-08T04:59:38.827Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 58,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:59:40.484Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Open",
+    "engagement": 66,
+    "ts": "2026-04-08T04:59:41.832Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 54,
+    "ts": "2026-04-08T04:59:44.843Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 60,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:59:45.469Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 55,
+    "ts": "2026-04-08T04:59:47.851Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 57,
+    "arcTarget": 8.1,
+    "interventionPending": 1,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:59:50.473Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 69,
+    "ts": "2026-04-08T04:59:53.848Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 58,
+    "arcTarget": 8.2,
+    "interventionPending": 1,
+    "cooldown": 60000,
+    "ts": "2026-04-08T04:59:55.477Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 58,
+    "ts": "2026-04-08T04:59:56.851Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 58,
+    "arcTarget": 8.3,
+    "interventionPending": 1,
+    "cooldown": 60000,
+    "ts": "2026-04-08T05:00:00.489Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 72,
+    "ts": "2026-04-08T05:00:02.863Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 62,
+    "arcTarget": 8.4,
+    "interventionPending": 1,
+    "cooldown": 60000,
+    "ts": "2026-04-08T05:00:05.485Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 59,
+    "ts": "2026-04-08T05:00:05.878Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 53,
+    "ts": "2026-04-08T05:00:08.859Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8.5,
+    "interventionPending": 1,
+    "cooldown": 60000,
+    "ts": "2026-04-08T05:00:10.490Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 49,
+    "ts": "2026-04-08T05:00:11.883Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 55,
+    "ts": "2026-04-08T05:00:14.883Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 58,
+    "arcTarget": 8.6,
+    "interventionPending": 1,
+    "cooldown": 60000,
+    "ts": "2026-04-08T05:00:15.492Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 55,
+    "ts": "2026-04-08T05:00:17.891Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 57,
+    "arcTarget": 8.7,
+    "interventionPending": 1,
+    "cooldown": 60000,
+    "ts": "2026-04-08T05:00:20.495Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 56,
+    "ts": "2026-04-08T05:00:23.887Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "feedback",
+    "type": "feedback",
+    "message": "\"energy_below_arc\" scored: neutral",
+    "outcome": {
+      "intervention": {
+        "category": "stimulate",
+        "intensity": "subtle",
+        "reason": "energy_below_arc",
+        "text": null,
+        "action": "music_shift_up"
+      },
+      "preState": {
+        "energy": 0.44,
+        "immersion": 0.46,
+        "trajectory": -0.007,
+        "trajectoryDir": "flat"
+      },
+      "postState": {
+        "energy": 0.44,
+        "immersion": 0.46,
+        "trajectory": 0,
+        "trajectoryDir": "flat"
+      },
+      "outcome": {
+        "outcome": "neutral",
+        "score": 0,
+        "factors": []
+      },
+      "timestamp": 1775624365454,
+      "measuredAt": 1775624425500
+    },
+    "ts": "2026-04-08T05:00:25.500Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 55,
+    "arcTarget": 8.8,
+    "interventionPending": 0,
+    "cooldown": 73484.69228349533,
+    "ts": "2026-04-08T05:00:25.500Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 52,
+    "ts": "2026-04-08T05:00:26.891Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 63,
+    "ts": "2026-04-08T05:00:29.903Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 55,
+    "arcTarget": 8.9,
+    "interventionPending": 0,
+    "cooldown": 73484.69228349533,
+    "ts": "2026-04-08T05:00:30.503Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 59,
+    "ts": "2026-04-08T05:00:32.895Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 57,
+    "arcTarget": 9,
+    "interventionPending": 0,
+    "cooldown": 73484.69228349533,
+    "ts": "2026-04-08T05:00:35.507Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 55,
+    "ts": "2026-04-08T05:00:35.911Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 62,
+    "ts": "2026-04-08T05:00:38.915Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "intervention_fired",
+    "type": "intervention_fired",
+    "message": "[stimulate/subtle] energy_below_arc",
+    "decision": {
+      "category": "stimulate",
+      "intensity": "subtle",
+      "reason": "energy_below_arc",
+      "text": null,
+      "action": "volume_up",
+      "haptic": null,
+      "state": {
+        "energy": "medium",
+        "immersion": "observing",
+        "trajectory": "flat"
+      },
+      "timestamp": 1775624440513
+    },
+    "ts": "2026-04-08T05:00:40.513Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "intervention",
+    "category": "stimulate",
+    "intensity": "subtle",
+    "reason": "energy_below_arc",
+    "text": null,
+    "action": "volume_up",
+    "haptic": null,
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "timestamp": 1775624440513,
+    "ts": "2026-04-08T05:00:40.513Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 58,
+    "arcTarget": 9.1,
+    "interventionPending": 1,
+    "cooldown": 73484.69228349533,
+    "ts": "2026-04-08T05:00:40.514Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 48,
+    "ts": "2026-04-08T05:00:41.887Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 54,
+    "ts": "2026-04-08T05:00:44.923Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 57,
+    "arcTarget": 9.2,
+    "interventionPending": 1,
+    "cooldown": 73484.69228349533,
+    "ts": "2026-04-08T05:00:45.515Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 58,
+    "ts": "2026-04-08T05:00:47.930Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 56,
+    "arcTarget": 9.3,
+    "interventionPending": 1,
+    "cooldown": 73484.69228349533,
+    "ts": "2026-04-08T05:00:50.519Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 53,
+    "ts": "2026-04-08T05:00:50.923Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 48,
+    "ts": "2026-04-08T05:00:53.930Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 54,
+    "arcTarget": 9.4,
+    "interventionPending": 1,
+    "cooldown": 73484.69228349533,
+    "ts": "2026-04-08T05:00:55.524Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 49,
+    "ts": "2026-04-08T05:00:59.934Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 52,
+    "arcTarget": 9.5,
+    "interventionPending": 1,
+    "cooldown": 73484.69228349533,
+    "ts": "2026-04-08T05:01:00.527Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 52,
+    "arcTarget": 9.6,
+    "interventionPending": 1,
+    "cooldown": 73484.69228349533,
+    "ts": "2026-04-08T05:01:05.532Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 71,
+    "ts": "2026-04-08T05:01:05.951Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 65,
+    "ts": "2026-04-08T05:01:08.942Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 57,
+    "arcTarget": 9.7,
+    "interventionPending": 1,
+    "cooldown": 73484.69228349533,
+    "ts": "2026-04-08T05:01:10.535Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 62,
+    "ts": "2026-04-08T05:01:11.958Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 54,
+    "ts": "2026-04-08T05:01:14.954Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 58,
+    "arcTarget": 9.8,
+    "interventionPending": 1,
+    "cooldown": 73484.69228349533,
+    "ts": "2026-04-08T05:01:15.538Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 58,
+    "ts": "2026-04-08T05:01:17.974Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 60,
+    "arcTarget": 9.9,
+    "interventionPending": 1,
+    "cooldown": 73484.69228349533,
+    "ts": "2026-04-08T05:01:20.543Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 63,
+    "ts": "2026-04-08T05:01:20.974Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Open",
+    "engagement": 55,
+    "ts": "2026-04-08T05:01:23.963Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 60,
+    "arcTarget": 10,
+    "interventionPending": 1,
+    "cooldown": 73484.69228349533,
+    "ts": "2026-04-08T05:01:25.547Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Open",
+    "engagement": 51,
+    "ts": "2026-04-08T05:01:26.975Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 57,
+    "arcTarget": 10,
+    "interventionPending": 1,
+    "cooldown": 73484.69228349533,
+    "ts": "2026-04-08T05:01:30.563Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 58,
+    "ts": "2026-04-08T05:01:32.987Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "play",
+    "track": "Top Punjabi Bass Boosted Songs 2022 Mashup ||🔥Songs For Car🔥|| Remix Punjabi",
+    "artist": "HP Music update",
+    "ts": "2026-04-08T05:01:35.128Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 57,
+    "arcTarget": 10,
+    "interventionPending": 1,
+    "cooldown": 73484.69228349533,
+    "ts": "2026-04-08T05:01:35.567Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Open",
+    "engagement": 48,
+    "ts": "2026-04-08T05:01:35.982Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 59,
+    "ts": "2026-04-08T05:01:38.986Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "feedback",
+    "type": "feedback",
+    "message": "\"energy_below_arc\" scored: neutral",
+    "outcome": {
+      "intervention": {
+        "category": "stimulate",
+        "intensity": "subtle",
+        "reason": "energy_below_arc",
+        "text": null,
+        "action": "volume_up"
+      },
+      "preState": {
+        "energy": 0.45,
+        "immersion": 0.42,
+        "trajectory": -0.001,
+        "trajectoryDir": "flat"
+      },
+      "postState": {
+        "energy": 0.47,
+        "immersion": 0.4,
+        "trajectory": -0.002,
+        "trajectoryDir": "flat"
+      },
+      "outcome": {
+        "outcome": "neutral",
+        "score": 0,
+        "factors": []
+      },
+      "timestamp": 1775624440513,
+      "measuredAt": 1775624500572
+    },
+    "ts": "2026-04-08T05:01:40.572Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 56,
+    "arcTarget": 10,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:01:40.572Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Open",
+    "engagement": 58,
+    "ts": "2026-04-08T05:01:41.998Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 55,
+    "ts": "2026-04-08T05:01:44.998Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 55,
+    "arcTarget": 10,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:01:45.575Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 42,
+    "ts": "2026-04-08T05:01:48.002Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 53,
+    "arcTarget": 10,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:01:50.580Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 76,
+    "ts": "2026-04-08T05:01:51.006Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 51,
+    "ts": "2026-04-08T05:01:54.009Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 57,
+    "arcTarget": 10,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:01:55.583Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 55,
+    "ts": "2026-04-08T05:01:57.013Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 58,
+    "ts": "2026-04-08T05:02:00.013Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 56,
+    "arcTarget": 10,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:02:00.587Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Open",
+    "engagement": 45,
+    "ts": "2026-04-08T05:02:03.018Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 55,
+    "arcTarget": 10,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:02:05.592Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 59,
+    "ts": "2026-04-08T05:02:06.030Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 60,
+    "ts": "2026-04-08T05:02:09.022Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 55,
+    "arcTarget": 10,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:02:10.595Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 59,
+    "ts": "2026-04-08T05:02:12.026Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 60,
+    "ts": "2026-04-08T05:02:15.038Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 57,
+    "arcTarget": 10,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:02:15.598Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 48,
+    "ts": "2026-04-08T05:02:18.042Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 55,
+    "arcTarget": 10,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:02:20.602Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 52,
+    "ts": "2026-04-08T05:02:21.034Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 56,
+    "ts": "2026-04-08T05:02:24.054Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 56,
+    "arcTarget": 10,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:02:25.606Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 58,
+    "ts": "2026-04-08T05:02:27.074Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 56,
+    "ts": "2026-04-08T05:02:30.065Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 55,
+    "arcTarget": 10,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:02:30.611Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 61,
+    "ts": "2026-04-08T05:02:33.069Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "intervention_fired",
+    "type": "intervention_fired",
+    "message": "[stimulate/subtle] energy_below_arc",
+    "decision": {
+      "category": "stimulate",
+      "intensity": "subtle",
+      "reason": "energy_below_arc",
+      "text": null,
+      "action": "music_shift_up",
+      "haptic": "light",
+      "state": {
+        "energy": "medium",
+        "immersion": "observing",
+        "trajectory": "flat"
+      },
+      "timestamp": 1775624555614
+    },
+    "ts": "2026-04-08T05:02:35.614Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "intervention",
+    "category": "stimulate",
+    "intensity": "subtle",
+    "reason": "energy_below_arc",
+    "text": null,
+    "action": "music_shift_up",
+    "haptic": "light",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "timestamp": 1775624555614,
+    "ts": "2026-04-08T05:02:35.614Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 55,
+    "arcTarget": 10,
+    "interventionPending": 1,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:02:35.616Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 61,
+    "ts": "2026-04-08T05:02:36.069Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 57,
+    "arcTarget": 10,
+    "interventionPending": 1,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:02:40.621Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 58,
+    "ts": "2026-04-08T05:02:42.057Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "play",
+    "track": "TECHNO MIX 2026 💣 Peak Time Techno Bangers 13 💣 Mixed by EJ",
+    "artist": "Electro Junkiee",
+    "ts": "2026-04-08T05:02:43.110Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 61,
+    "ts": "2026-04-08T05:02:45.081Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 10,
+    "interventionPending": 1,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:02:45.622Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 53,
+    "ts": "2026-04-08T05:02:48.081Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 58,
+    "arcTarget": 10,
+    "interventionPending": 1,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:02:50.627Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 49,
+    "ts": "2026-04-08T05:02:51.082Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 57,
+    "arcTarget": 10,
+    "interventionPending": 1,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:02:55.630Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 61,
+    "ts": "2026-04-08T05:02:57.089Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 54,
+    "ts": "2026-04-08T05:03:00.089Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 56,
+    "arcTarget": 10,
+    "interventionPending": 1,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:03:00.633Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 54,
+    "ts": "2026-04-08T05:03:03.101Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 55,
+    "arcTarget": 10,
+    "interventionPending": 1,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:03:05.638Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Closed",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 63,
+    "ts": "2026-04-08T05:03:06.112Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 44,
+    "ts": "2026-04-08T05:03:09.109Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 54,
+    "arcTarget": 10,
+    "interventionPending": 1,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:03:10.641Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 63,
+    "ts": "2026-04-08T05:03:12.116Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 61,
+    "ts": "2026-04-08T05:03:15.117Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 57,
+    "arcTarget": 10,
+    "interventionPending": 1,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:03:15.646Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 52,
+    "ts": "2026-04-08T05:03:18.113Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 56,
+    "arcTarget": 10,
+    "interventionPending": 1,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:03:20.650Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 61,
+    "ts": "2026-04-08T05:03:21.124Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 60,
+    "ts": "2026-04-08T05:03:24.133Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 57,
+    "arcTarget": 10,
+    "interventionPending": 1,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:03:25.655Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 59,
+    "ts": "2026-04-08T05:03:27.133Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 60,
+    "ts": "2026-04-08T05:03:30.132Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 10,
+    "interventionPending": 1,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:03:30.658Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 46,
+    "ts": "2026-04-08T05:03:33.137Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "feedback",
+    "type": "feedback",
+    "message": "\"energy_below_arc\" scored: negative",
+    "outcome": {
+      "intervention": {
+        "category": "stimulate",
+        "intensity": "subtle",
+        "reason": "energy_below_arc",
+        "text": null,
+        "action": "music_shift_up"
+      },
+      "preState": {
+        "energy": 0.49,
+        "immersion": 0.39,
+        "trajectory": 0,
+        "trajectoryDir": "flat"
+      },
+      "postState": {
+        "energy": 0.42,
+        "immersion": 0.39,
+        "trajectory": 0,
+        "trajectoryDir": "flat"
+      },
+      "outcome": {
+        "outcome": "negative",
+        "score": -1,
+        "factors": [
+          "energy_dropped"
+        ]
+      },
+      "timestamp": 1775624555614,
+      "measuredAt": 1775624615662
+    },
+    "ts": "2026-04-08T05:03:35.662Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 56,
+    "arcTarget": 10,
+    "interventionPending": 0,
+    "cooldown": 202500,
+    "ts": "2026-04-08T05:03:35.663Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 59,
+    "ts": "2026-04-08T05:03:36.145Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 54,
+    "ts": "2026-04-08T05:03:39.137Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 56,
+    "arcTarget": 10,
+    "interventionPending": 0,
+    "cooldown": 202500,
+    "ts": "2026-04-08T05:03:40.666Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 60,
+    "ts": "2026-04-08T05:03:42.140Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 73,
+    "ts": "2026-04-08T05:03:45.169Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 10,
+    "interventionPending": 0,
+    "cooldown": 202500,
+    "ts": "2026-04-08T05:03:45.669Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 54,
+    "ts": "2026-04-08T05:03:48.153Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 58,
+    "arcTarget": 10,
+    "interventionPending": 0,
+    "cooldown": 202500,
+    "ts": "2026-04-08T05:03:50.674Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 58,
+    "ts": "2026-04-08T05:03:51.168Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 51,
+    "ts": "2026-04-08T05:03:54.168Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 58,
+    "arcTarget": 10,
+    "interventionPending": 0,
+    "cooldown": 202500,
+    "ts": "2026-04-08T05:03:55.678Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 49,
+    "ts": "2026-04-08T05:03:57.176Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 57,
+    "ts": "2026-04-08T05:04:00.172Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 57,
+    "arcTarget": 10,
+    "interventionPending": 0,
+    "cooldown": 202500,
+    "ts": "2026-04-08T05:04:00.682Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 71,
+    "ts": "2026-04-08T05:04:03.184Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 57,
+    "arcTarget": 10,
+    "interventionPending": 0,
+    "cooldown": 202500,
+    "ts": "2026-04-08T05:04:05.685Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 64,
+    "ts": "2026-04-08T05:04:06.160Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Open",
+    "engagement": 61,
+    "ts": "2026-04-08T05:04:09.192Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 10,
+    "interventionPending": 0,
+    "cooldown": 202500,
+    "ts": "2026-04-08T05:04:10.689Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 60,
+    "ts": "2026-04-08T05:04:12.192Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 54,
+    "ts": "2026-04-08T05:04:15.200Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 10,
+    "interventionPending": 0,
+    "cooldown": 202500,
+    "ts": "2026-04-08T05:04:15.692Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 10,
+    "interventionPending": 0,
+    "cooldown": 202500,
+    "ts": "2026-04-08T05:04:20.697Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 10,
+    "interventionPending": 0,
+    "cooldown": 202500,
+    "ts": "2026-04-08T05:04:26.208Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 10,
+    "interventionPending": 0,
+    "cooldown": 202500,
+    "ts": "2026-04-08T05:04:31.899Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "play",
+    "track": "TECHNO MIX 2026 💣 Peak Time Techno Bangers 13 💣 Mixed by EJ",
+    "artist": "Electro Junkiee",
+    "ts": "2026-04-08T05:04:33.033Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 10,
+    "interventionPending": 0,
+    "cooldown": 202500,
+    "ts": "2026-04-08T05:04:36.900Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 9.9,
+    "interventionPending": 0,
+    "cooldown": 202500,
+    "ts": "2026-04-08T05:04:41.904Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "intervention_fired",
+    "type": "intervention_fired",
+    "message": "[stimulate/subtle] energy_below_arc",
+    "decision": {
+      "category": "stimulate",
+      "intensity": "subtle",
+      "reason": "energy_below_arc",
+      "text": null,
+      "action": "music_shift_up",
+      "haptic": "light",
+      "state": {
+        "energy": "medium",
+        "immersion": "observing",
+        "trajectory": "flat"
+      },
+      "timestamp": 1775624760204
+    },
+    "ts": "2026-04-08T05:06:00.204Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "intervention",
+    "category": "stimulate",
+    "intensity": "subtle",
+    "reason": "energy_below_arc",
+    "text": null,
+    "action": "music_shift_up",
+    "haptic": "light",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "timestamp": 1775624760204,
+    "ts": "2026-04-08T05:06:00.204Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8.6,
+    "interventionPending": 1,
+    "cooldown": 202500,
+    "ts": "2026-04-08T05:06:00.206Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "play",
+    "track": "TECHNO MIX 2026 💣 Peak Time Techno Bangers 13 💣 Mixed by EJ",
+    "artist": "Electro Junkiee",
+    "ts": "2026-04-08T05:06:02.772Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8.5,
+    "interventionPending": 1,
+    "cooldown": 202500,
+    "ts": "2026-04-08T05:06:05.200Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "play",
+    "track": "\"Moments in the bible with the most aura\" 🛐✝️☦️ #christ #bible #Christians",
+    "artist": "Death to the world",
+    "ts": "2026-04-08T05:06:06.814Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8.4,
+    "interventionPending": 1,
+    "cooldown": 202500,
+    "ts": "2026-04-08T05:06:10.203Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8.3,
+    "interventionPending": 1,
+    "cooldown": 202500,
+    "ts": "2026-04-08T05:06:15.207Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8.3,
+    "interventionPending": 1,
+    "cooldown": 202500,
+    "ts": "2026-04-08T05:06:20.211Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8.2,
+    "interventionPending": 1,
+    "cooldown": 202500,
+    "ts": "2026-04-08T05:06:25.215Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "play",
+    "track": "The Most TERRIFYING Space Photo #space #nasa #science",
+    "artist": "AstroKobi",
+    "ts": "2026-04-08T05:06:28.536Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8.1,
+    "interventionPending": 1,
+    "cooldown": 202500,
+    "ts": "2026-04-08T05:06:30.220Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "improving"
+    },
+    "engagement": 61,
+    "arcTarget": 8.1,
+    "interventionPending": 1,
+    "cooldown": 202500,
+    "ts": "2026-04-08T05:06:35.223Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "improving"
+    },
+    "engagement": 61,
+    "arcTarget": 8.1,
+    "interventionPending": 1,
+    "cooldown": 202500,
+    "ts": "2026-04-08T05:06:40.228Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "improving"
+    },
+    "engagement": 61,
+    "arcTarget": 8.1,
+    "interventionPending": 1,
+    "cooldown": 202500,
+    "ts": "2026-04-08T05:06:45.231Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "observing",
+      "trajectory": "improving"
+    },
+    "engagement": 61,
+    "arcTarget": 8.1,
+    "interventionPending": 1,
+    "cooldown": 202500,
+    "ts": "2026-04-08T05:06:50.234Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "observing",
+      "trajectory": "improving"
+    },
+    "engagement": 61,
+    "arcTarget": 8.1,
+    "interventionPending": 1,
+    "cooldown": 202500,
+    "ts": "2026-04-08T05:06:55.238Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "feedback",
+    "type": "feedback",
+    "message": "\"energy_below_arc\" scored: positive",
+    "outcome": {
+      "intervention": {
+        "category": "stimulate",
+        "intensity": "subtle",
+        "reason": "energy_below_arc",
+        "text": null,
+        "action": "music_shift_up"
+      },
+      "preState": {
+        "energy": 0.47,
+        "immersion": 0.29,
+        "trajectory": -0.001,
+        "trajectoryDir": "flat"
+      },
+      "postState": {
+        "energy": 0.73,
+        "immersion": 0.58,
+        "trajectory": 0.014,
+        "trajectoryDir": "improving"
+      },
+      "outcome": {
+        "outcome": "positive",
+        "score": 4,
+        "factors": [
+          "energy_up",
+          "immersion_up",
+          "trajectory_reversed"
+        ]
+      },
+      "timestamp": 1775624760204,
+      "measuredAt": 1775624820242
+    },
+    "ts": "2026-04-08T05:07:00.244Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "improving"
+    },
+    "engagement": 61,
+    "arcTarget": 8.1,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:07:00.244Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "improving"
+    },
+    "engagement": 61,
+    "arcTarget": 8.1,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:07:05.246Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "improving"
+    },
+    "engagement": 61,
+    "arcTarget": 8.1,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:07:10.251Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "improving"
+    },
+    "engagement": 61,
+    "arcTarget": 8.1,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:07:15.254Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "play",
+    "track": "• Bro Is All In One 💀 - His Aura Is Unmatchable | Amv/Edit | #sololeveling #shots #sungjinwoo #anime",
+    "artist": "Synic",
+    "ts": "2026-04-08T05:07:15.439Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "improving"
+    },
+    "engagement": 61,
+    "arcTarget": 8.1,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:07:20.259Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "improving"
+    },
+    "engagement": 61,
+    "arcTarget": 8.1,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:07:25.262Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8.1,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:07:31.211Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8.1,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:07:43.504Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8.1,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:07:48.505Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8.1,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:07:53.510Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8.1,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:07:58.530Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "play",
+    "track": "• Bro Is All In One 💀 - His Aura Is Unmatchable | Amv/Edit | #sololeveling #shots #sungjinwoo #anime",
+    "artist": "Synic",
+    "ts": "2026-04-08T05:08:00.562Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "play",
+    "track": "• Bro Is All In One 💀 - His Aura Is Unmatchable | Amv/Edit | #sololeveling #shots #sungjinwoo #anime",
+    "artist": "Synic",
+    "ts": "2026-04-08T05:08:01.941Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8.1,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:08:03.534Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8.1,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:08:08.538Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8.1,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:08:13.548Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8.1,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:08:18.550Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "play",
+    "track": "Coldest entry in anime 🥵🥶 | Mori and Daewi | God of Highschool",
+    "artist": "Anime Editz",
+    "ts": "2026-04-08T05:08:20.460Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8.1,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:08:23.553Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8.1,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:08:28.568Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "play",
+    "track": "A masterclass in acting #AndrewGarfield #AngelsInAmerica #NationalTheatre #Theatre #actors",
+    "artist": "National Theatre",
+    "ts": "2026-04-08T05:08:33.138Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8.1,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:08:33.570Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8.1,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:08:38.574Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8.1,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:08:44.207Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:09:09.688Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "play",
+    "track": "A masterclass in acting #AndrewGarfield #AngelsInAmerica #NationalTheatre #Theatre #actors",
+    "artist": "National Theatre",
+    "ts": "2026-04-08T05:09:11.995Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:09:14.685Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:09:19.689Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:09:24.692Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:09:29.698Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:09:34.702Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:09:39.705Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:09:44.709Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:09:49.712Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:09:54.727Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:09:59.729Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:10:04.734Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:10:09.748Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "intervention_fired",
+    "type": "intervention_fired",
+    "message": "[stimulate/subtle] energy_below_arc",
+    "decision": {
+      "category": "stimulate",
+      "intensity": "subtle",
+      "reason": "energy_below_arc",
+      "text": null,
+      "action": "volume_up",
+      "haptic": null,
+      "state": {
+        "energy": "medium",
+        "immersion": "engaged",
+        "trajectory": "flat"
+      },
+      "timestamp": 1775625014750
+    },
+    "ts": "2026-04-08T05:10:14.750Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "intervention",
+    "category": "stimulate",
+    "intensity": "subtle",
+    "reason": "energy_below_arc",
+    "text": null,
+    "action": "volume_up",
+    "haptic": null,
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "timestamp": 1775625014750,
+    "ts": "2026-04-08T05:10:14.750Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:10:14.751Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "play",
+    "track": "YOUNA - Peak Time / Driving & Melodic Techno DJ Mix 17",
+    "artist": "YOUNA",
+    "ts": "2026-04-08T05:10:18.572Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:10:19.755Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:10:24.768Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:10:29.773Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:10:34.776Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:10:39.790Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:10:44.792Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:10:49.797Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:10:54.809Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:10:59.811Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:11:04.816Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 90000,
+    "ts": "2026-04-08T05:11:09.839Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "feedback",
+    "type": "feedback",
+    "message": "\"energy_below_arc\" scored: neutral",
+    "outcome": {
+      "intervention": {
+        "category": "stimulate",
+        "intensity": "subtle",
+        "reason": "energy_below_arc",
+        "text": null,
+        "action": "volume_up"
+      },
+      "preState": {
+        "energy": 0.46,
+        "immersion": 0.68,
+        "trajectory": 0,
+        "trajectoryDir": "flat"
+      },
+      "postState": {
+        "energy": 0.56,
+        "immersion": 0.62,
+        "trajectory": -0.002,
+        "trajectoryDir": "flat"
+      },
+      "outcome": {
+        "outcome": "neutral",
+        "score": 1,
+        "factors": [
+          "energy_up"
+        ]
+      },
+      "timestamp": 1775625014750,
+      "measuredAt": 1775625074840
+    },
+    "ts": "2026-04-08T05:11:14.841Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:11:14.841Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:11:19.844Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:11:24.847Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:11:29.851Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:11:34.856Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:11:39.870Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:11:44.873Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:11:49.876Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:11:54.890Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:11:59.892Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:12:04.895Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:12:09.910Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:12:14.912Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:12:19.916Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:12:24.931Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "intervention_fired",
+    "type": "intervention_fired",
+    "message": "[stimulate/subtle] energy_below_arc",
+    "decision": {
+      "category": "stimulate",
+      "intensity": "subtle",
+      "reason": "energy_below_arc",
+      "text": null,
+      "action": "music_shift_up",
+      "haptic": "light",
+      "state": {
+        "energy": "medium",
+        "immersion": "engaged",
+        "trajectory": "flat"
+      },
+      "timestamp": 1775625149935
+    },
+    "ts": "2026-04-08T05:12:29.935Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "intervention",
+    "category": "stimulate",
+    "intensity": "subtle",
+    "reason": "energy_below_arc",
+    "text": null,
+    "action": "music_shift_up",
+    "haptic": "light",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "timestamp": 1775625149935,
+    "ts": "2026-04-08T05:12:29.936Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:12:29.940Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:12:34.938Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:12:39.954Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:12:44.958Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:12:49.959Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:12:54.961Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:12:59.966Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:13:04.970Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:13:09.987Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "play",
+    "track": "Hans Zimmer - Soundtrack Best of | EPIC VERSION",
+    "artist": "Pierre Trottier",
+    "ts": "2026-04-08T05:13:11.687Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:13:14.990Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:13:19.995Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 110227.03842524302,
+    "ts": "2026-04-08T05:13:25.013Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "feedback",
+    "type": "feedback",
+    "message": "\"energy_below_arc\" scored: neutral",
+    "outcome": {
+      "intervention": {
+        "category": "stimulate",
+        "intensity": "subtle",
+        "reason": "energy_below_arc",
+        "text": null,
+        "action": "music_shift_up"
+      },
+      "preState": {
+        "energy": 0.47,
+        "immersion": 0.67,
+        "trajectory": 0,
+        "trajectoryDir": "flat"
+      },
+      "postState": {
+        "energy": 0.46,
+        "immersion": 0.68,
+        "trajectory": -0.001,
+        "trajectoryDir": "flat"
+      },
+      "outcome": {
+        "outcome": "neutral",
+        "score": 0,
+        "factors": []
+      },
+      "timestamp": 1775625149935,
+      "measuredAt": 1775625210015
+    },
+    "ts": "2026-04-08T05:13:30.015Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:13:30.016Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:13:35.019Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:13:40.044Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:13:45.051Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:13:50.050Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:13:55.057Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:14:00.062Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:14:05.066Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:14:10.080Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:14:15.082Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:14:20.085Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:14:25.090Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:14:30.093Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:14:35.097Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:14:40.117Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:14:45.118Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:14:50.121Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 0,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:14:55.137Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "intervention_fired",
+    "type": "intervention_fired",
+    "message": "[stimulate/subtle] energy_below_arc",
+    "decision": {
+      "category": "stimulate",
+      "intensity": "subtle",
+      "reason": "energy_below_arc",
+      "text": null,
+      "action": "volume_up",
+      "haptic": null,
+      "state": {
+        "energy": "medium",
+        "immersion": "engaged",
+        "trajectory": "flat"
+      },
+      "timestamp": 1775625300140
+    },
+    "ts": "2026-04-08T05:15:00.141Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "intervention",
+    "category": "stimulate",
+    "intensity": "subtle",
+    "reason": "energy_below_arc",
+    "text": null,
+    "action": "volume_up",
+    "haptic": null,
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "timestamp": 1775625300140,
+    "ts": "2026-04-08T05:15:00.141Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:15:00.141Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:15:05.145Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:15:10.151Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:15:15.153Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:15:20.158Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:15:25.175Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:15:30.177Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "detached",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:15:35.181Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "detached",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 8,
+    "interventionPending": 1,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:15:40.185Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "detached",
+      "trajectory": "declining"
+    },
+    "engagement": 61,
+    "arcTarget": 7.9,
+    "interventionPending": 1,
+    "cooldown": 135000,
+    "ts": "2026-04-08T05:15:45.213Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "feedback",
+    "type": "feedback",
+    "message": "\"energy_below_arc\" scored: neutral",
+    "outcome": {
+      "intervention": {
+        "category": "stimulate",
+        "intensity": "subtle",
+        "reason": "energy_below_arc",
+        "text": null,
+        "action": "volume_up"
+      },
+      "preState": {
+        "energy": 0.5,
+        "immersion": 0.66,
+        "trajectory": 0.001,
+        "trajectoryDir": "flat"
+      },
+      "postState": {
+        "energy": 0.55,
+        "immersion": 0.01,
+        "trajectory": -0.019,
+        "trajectoryDir": "declining"
+      },
+      "outcome": {
+        "outcome": "neutral",
+        "score": 0,
+        "factors": [
+          "energy_up",
+          "immersion_dropped"
+        ]
+      },
+      "timestamp": 1775625300140,
+      "measuredAt": 1775625374362
+    },
+    "ts": "2026-04-08T05:16:14.362Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "detached",
+      "trajectory": "declining"
+    },
+    "engagement": 61,
+    "arcTarget": 7.7,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:16:14.362Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "declining"
+    },
+    "engagement": 61,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:16:19.356Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "play",
+    "track": "Hans Zimmer - Soundtrack Best of | EPIC VERSION",
+    "artist": "Pierre Trottier",
+    "ts": "2026-04-08T05:16:19.915Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "declining"
+    },
+    "engagement": 61,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:16:24.362Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "declining"
+    },
+    "engagement": 61,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:16:29.365Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "observing",
+      "trajectory": "declining"
+    },
+    "engagement": 61,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:16:34.369Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "observing",
+      "trajectory": "declining"
+    },
+    "engagement": 61,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:16:39.373Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "observing",
+      "trajectory": "declining"
+    },
+    "engagement": 61,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:16:44.377Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Open",
+    "engagement": 46,
+    "ts": "2026-04-08T05:16:45.429Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "declining"
+    },
+    "engagement": 59,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:16:49.382Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "declining"
+    },
+    "engagement": 59,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:16:54.385Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:16:59.388Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:17:04.393Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:17:09.396Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:17:14.401Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:17:19.404Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:17:24.408Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Open",
+    "engagement": 71,
+    "ts": "2026-04-08T05:17:24.459Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:17:29.413Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:17:34.417Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:17:39.430Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:17:44.433Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:17:49.437Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:17:54.448Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:17:59.451Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:18:04.456Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:18:09.459Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:18:14.463Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:18:20.198Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:18:36.067Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "play",
+    "track": "Hans Zimmer - Soundtrack Best of | EPIC VERSION",
+    "artist": "Pierre Trottier",
+    "ts": "2026-04-08T05:18:37.305Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:18:41.071Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:18:46.076Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:18:51.087Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:18:56.091Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:19:01.095Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:19:06.109Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 49,
+    "ts": "2026-04-08T05:19:09.187Z",
+    "sessionId": "S-mnpktgsx"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "observing",
+      "trajectory": "flat"
+    },
+    "engagement": 57,
+    "arcTarget": 7.6,
+    "interventionPending": 0,
+    "cooldown": 165340.55763786452,
+    "ts": "2026-04-08T05:19:11.112Z",
+    "sessionId": "S-mnpktgsx"
+  }
+]
