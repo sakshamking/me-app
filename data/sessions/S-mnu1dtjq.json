@@ -1222,5 +1222,667 @@
     "cooldown": 45000,
     "ts": "2026-04-11T07:55:48.778Z",
     "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "music_requeue",
+    "type": "music_requeue",
+    "message": "State shifted → queuing new music",
+    "state": "overextended_absorbed",
+    "ts": "2026-04-11T07:55:53.783Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "music_adapt",
+    "type": "music_adapt",
+    "message": "Energy mismatch: state=9.1 target=7.1",
+    "mismatch": "2.0",
+    "ts": "2026-04-11T07:55:53.784Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "absorbed",
+      "trajectory": "flat"
+    },
+    "engagement": 70,
+    "arcTarget": 7.1,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:55:53.784Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "play",
+    "track": "Ludovico Einaudi - Experience (Official Visualizer)",
+    "artist": "LudovicoEinaudiVEVO",
+    "ts": "2026-04-11T07:55:55.843Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "absorbed",
+      "trajectory": "flat"
+    },
+    "engagement": 70,
+    "arcTarget": 7.1,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:55:58.785Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "play",
+    "track": "Ludovico Einaudi - Experience (Official Visualizer)",
+    "artist": "LudovicoEinaudiVEVO",
+    "ts": "2026-04-11T07:55:59.276Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "absorbed",
+      "trajectory": "flat"
+    },
+    "engagement": 70,
+    "arcTarget": 7.2,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:56:03.788Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "play",
+    "track": "Ludovico Einaudi - Experience (Official Visualizer)",
+    "artist": "LudovicoEinaudiVEVO",
+    "ts": "2026-04-11T07:56:04.296Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "absorbed",
+      "trajectory": "flat"
+    },
+    "engagement": 70,
+    "arcTarget": 7.3,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:56:08.794Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "play",
+    "track": "Ludovico Einaudi - Experience (Official Visualizer)",
+    "artist": "LudovicoEinaudiVEVO",
+    "ts": "2026-04-11T07:56:09.313Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "absorbed",
+      "trajectory": "flat"
+    },
+    "engagement": 70,
+    "arcTarget": 7.4,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:56:13.797Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "play",
+    "track": "Ludovico Einaudi - Experience (Official Visualizer)",
+    "artist": "LudovicoEinaudiVEVO",
+    "ts": "2026-04-11T07:56:14.366Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Open",
+    "engagement": 37,
+    "ts": "2026-04-11T07:56:14.424Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 63,
+    "arcTarget": 7.2,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:56:18.802Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "play",
+    "track": "Ludovico Einaudi - Experience (Official Visualizer)",
+    "artist": "LudovicoEinaudiVEVO",
+    "ts": "2026-04-11T07:56:19.130Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 63,
+    "arcTarget": 6.9,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:56:23.809Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "play",
+    "track": "Ludovico Einaudi - Experience (Official Visualizer)",
+    "artist": "LudovicoEinaudiVEVO",
+    "ts": "2026-04-11T07:56:24.391Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "music_adapt",
+    "type": "music_adapt",
+    "message": "Energy mismatch: state=3.8 target=6.6",
+    "mismatch": "2.8",
+    "ts": "2026-04-11T07:56:28.811Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 63,
+    "arcTarget": 6.6,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:56:28.811Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "play",
+    "track": "Ludovico Einaudi - Experience (Official Visualizer)",
+    "artist": "LudovicoEinaudiVEVO",
+    "ts": "2026-04-11T07:56:29.421Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Open",
+    "engagement": 57,
+    "ts": "2026-04-11T07:56:29.839Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "play",
+    "track": "POV: It's a 9XM morning and you're vibing to 2010s Bollywood hits 🔥 #9xm",
+    "artist": "Utsav Unfiltered",
+    "ts": "2026-04-11T07:56:31.321Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "music_requeue",
+    "type": "music_requeue",
+    "message": "State shifted → queuing new music",
+    "state": "high_engaged",
+    "ts": "2026-04-11T07:56:33.815Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 63,
+    "arcTarget": 6.6,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:56:33.815Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "play",
+    "track": "POV: It's a 9XM morning and you're vibing to 2010s Bollywood hits 🔥 #9xm",
+    "artist": "Utsav Unfiltered",
+    "ts": "2026-04-11T07:56:34.604Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 63,
+    "arcTarget": 6.6,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:56:38.818Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "play",
+    "track": "POV: It's a 9XM morning and you're vibing to 2010s Bollywood hits 🔥 #9xm",
+    "artist": "Utsav Unfiltered",
+    "ts": "2026-04-11T07:56:39.369Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 63,
+    "arcTarget": 6.5,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:56:43.820Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "play",
+    "track": "POV: It's a 9XM morning and you're vibing to 2010s Bollywood hits 🔥 #9xm",
+    "artist": "Utsav Unfiltered",
+    "ts": "2026-04-11T07:56:44.385Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "declining"
+    },
+    "engagement": 63,
+    "arcTarget": 5.8,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:56:48.824Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "play",
+    "track": "POV: It's a 9XM morning and you're vibing to 2010s Bollywood hits 🔥 #9xm",
+    "artist": "Utsav Unfiltered",
+    "ts": "2026-04-11T07:56:49.641Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "music_requeue",
+    "type": "music_requeue",
+    "message": "State shifted → queuing new music",
+    "state": "high_engaged",
+    "ts": "2026-04-11T07:56:53.830Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "declining"
+    },
+    "engagement": 63,
+    "arcTarget": 5.7,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:56:53.830Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "play",
+    "track": "POV: It's a 9XM morning and you're vibing to 2010s Bollywood hits 🔥 #9xm",
+    "artist": "Utsav Unfiltered",
+    "ts": "2026-04-11T07:56:54.395Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "intervention_fired",
+    "type": "intervention_fired",
+    "message": "[regulate/subtle] declining_overextended",
+    "decision": {
+      "category": "regulate",
+      "intensity": "subtle",
+      "reason": "declining_overextended",
+      "text": null,
+      "action": "volume_down",
+      "haptic": null,
+      "state": {
+        "energy": "high",
+        "immersion": "engaged",
+        "trajectory": "declining"
+      },
+      "timestamp": 1775894218833
+    },
+    "ts": "2026-04-11T07:56:58.834Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "intervention",
+    "category": "regulate",
+    "intensity": "subtle",
+    "reason": "declining_overextended",
+    "text": null,
+    "action": "volume_down",
+    "haptic": null,
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "declining"
+    },
+    "timestamp": 1775894218833,
+    "ts": "2026-04-11T07:56:58.834Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "declining"
+    },
+    "engagement": 63,
+    "arcTarget": 5.6,
+    "interventionPending": 1,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:56:58.835Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "play",
+    "track": "POV: It's a 9XM morning and you're vibing to 2010s Bollywood hits 🔥 #9xm",
+    "artist": "Utsav Unfiltered",
+    "ts": "2026-04-11T07:56:59.493Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 52,
+    "ts": "2026-04-11T07:57:00.579Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 78,
+    "ts": "2026-04-11T07:57:03.695Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 5.5,
+    "interventionPending": 1,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:57:03.835Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "play",
+    "track": "POV: It's a 9XM morning and you're vibing to 2010s Bollywood hits 🔥 #9xm",
+    "artist": "Utsav Unfiltered",
+    "ts": "2026-04-11T07:57:04.540Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 78,
+    "ts": "2026-04-11T07:57:06.811Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 62,
+    "arcTarget": 5.5,
+    "interventionPending": 1,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:57:08.840Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "play",
+    "track": "POV: It's a 9XM morning and you're vibing to 2010s Bollywood hits 🔥 #9xm",
+    "artist": "Utsav Unfiltered",
+    "ts": "2026-04-11T07:57:09.561Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 50,
+    "ts": "2026-04-11T07:57:09.935Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "music_requeue",
+    "type": "music_requeue",
+    "message": "State shifted → queuing new music",
+    "state": "high_engaged",
+    "ts": "2026-04-11T07:57:13.845Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 5.5,
+    "interventionPending": 1,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:57:13.845Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "play",
+    "track": "POV: It's a 9XM morning and you're vibing to 2010s Bollywood hits 🔥 #9xm",
+    "artist": "Utsav Unfiltered",
+    "ts": "2026-04-11T07:57:14.570Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 5.5,
+    "interventionPending": 1,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:57:18.848Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 66,
+    "ts": "2026-04-11T07:57:19.147Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "play",
+    "track": "POV: It's a 9XM morning and you're vibing to 2010s Bollywood hits 🔥 #9xm",
+    "artist": "Utsav Unfiltered",
+    "ts": "2026-04-11T07:57:19.576Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "engine_stop",
+    "type": "engine_stop",
+    "message": "Engine stopped",
+    "summary": {
+      "sessionId": "S-mnu1dtjq",
+      "duration": 5,
+      "calibration": "complete",
+      "finalState": {
+        "energy": {
+          "level": "high",
+          "value": 0.6,
+          "confidence": 1
+        },
+        "immersion": {
+          "level": "engaged",
+          "value": 0.62,
+          "confidence": 1
+        },
+        "trajectory": {
+          "direction": "flat",
+          "value": -0.007,
+          "volatility": 0.07,
+          "confidence": 0.2773481184445835,
+          "windowSize": 18
+        },
+        "raw": {
+          "currentEngagement": 50,
+          "avgEngagement30s": 59,
+          "eyes": "Open",
+          "headPose": "Up",
+          "nod": "None",
+          "brow": "Raised",
+          "faceReadings": 12,
+          "sensorReadings": 60
+        },
+        "timestamp": 1775894238847
+      },
+      "interventions": {
+        "total": 0,
+        "stats": {},
+        "recentOutcomes": []
+      },
+      "arcAdaptations": 38,
+      "profile": "feel"
+    },
+    "ts": "2026-04-11T07:57:22.521Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "session_end",
+    "summary": {
+      "sessionId": "S-mnu1dtjq",
+      "duration": 5,
+      "calibration": "complete",
+      "finalState": {
+        "energy": {
+          "level": "high",
+          "value": 0.6,
+          "confidence": 1
+        },
+        "immersion": {
+          "level": "engaged",
+          "value": 0.62,
+          "confidence": 1
+        },
+        "trajectory": {
+          "direction": "flat",
+          "value": -0.007,
+          "volatility": 0.07,
+          "confidence": 0.2773481184445835,
+          "windowSize": 18
+        },
+        "raw": {
+          "currentEngagement": 50,
+          "avgEngagement30s": 59,
+          "eyes": "Open",
+          "headPose": "Up",
+          "nod": "None",
+          "brow": "Raised",
+          "faceReadings": 12,
+          "sensorReadings": 60
+        },
+        "timestamp": 1775894238847
+      },
+      "interventions": {
+        "total": 0,
+        "stats": {},
+        "recentOutcomes": []
+      },
+      "arcAdaptations": 38,
+      "profile": "feel"
+    },
+    "ts": "2026-04-11T07:57:22.521Z",
+    "sessionId": "S-mnu1dtjq"
   }
 ]
