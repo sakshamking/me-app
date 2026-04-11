@@ -484,7 +484,8 @@ function onPlayerState(event) {
     const info = ytPlayer.getVideoData();
     $('trackTitle').textContent = info.title || 'Playing';
     $('trackArtist').textContent = info.author || '';
-    if (engine) engine.setCurrentTrack({ title: info.title, artist: info.author, id: info.video_id });
+    const dur = ytPlayer.getDuration ? ytPlayer.getDuration() : 0;
+    if (engine) engine.setCurrentTrack({ title: info.title, artist: info.author, id: info.video_id, duration: dur });
     if (logger) logger.log('play', { track: info.title, artist: info.author });
   } else if (st === YT.PlayerState.PAUSED) {
     $('playIcon').innerHTML = '<path d="M8 5v14l11-7z"/>';
@@ -661,9 +662,12 @@ async function startFaceDetection() {
 
     faceAnalyzer = new FaceAnalyzer();
 
-    // Run detection every 3s (battery-friendly)
-    faceDetectId = setInterval(async () => {
-      if (!engine || !engine.active || !faceModelLoaded) return;
+    // Sequential face detection — consistent 3s cadence (no overlap from async drift)
+    async function runFaceLoop() {
+      if (!engine || !engine.active || !faceModelLoaded) {
+        faceDetectId = setTimeout(runFaceLoop, 3000);
+        return;
+      }
       try {
         const detection = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
           .withFaceLandmarks(true) // useTinyModel
@@ -674,7 +678,10 @@ async function startFaceDetection() {
           if (logger) logger.log('face_data', faceData);
         }
       } catch (e) { /* skip frame */ }
-    }, 3000);
+      // Schedule AFTER completion — guarantees consistent spacing
+      faceDetectId = setTimeout(runFaceLoop, 3000);
+    }
+    faceDetectId = setTimeout(runFaceLoop, 1000);
   } catch (e) {
     console.warn('Camera access denied:', e);
     // Engine will work with sensors only — graceful degradation
@@ -755,6 +762,27 @@ function handleMusicCommand(cmd) {
           }
         });
       }
+      break;
+    case 'queue_next':
+      // Dynamic re-queue: search and add to queue without interrupting current track
+      if (cmd.query) {
+        ytSearch.search(cmd.query.query, 8).then(tracks => {
+          tracks = engine.filterYouTubeResults(tracks);
+          if (tracks.length > 0) {
+            currentQueue.splice(currentIndex + 1, 0, ...shuffle(tracks));
+            renderQueue();
+          }
+        });
+      }
+      break;
+    case 'seek':
+      // Smart playback positioning — jump to energy-matched section
+      if (cmd.position && ytPlayer.seekTo) {
+        ytPlayer.seekTo(cmd.position, true);
+      }
+      break;
+    case 'extend':
+      // Extend current track — just let it keep playing (no-op, prevents skip)
       break;
   }
 }
@@ -855,7 +883,7 @@ async function endSession() {
 
   if (sessionTimerId) { clearInterval(sessionTimerId); sessionTimerId = null; }
   if (sensorSendId) { clearInterval(sensorSendId); sensorSendId = null; }
-  if (faceDetectId) { clearInterval(faceDetectId); faceDetectId = null; }
+  if (faceDetectId) { clearTimeout(faceDetectId); faceDetectId = null; }
 
   // Stop face camera
   const video = $('face-video');

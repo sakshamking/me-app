@@ -152,27 +152,33 @@ class StateEstimator {
     let faceValue = null, faceConfidence = 0;
 
     if (faceFresh) {
-      let energyScore = 0, weights = 0;
-      for (const f of recent) {
-        let fe = 0.5;
-        if (f.eyes === 'Open') fe += 0.15;
-        else if (f.eyes === 'Droopy') fe -= 0.15;
-        else if (f.eyes === 'Closed') fe -= 0.3;
-        if (f.nod === 'Active') fe += 0.2;
-        else if (f.nod === 'Light') fe += 0.05;
-        else fe -= 0.05;
-        if (f.brow === 'Raised') fe += 0.1;
-        if (f.mouth === 'Open') fe += 0.1;
-        energyScore += fe; weights += 1;
-      }
-      faceValue = weights > 0 ? energyScore / weights : 0.5;
-      faceConfidence = Math.min(1, recent.length / 6);
+      // PRIMARY signal: engagement score (continuous 0-100, the only truly variable face metric)
+      const engValues = recent.map(f => (f.engagement || 50) / 100);
+      const latestEng = engValues[engValues.length - 1];
+      const avgEng = engValues.reduce((a, b) => a + b, 0) / engValues.length;
 
+      // MODIFIERS from categorical features (adjust, don't drive)
+      const latest = recent[recent.length - 1];
+      let modifier = 0;
+      if (latest.eyes === 'Droopy') modifier -= 0.08;
+      else if (latest.eyes === 'Closed') modifier -= 0.18;
+      if (latest.nod === 'Active') modifier += 0.12;
+      else if (latest.nod === 'Light') modifier += 0.05;
+      if (latest.brow === 'Raised') modifier += 0.06;
+      if (latest.mouth === 'Open') modifier += 0.06;
+
+      // TREND amplification: recent direction matters (energy shifting up or down)
+      const trend = latestEng - avgEng;
+      faceValue = avgEng + modifier + trend * 0.5;
+
+      // Calibrator-relative adjustment (boosted influence)
       if (this.calibrator.calibrated) {
         const engDelta = this.calibrator.getDelta('engagement', recent[recent.length - 1].engagement || 50);
-        const baseAdj = 0.5 + engDelta * 0.1;
-        faceValue = faceValue * 0.7 + Math.max(0, Math.min(1, baseAdj)) * 0.3;
+        faceValue += engDelta * 0.12;
       }
+
+      faceValue = Math.max(0, Math.min(1, faceValue));
+      faceConfidence = Math.min(1, recent.length / 4); // faster confidence ramp (was /6)
       this.lastFaceEnergy = { value: faceValue, confidence: faceConfidence, timestamp: now };
     } else if (this.lastFaceEnergy) {
       const staleness = now - this.lastFaceEnergy.timestamp;
@@ -188,8 +194,23 @@ class StateEstimator {
       const avgMov = movements.reduce((a, b) => a + b, 0) / movements.length;
       let movDelta = avgMov;
       if (this.calibrator.calibrated) movDelta = this.calibrator.getDelta('movement', avgMov);
-      sensorValue = 0.5 + Math.min(0.3, Math.max(-0.3, movDelta * 0.1));
-      sensorConfidence = 0.4;
+      sensorValue = 0.5 + Math.min(0.35, Math.max(-0.35, movDelta * 0.15));
+      sensorConfidence = 0.55; // boosted from 0.4
+
+      // Movement BURST detection — sharp accel spike = energy event
+      const maxMov = Math.max(...movements);
+      if (maxMov > avgMov * 2.5 && maxMov > 0.5) {
+        sensorValue = Math.min(1, sensorValue + 0.1);
+        sensorConfidence = 0.65;
+      }
+    }
+
+    // Gyro data — rotational movement indicates body engagement
+    const gyroMags = recentSensors.filter(s => s.gyro)
+      .map(s => Math.sqrt(s.gyro.x ** 2 + s.gyro.y ** 2 + s.gyro.z ** 2));
+    if (gyroMags.length > 0 && sensorValue !== null) {
+      const avgGyro = gyroMags.reduce((a, b) => a + b, 0) / gyroMags.length;
+      if (avgGyro > 5) { sensorValue = Math.min(1, sensorValue + 0.08); sensorConfidence = Math.min(1, sensorConfidence + 0.1); }
     }
 
     const hrReadings = recentSensors.filter(s => s.hr && s.hr > 0).map(s => s.hr);
@@ -197,9 +218,9 @@ class StateEstimator {
       const avgHR = hrReadings.reduce((a, b) => a + b, 0) / hrReadings.length;
       if (this.calibrator.calibrated && this.calibrator.baseline.heartRate) {
         const hrDelta = this.calibrator.getDelta('heartRate', avgHR);
-        const hrContrib = 0.5 + Math.min(0.25, Math.max(-0.25, hrDelta * 0.1));
-        if (sensorValue !== null) { sensorValue = (sensorValue + hrContrib) / 2; sensorConfidence = 0.6; }
-        else { sensorValue = hrContrib; sensorConfidence = 0.5; }
+        const hrContrib = 0.5 + Math.min(0.3, Math.max(-0.3, hrDelta * 0.12));
+        if (sensorValue !== null) { sensorValue = (sensorValue + hrContrib) / 2; sensorConfidence = 0.65; }
+        else { sensorValue = hrContrib; sensorConfidence = 0.55; }
       }
     }
 
@@ -221,9 +242,9 @@ class StateEstimator {
     value = Math.max(0, Math.min(1, value + timeDrift));
     const confidence = Math.max(faceConfidence || 0, sensorConfidence || 0);
     let level;
-    if (value < 0.25) level = 'low';
+    if (value < 0.3) level = 'low';
     else if (value < 0.55) level = 'medium';
-    else if (value < 0.8) level = 'high';
+    else if (value < 0.75) level = 'high';
     else level = 'overextended';
     return { level, value: Math.round(value * 100) / 100, confidence: Math.round(confidence * 100) / 100 };
   }
@@ -240,34 +261,37 @@ class StateEstimator {
     let faceValue = null, faceConfidence = 0;
 
     if (faceFresh) {
-      let immScore = 0, weights = 0;
+      // PRIMARY: engagement stability = immersion (steady high engagement = absorbed)
+      const engValues = recent.map(f => (f.engagement || 50) / 100);
+      const avgEng = engValues.reduce((a, b) => a + b, 0) / engValues.length;
+      const engStd = this._std(engValues);
+      // High avg + low variance = deeply immersed; low avg OR high variance = detached
+      let immBase = avgEng * 0.6 + Math.max(0, 0.4 - engStd) * 0.6;
+
+      // MODIFIERS from categorical features
       const eyeStates = recent.map(f => f.eyes);
       const eyeCons = this._consistency(eyeStates);
+      const headPoses = recent.map(f => f.headPose);
+      const headCons = this._consistency(headPoses);
 
       if (isWindDown) {
         const closedCount = eyeStates.filter(e => e === 'Closed' || e === 'Droopy').length;
-        if (closedCount > eyeStates.length * 0.7 && eyeCons > 0.6) immScore += 0.8;
-        else if (eyeStates.every(e => e === 'Open')) immScore += 0.5;
-        else immScore += 0.4;
+        if (closedCount > eyeStates.length * 0.6 && eyeCons > 0.5) immBase += 0.15;
       } else {
         const openCount = eyeStates.filter(e => e === 'Open').length;
-        immScore += (openCount / eyeStates.length) * 0.7;
+        immBase += (openCount / eyeStates.length) * 0.1;
       }
-      weights += 1;
 
-      const headPoses = recent.map(f => f.headPose);
-      immScore += this._consistency(headPoses) * 0.6; weights += 1;
+      // Head consistency — staying put = immersed
+      immBase += headCons * 0.1;
 
-      const engValues = recent.map(f => f.engagement || 50);
-      const engStd = this._std(engValues);
-      immScore += Math.max(0, 1 - engStd / 20) * 0.7; weights += 1;
-
+      // Light nods = rhythmic engagement (immersion signal)
       const nods = recent.map(f => f.nod);
-      const lightNods = nods.filter(n => n === 'Light').length;
-      if (lightNods > nods.length * 0.4) { immScore += 0.6; weights += 1; }
+      const lightNods = nods.filter(n => n === 'Light' || n === 'Active').length;
+      if (lightNods > nods.length * 0.3) immBase += 0.1;
 
-      faceValue = weights > 0 ? immScore / weights : 0.4;
-      faceConfidence = Math.min(1, recent.length / 6);
+      faceValue = Math.max(0, Math.min(1, immBase));
+      faceConfidence = Math.min(1, recent.length / 4);
       this.lastFaceImmersion = { value: faceValue, confidence: faceConfidence, timestamp: now };
     } else if (this.lastFaceImmersion) {
       const staleness = now - this.lastFaceImmersion.timestamp;
@@ -422,29 +446,30 @@ class FeedbackLoop {
     if (cat === 'stimulate') {
       const eDelta = post.energy - pre.energy;
       const iDelta = post.immersion - pre.immersion;
-      if (eDelta > 0.05) { score += 1; factors.push('energy_up'); }
-      if (iDelta > 0.05) { score += 1; factors.push('immersion_up'); }
+      if (eDelta > 0.03) { score += 1; factors.push('energy_up'); }
+      if (iDelta > 0.03) { score += 1; factors.push('immersion_up'); }
       if (post.trajectoryDir === 'improving' && pre.trajectoryDir !== 'improving') { score += 2; factors.push('trajectory_reversed'); }
-      if (eDelta < -0.05) { score -= 1; factors.push('energy_dropped'); }
-      if (iDelta < -0.1) { score -= 1; factors.push('immersion_dropped'); }
+      if (eDelta < -0.03) { score -= 1; factors.push('energy_dropped'); }
+      if (iDelta < -0.08) { score -= 1; factors.push('immersion_dropped'); }
     } else if (cat === 'regulate') {
       const eDelta = post.energy - pre.energy;
-      if (eDelta < -0.05 && post.energy > 0.25) { score += 1; factors.push('calmed'); }
-      if (post.immersion > pre.immersion) { score += 1; factors.push('immersion_up'); }
-      if (post.energy < 0.2) { score -= 1; factors.push('overcorrected'); }
+      if (eDelta < -0.03 && post.energy > 0.2) { score += 1; factors.push('calmed'); }
+      if (post.immersion >= pre.immersion - 0.02) { score += 1; factors.push('immersion_held'); }
+      if (post.energy < 0.15) { score -= 1; factors.push('overcorrected'); }
     } else if (cat === 'transition') {
       if ((post.trajectoryDir === 'improving' || post.trajectoryDir === 'flat') &&
           (pre.trajectoryDir === 'declining' || pre.trajectoryDir === 'volatile')) { score += 2; factors.push('stabilized'); }
       if (post.trajectoryDir === 'declining') { score -= 1; factors.push('still_declining'); }
     } else if (cat === 'hold') {
       const iDelta = post.immersion - pre.immersion;
-      if (iDelta >= -0.05) { score += 1; factors.push('maintained'); }
+      if (iDelta >= -0.03) { score += 1; factors.push('maintained'); }
       if (post.trajectoryDir === 'improving') { score += 1; factors.push('improving'); }
-      if (iDelta < -0.15) { score -= 1; factors.push('lost_immersion'); }
+      if (iDelta < -0.10) { score -= 1; factors.push('lost_immersion'); }
     }
 
+    // Lower threshold to count as positive (was 2, now 1)
     let outcome;
-    if (score >= 2) outcome = 'positive';
+    if (score >= 1) outcome = 'positive';
     else if (score <= -1) outcome = 'negative';
     else outcome = 'neutral';
     return { outcome, score, factors };
@@ -476,9 +501,11 @@ class FeedbackLoop {
 class InterventionEngine {
   constructor(feedback) {
     this.feedback = feedback;
-    this.baseCooldown = 60000;
+    this.baseCooldown = 45000; // 45s base (was 60s — more responsive)
+    this.MAX_COOLDOWN = 180000; // hard cap: 3 min (was uncapped at 455s)
     this.lastInterventionTime = 0;
     this.consecutiveFailures = 0;
+    this.lastFailureDecayTime = Date.now();
     this.observationCount = 0;
     this.lastObservedState = null;
     this.recentActions = [];
@@ -537,7 +564,13 @@ class InterventionEngine {
       return null;
     }
 
-    const effectiveCooldown = this.baseCooldown * Math.pow(1.5, this.consecutiveFailures);
+    // Time-decay consecutive failures (every 90s of inactivity, decay by 0.3)
+    const sinceLastDecay = now - this.lastFailureDecayTime;
+    if (sinceLastDecay > 90000 && this.consecutiveFailures > 0) {
+      this.consecutiveFailures = Math.max(0, this.consecutiveFailures - 0.3 * Math.floor(sinceLastDecay / 90000));
+      this.lastFailureDecayTime = now;
+    }
+    const effectiveCooldown = Math.min(this.MAX_COOLDOWN, this.baseCooldown * Math.pow(1.3, this.consecutiveFailures));
     if (now - this.lastInterventionTime < effectiveCooldown) return null;
     if (!context.calibrated) return null;
 
@@ -611,9 +644,10 @@ class InterventionEngine {
   }
 
   onFeedback(outcome) {
-    if (outcome === 'negative') { this.consecutiveFailures = Math.min(5, this.consecutiveFailures + 2); }
+    if (outcome === 'negative') { this.consecutiveFailures = Math.min(4, this.consecutiveFailures + 1.5); }
     else if (outcome === 'positive') { this.consecutiveFailures = Math.max(0, this.consecutiveFailures - 2); }
-    else { this.consecutiveFailures = Math.min(5, this.consecutiveFailures + 0.5); }
+    else { this.consecutiveFailures = Math.min(4, this.consecutiveFailures + 0.3); }
+    this.lastFailureDecayTime = Date.now();
   }
 
   toJSON() {
@@ -792,20 +826,50 @@ class MusicBrain {
   }
 
   adaptArc(state, sessionElapsed) {
-    if (!this.currentArc) return;
-    if (state.trajectory?.direction === 'improving' && state.energy?.level === 'high') {
+    if (!this.currentArc || !this.currentProfile) return;
+    const [minE, maxE] = this.currentProfile.energyRange;
+    const stateEnergy = (state.energy?.value || 0.5) * 10;
+    const targetEnergy = this.getTargetEnergy(sessionElapsed);
+    const mismatch = stateEnergy - targetEnergy;
+
+    // LIVE RESHAPING: arc bends toward actual state (not just on trajectory events)
+    // If user energy is consistently above/below arc, pull the arc toward them
+    if (Math.abs(mismatch) > 1.5) {
+      const pull = mismatch * 0.15; // gentle pull toward actual state
       for (let i = 0; i < this.currentArc.length; i++) {
-        if (this.currentArc[i].t > sessionElapsed) { this.currentArc[i].t *= 1.1; break; }
+        if (this.currentArc[i].t > sessionElapsed && this.currentArc[i].t < sessionElapsed + 10) {
+          this.currentArc[i].energy = Math.max(minE, Math.min(maxE, this.currentArc[i].energy + pull));
+        }
+      }
+      this.arcAdaptations++;
+    }
+
+    // Trajectory-based adaptation (kept but more aggressive)
+    if (state.trajectory?.direction === 'improving' && state.energy?.level === 'high') {
+      // Extend the peak — stretch next 3 arc points forward
+      let stretched = 0;
+      for (let i = 0; i < this.currentArc.length && stretched < 3; i++) {
+        if (this.currentArc[i].t > sessionElapsed) { this.currentArc[i].t *= 1.08; stretched++; }
       }
       this.arcAdaptations++;
     }
     if (state.trajectory?.direction === 'declining') {
-      const currentTarget = this.getTargetEnergy(sessionElapsed);
-      if (currentTarget > 4) {
-        for (let i = 0; i < this.currentArc.length; i++) {
-          if (this.currentArc[i].t > sessionElapsed)
-            this.currentArc[i].energy = Math.max(this.currentProfile.energyRange[0], this.currentArc[i].energy - 1);
+      // Drop energy on upcoming arc points (3 points, not just 1)
+      let dropped = 0;
+      for (let i = 0; i < this.currentArc.length && dropped < 3; i++) {
+        if (this.currentArc[i].t > sessionElapsed) {
+          this.currentArc[i].energy = Math.max(minE, this.currentArc[i].energy - 0.8);
+          dropped++;
         }
+      }
+      this.arcAdaptations++;
+    }
+    if (state.trajectory?.direction === 'volatile') {
+      // Smooth upcoming arc — reduce variance
+      const upcoming = this.currentArc.filter(p => p.t > sessionElapsed).slice(0, 5);
+      if (upcoming.length > 2) {
+        const avgE = upcoming.reduce((s, p) => s + p.energy, 0) / upcoming.length;
+        upcoming.forEach(p => { p.energy = p.energy * 0.6 + avgE * 0.4; });
         this.arcAdaptations++;
       }
     }
@@ -985,28 +1049,44 @@ class FaceAnalyzer {
   }
 
   _computeEngagement(detection, eyes, headPose, mouth) {
-    let score = 50; // baseline
+    let score = 50;
 
-    // Face detection confidence
+    // Detection confidence (amplified — varies naturally with angle/lighting/distance)
     const confidence = detection.detection?._score || detection.score || 0.5;
-    score += (confidence - 0.5) * 40; // higher confidence = more engaged
+    score += (confidence - 0.5) * 60;
 
-    // Eyes contribution
-    if (eyes === 'Open') score += 10;
-    else if (eyes === 'Droopy') score -= 5;
-    else score -= 15;
+    // Eyes (wider range)
+    if (eyes === 'Open') score += 12;
+    else if (eyes === 'Droopy') score -= 10;
+    else score -= 20;
 
-    // Head pose — forward = engaged
-    if (headPose.pose === 'Forward') score += 5;
-    else if (headPose.pose === 'Down') score -= 10;
+    // Head pose
+    if (headPose.pose === 'Forward') score += 8;
+    else if (headPose.pose === 'Down') score -= 15;
+    else if (headPose.pose === 'Up') score -= 5;
 
-    // Expression if available
+    // Mouth — open indicates reaction/engagement
+    if (mouth === 'Open') score += 8;
+
+    // Full expression profile (use all emotions, not just max of happy/surprised)
     if (detection.expressions) {
       const expr = detection.expressions;
-      const maxExpr = Math.max(expr.happy || 0, expr.surprised || 0);
-      score += maxExpr * 20;
-      score -= (expr.angry || 0) * 10;
-      score -= (expr.disgusted || 0) * 10;
+      score += (expr.happy || 0) * 25;
+      score += (expr.surprised || 0) * 15;
+      score -= (expr.angry || 0) * 15;
+      score -= (expr.disgusted || 0) * 15;
+      score -= (expr.sad || 0) * 10;
+      // Neutral face = lower engagement signal
+      score -= (expr.neutral || 0) * 8;
+    }
+
+    // Head movement variance — subtle movement = engaged (swaying, nodding to music)
+    if (this.headPoseHistory.length >= 3) {
+      const pitches = this.headPoseHistory.slice(-5).map(h => h.pitch);
+      const mean = pitches.reduce((a, b) => a + b, 0) / pitches.length;
+      const variance = pitches.reduce((s, v) => s + (v - mean) ** 2, 0) / pitches.length;
+      if (variance > 0.003 && variance < 0.02) score += 8; // subtle movement
+      else if (variance >= 0.02) score -= 3; // too fidgety
     }
 
     return Math.max(0, Math.min(100, Math.round(score)));
@@ -1081,6 +1161,7 @@ class MEEngine {
   setCurrentTrack(track) {
     this.currentTrack = track;
     this.trackStartedAt = Date.now();
+    this._pendingSeek = true; // trigger seek evaluation on next tick
   }
 
   _tick() {
@@ -1125,6 +1206,9 @@ class MEEngine {
     if (decision) this._executeDecision(decision, state, sessionElapsed);
     this.musicBrain.adaptArc(state, sessionElapsed);
 
+    // CONTINUOUS MUSIC EVALUATION — independent of intervention engine
+    this._evaluateMusic(state, sessionElapsed);
+
     this._emit('log', {
       type: 'tick',
       state: { energy: state.energy.level, immersion: state.immersion.level, trajectory: state.trajectory.direction },
@@ -1133,6 +1217,77 @@ class MEEngine {
       interventionPending: this.feedback.pending.length,
       cooldown: this.intervention.toJSON().cooldown
     });
+  }
+
+  // Continuous music adaptation — runs every tick, separate from intervention decisions
+  _evaluateMusic(state, sessionElapsed) {
+    const targetEnergy = this.musicBrain.getTargetEnergy(sessionElapsed);
+    const stateEnergy = (state.energy?.value || 0.5) * 10; // scale 0-10
+    const mismatch = Math.abs(stateEnergy - targetEnergy);
+    const trackElapsed = this.trackStartedAt ? (Date.now() - this.trackStartedAt) / 1000 : 0;
+
+    // Track state changes for dynamic re-queuing
+    const currentStateKey = `${state.energy?.level}_${state.immersion?.level}`;
+    if (this._lastMusicStateKey && this._lastMusicStateKey !== currentStateKey) {
+      this._stateChangeCount = (this._stateChangeCount || 0) + 1;
+    }
+    this._lastMusicStateKey = currentStateKey;
+
+    // DYNAMIC RE-QUEUE: state shifted significantly — prep new music
+    if (this._stateChangeCount >= 2) {
+      this._stateChangeCount = 0;
+      const query = this.musicBrain.getNextSearchQuery(state, sessionElapsed);
+      if (query) {
+        this._emit('command', { type: 'music', command: 'queue_next', query, reason: 'state_shift' });
+        this._emit('log', { type: 'music_requeue', message: `State shifted → queuing new music`, state: currentStateKey });
+      }
+    }
+
+    // ENERGY MISMATCH: if music energy is wrong for 3+ ticks (15s), force change
+    if (mismatch > 2) {
+      this._musicMismatchCount = (this._musicMismatchCount || 0) + 1;
+      if (this._musicMismatchCount >= 3) {
+        this._musicMismatchCount = 0;
+        const query = this.musicBrain.getNextSearchQuery(state, sessionElapsed);
+        if (query) {
+          this._emit('command', { type: 'music', command: 'search_and_play', query, reason: 'energy_mismatch' });
+          this._emit('log', {
+            type: 'music_adapt', message: `Energy mismatch: state=${stateEnergy.toFixed(1)} target=${targetEnergy.toFixed(1)}`,
+            mismatch: mismatch.toFixed(1)
+          });
+        }
+      }
+    } else {
+      this._musicMismatchCount = Math.max(0, (this._musicMismatchCount || 0) - 1);
+    }
+
+    // PROACTIVE TRANSITION: track playing too long + user not absorbed → move on
+    if (trackElapsed > 210 && state.immersion?.level !== 'absorbed') {
+      const query = this.musicBrain.getNextSearchQuery(state, sessionElapsed);
+      if (query) {
+        this._emit('command', { type: 'music', command: 'search_and_play', query, reason: 'track_refresh' });
+        this.trackStartedAt = Date.now(); // reset to prevent rapid re-trigger
+      }
+    }
+
+    // SEEK SUGGESTION: on new track, suggest energy-matched position
+    if (this._pendingSeek && this.currentTrack) {
+      const seekPos = this._getSeekPosition(this.currentTrack.duration, targetEnergy);
+      if (seekPos > 15) {
+        this._emit('command', { type: 'music', command: 'seek', position: seekPos, reason: 'energy_match' });
+      }
+      this._pendingSeek = false;
+    }
+  }
+
+  // Estimate where in a track to start based on target energy
+  _getSeekPosition(trackDuration, targetEnergy) {
+    if (!trackDuration || trackDuration < 90) return 0;
+    // Rough energy map: 0-15% intro, 15-40% build, 40-75% peak, 75-100% outro
+    if (targetEnergy >= 7) return Math.floor(trackDuration * 0.35); // jump to peak buildup
+    if (targetEnergy >= 5) return Math.floor(trackDuration * 0.15); // start at build
+    if (targetEnergy >= 3) return 0; // play from start (mellow is fine from intro)
+    return Math.floor(trackDuration * 0.70); // low energy — play fade-out section
   }
 
   _executeDecision(decision, state, sessionElapsed) {
