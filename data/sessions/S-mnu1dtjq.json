@@ -632,5 +632,595 @@
     "cooldown": 45000,
     "ts": "2026-04-11T07:53:48.632Z",
     "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "calibration_complete",
+    "type": "calibration_complete",
+    "message": "Baseline calibration complete",
+    "baseline": {
+      "engagement": {
+        "mean": 60.357142857142854,
+        "std": 15.055170648827136
+      },
+      "eyeOpenRatio": {
+        "mean": 0.9285714285714286,
+        "std": 0.1749635530559413
+      },
+      "headStability": {
+        "mean": 0.7,
+        "std": 0
+      },
+      "movement": {
+        "mean": 0.15797561856265502,
+        "std": 0.19264714656442017
+      },
+      "heartRate": null,
+      "browActivity": {
+        "mean": 1,
+        "std": 0
+      },
+      "nodActivity": {
+        "mean": 0,
+        "std": 0
+      },
+      "sampleCount": 118,
+      "calibratedAt": 1775894033636
+    },
+    "ts": "2026-04-11T07:53:53.636Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 5.3,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:53:53.637Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 5.6,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:53:58.639Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 36,
+    "ts": "2026-04-11T07:53:58.647Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 59,
+    "ts": "2026-04-11T07:54:01.759Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "music_requeue",
+    "type": "music_requeue",
+    "message": "State shifted → queuing new music",
+    "state": "high_engaged",
+    "ts": "2026-04-11T07:54:03.646Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 51,
+    "arcTarget": 5.8,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:54:03.646Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 51,
+    "arcTarget": 5.9,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:54:08.647Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 51,
+    "arcTarget": 6.1,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:54:13.651Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 54,
+    "ts": "2026-04-11T07:54:17.163Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 51,
+    "arcTarget": 6.2,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:54:18.656Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 51,
+    "arcTarget": 6.4,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:54:23.660Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 65,
+    "ts": "2026-04-11T07:54:26.431Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "music_requeue",
+    "type": "music_requeue",
+    "message": "State shifted → queuing new music",
+    "state": "high_engaged",
+    "ts": "2026-04-11T07:54:28.665Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 57,
+    "arcTarget": 6.4,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:54:28.665Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 57,
+    "arcTarget": 6.4,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:54:33.667Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 57,
+    "arcTarget": 6.5,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:54:38.713Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 57,
+    "arcTarget": 6.5,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:54:43.714Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 57,
+    "arcTarget": 6.6,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:54:48.718Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "music_requeue",
+    "type": "music_requeue",
+    "message": "State shifted → queuing new music",
+    "state": "high_engaged",
+    "ts": "2026-04-11T07:54:53.724Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 57,
+    "arcTarget": 6.7,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:54:53.724Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 64,
+    "ts": "2026-04-11T07:54:57.174Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 59,
+    "arcTarget": 6.7,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:54:58.725Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 70,
+    "ts": "2026-04-11T07:55:00.281Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 58,
+    "arcTarget": 6.7,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:55:03.730Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 58,
+    "arcTarget": 6.8,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:55:08.734Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "music_requeue",
+    "type": "music_requeue",
+    "message": "State shifted → queuing new music",
+    "state": "high_engaged",
+    "ts": "2026-04-11T07:55:13.739Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 58,
+    "arcTarget": 6.8,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:55:13.739Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 52,
+    "ts": "2026-04-11T07:55:15.697Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "medium",
+      "immersion": "absorbed",
+      "trajectory": "flat"
+    },
+    "engagement": 61,
+    "arcTarget": 6.7,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:55:18.755Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 65,
+    "ts": "2026-04-11T07:55:18.818Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 74,
+    "ts": "2026-04-11T07:55:21.949Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "music_requeue",
+    "type": "music_requeue",
+    "message": "State shifted → queuing new music",
+    "state": "high_absorbed",
+    "ts": "2026-04-11T07:55:23.760Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "absorbed",
+      "trajectory": "flat"
+    },
+    "engagement": 65,
+    "arcTarget": 6.7,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:55:23.760Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 62,
+    "ts": "2026-04-11T07:55:28.141Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "absorbed",
+      "trajectory": "flat"
+    },
+    "engagement": 65,
+    "arcTarget": 6.8,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:55:28.762Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 76,
+    "ts": "2026-04-11T07:55:31.261Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "absorbed",
+      "trajectory": "flat"
+    },
+    "engagement": 67,
+    "arcTarget": 6.8,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:55:33.766Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Closed",
+    "engagement": 78,
+    "ts": "2026-04-11T07:55:34.377Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Droopy",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Open",
+    "engagement": 55,
+    "ts": "2026-04-11T07:55:37.501Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "high",
+      "immersion": "absorbed",
+      "trajectory": "flat"
+    },
+    "engagement": 68,
+    "arcTarget": 6.8,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:55:38.769Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "face_data",
+    "eyes": "Open",
+    "headPose": "Up",
+    "nod": "None",
+    "brow": "Raised",
+    "mouth": "Open",
+    "engagement": 72,
+    "ts": "2026-04-11T07:55:40.628Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 70,
+    "arcTarget": 6.9,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:55:43.773Z",
+    "sessionId": "S-mnu1dtjq"
+  },
+  {
+    "event": "tick",
+    "type": "tick",
+    "state": {
+      "energy": "overextended",
+      "immersion": "engaged",
+      "trajectory": "flat"
+    },
+    "engagement": 70,
+    "arcTarget": 7,
+    "interventionPending": 0,
+    "cooldown": 45000,
+    "ts": "2026-04-11T07:55:48.778Z",
+    "sessionId": "S-mnu1dtjq"
   }
 ]
