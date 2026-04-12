@@ -743,37 +743,59 @@ let faceMeshInstance = null;
 
 async function startFaceDetection() {
   const faceStatus = (msg) => console.log(`[FACE] ${msg}`);
+  const ua = navigator.userAgent;
+  const isIOS = /iPad|iPhone|iPod/.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const isAndroid = /Android/.test(ua);
+  const isMobile = isIOS || isAndroid;
+  faceStatus(`Device: ${isIOS ? 'iOS' : isAndroid ? 'Android' : 'Desktop'}, UA: ${ua.slice(0, 80)}`);
 
+  // Wait for CDN script — retry up to 15s
+  let scriptWaitMs = 0;
   if (typeof FaceMesh === 'undefined') {
-    faceStatus('⏳ Waiting for MediaPipe script to load from CDN...');
+    faceStatus('Waiting for MediaPipe script from CDN...');
+    if (scriptWaitMs > 15000) { faceStatus('✗ MediaPipe script never loaded — CDN blocked?'); return; }
+    scriptWaitMs += 2000;
     setTimeout(startFaceDetection, 2000);
     return;
   }
-  faceStatus('✓ FaceMesh class found');
+  faceStatus('✓ FaceMesh class available');
 
+  // Initialize FaceMesh — try with refineLandmarks, fall back without (older WASM)
   try {
     faceMeshInstance = new FaceMesh({
       locateFile: (file) => {
         const url = `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1633559619/${file}`;
-        faceStatus(`Loading: ${file}`);
+        faceStatus(`Loading WASM: ${file}`);
         return url;
       }
     });
 
-    faceMeshInstance.setOptions({
-      selfieMode: true,
-      maxNumFaces: 1,
-      refineLandmarks: true,
-      minDetectionConfidence: 0.3,
-      minTrackingConfidence: 0.3
-    });
+    // Try with iris refinement (478 landmarks). If unsupported, retry without.
+    try {
+      faceMeshInstance.setOptions({
+        selfieMode: true,
+        maxNumFaces: 1,
+        refineLandmarks: true,
+        minDetectionConfidence: 0.3,
+        minTrackingConfidence: 0.3
+      });
+      faceStatus('✓ Options set (refineLandmarks: true, 478 landmarks)');
+    } catch (optErr) {
+      faceStatus('refineLandmarks not supported in this version, using 468 landmarks');
+      faceMeshInstance.setOptions({
+        selfieMode: true,
+        maxNumFaces: 1,
+        minDetectionConfidence: 0.3,
+        minTrackingConfidence: 0.3
+      });
+    }
 
     faceAnalyzer = new FaceAnalyzer();
 
     let onResultsCalls = 0;
     faceMeshInstance.onResults((results) => {
       onResultsCalls++;
-      if (onResultsCalls <= 3) faceStatus(`onResults call #${onResultsCalls}, faces: ${results.multiFaceLandmarks ? results.multiFaceLandmarks.length : 0}`);
+      if (onResultsCalls <= 3) faceStatus(`onResults #${onResultsCalls}, faces: ${results.multiFaceLandmarks ? results.multiFaceLandmarks.length : 0}, landmarks: ${results.multiFaceLandmarks?.[0]?.length || 0}`);
       if (!engine || !engine.active) return;
       if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
         const landmarks = results.multiFaceLandmarks[0];
@@ -781,53 +803,86 @@ async function startFaceDetection() {
         faceData.detectionConfidence = 0.8;
         if (!faceModelLoaded) {
           faceModelLoaded = true;
-          faceStatus('✓ First face detected — model active');
+          faceStatus(`✓ First face detected — ${landmarks.length} landmarks, model active`);
         }
         engine.ingestFaceData(faceData);
         if (logger) logger.logFace(faceData);
       }
     });
 
-    faceStatus('✓ FaceMesh instance created, WASM loading on first send...');
+    faceStatus('✓ FaceMesh instance created');
   } catch (e) {
-    faceStatus(`✗ Init failed: ${e.message}`);
+    faceStatus(`✗ FaceMesh init failed: ${e.message}`);
     return;
   }
 
-  // Start camera
-  try {
-    faceStatus('Requesting camera...');
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }
-    });
-    const video = $('face-video');
-    video.srcObject = stream;
-    await new Promise(resolve => { video.onloadedmetadata = () => { video.play().then(resolve); }; });
-    faceStatus(`✓ Camera active — ${video.videoWidth}x${video.videoHeight}`);
+  // Start camera — progressive fallback for cross-device compatibility
+  const cameraConstraints = [
+    { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } },
+    { facingMode: 'user' },
+    { width: { ideal: 640 }, height: { ideal: 480 } },
+    true  // last resort: any camera, any resolution
+  ];
 
-    let sendCount = 0;
-    let sendErrors = 0;
-    async function runFaceLoop() {
-      if (!engine || !engine.active) {
-        faceDetectId = setTimeout(runFaceLoop, 3000);
+  let stream = null;
+  for (let i = 0; i < cameraConstraints.length; i++) {
+    try {
+      faceStatus(`Camera attempt ${i + 1}/${cameraConstraints.length}...`);
+      stream = await navigator.mediaDevices.getUserMedia({ video: cameraConstraints[i] });
+      break;
+    } catch (e) {
+      faceStatus(`Camera attempt ${i + 1} failed: ${e.name} — ${e.message}`);
+    }
+  }
+
+  if (!stream) {
+    faceStatus('✗ All camera attempts failed — face detection disabled');
+    return;
+  }
+
+  const video = $('face-video');
+  video.srcObject = stream;
+  try {
+    await new Promise((resolve, reject) => {
+      video.onloadedmetadata = () => video.play().then(resolve).catch(reject);
+      setTimeout(() => reject(new Error('Video metadata timeout')), 10000);
+    });
+  } catch (e) {
+    faceStatus(`✗ Video play failed: ${e.message}`);
+    return;
+  }
+  faceStatus(`✓ Camera active — ${video.videoWidth}x${video.videoHeight}`);
+
+  // Face detection loop
+  let sendCount = 0;
+  let sendErrors = 0;
+  let consecutiveErrors = 0;
+  async function runFaceLoop() {
+    if (!engine || !engine.active) {
+      faceDetectId = setTimeout(runFaceLoop, 3000);
+      return;
+    }
+    sendCount++;
+    try {
+      await faceMeshInstance.send({ image: video });
+      consecutiveErrors = 0;
+    } catch (e) {
+      sendErrors++;
+      consecutiveErrors++;
+      if (sendErrors <= 5) faceStatus(`✗ send() error #${sendErrors}: ${e.message || e}`);
+      // If WASM crashed (5+ consecutive errors), stop retrying
+      if (consecutiveErrors >= 10) {
+        faceStatus('✗ WASM appears crashed (10 consecutive errors) — stopping face loop');
         return;
       }
-      sendCount++;
-      try {
-        await faceMeshInstance.send({ image: video });
-      } catch (e) {
-        sendErrors++;
-        if (sendErrors <= 5) faceStatus(`✗ send() error #${sendErrors}: ${e.message || e}`);
-        if (sendErrors === 5) faceStatus('Suppressing further send errors...');
-      }
-      if (sendCount === 5) faceStatus(`Progress: ${sendCount} sends, ${sendErrors} errors, faceModel=${faceModelLoaded}`);
-      if (sendCount === 15) faceStatus(`Progress: ${sendCount} sends, ${sendErrors} errors, faceModel=${faceModelLoaded}`);
-      faceDetectId = setTimeout(runFaceLoop, 2000);
     }
-    faceDetectId = setTimeout(runFaceLoop, 1000);
-  } catch (e) {
-    faceStatus(`✗ Camera denied: ${e.message}`);
+    if (sendCount === 5 || sendCount === 15 || sendCount === 30) {
+      faceStatus(`Progress: ${sendCount} sends, ${sendErrors} errors, detected=${faceModelLoaded}`);
+    }
+    // Adaptive interval: 2s desktop, 3s mobile (save battery)
+    faceDetectId = setTimeout(runFaceLoop, isMobile ? 3000 : 2000);
   }
+  faceDetectId = setTimeout(runFaceLoop, 1000);
 }
 
 // ==================== ENGINE EVENTS ====================
