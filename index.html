@@ -278,9 +278,10 @@ body {
 <!-- ========== TOKEN CONFIG (one-time) ========== -->
 <div id="v-config">
   <div class="brand-name">M + E</div>
-  <div class="config-msg">One-time setup. Paste your GitHub token<br>so session data syncs automatically.</div>
+  <div class="config-msg">Optional: paste your GitHub token<br>to sync session data automatically.</div>
   <input type="text" id="f-token" placeholder="github_pat_..." autocomplete="off" spellcheck="false">
   <button onclick="saveGitHubToken()">Connect</button>
+  <button onclick="skipGitHubSetup()" style="margin-top:8px; padding:10px 28px; border:1px solid rgba(255,255,255,0.1); border-radius:12px; background:transparent; color:rgba(255,255,255,0.3); font-size:13px; cursor:pointer;">Skip — just play</button>
   <div class="config-status" id="config-status"></div>
 </div>
 
@@ -472,7 +473,7 @@ const GITHUB_REPO = 'sakshamking/me-app';
 // ==================== GITHUB TOKEN CONFIG ====================
 function getGitHubToken() { return localStorage.getItem('me_github_token') || null; }
 
-function checkGitHubSetup() {
+function checkGitHubSetupInner() {
   const token = getGitHubToken();
   if (!token) {
     $('v-config').style.display = 'flex';
@@ -505,6 +506,18 @@ async function saveGitHubToken() {
   const r = await AnalyticsLogger.syncPending(GITHUB_REPO, token);
   if (r.synced > 0) $('config-status').textContent = `Connected! Synced ${r.synced} session(s).`;
   setTimeout(() => { $('v-config').style.display = 'none'; $('v-intake').classList.add('active'); }, 800);
+}
+
+function skipGitHubSetup() {
+  localStorage.setItem('me_github_skipped', '1');
+  $('v-config').style.display = 'none';
+  $('v-intake').classList.add('active');
+}
+
+function checkGitHubSetup() {
+  // If previously skipped, don't block
+  if (localStorage.getItem('me_github_skipped')) return;
+  checkGitHubSetupInner();
 }
 
 document.addEventListener('DOMContentLoaded', checkGitHubSetup);
@@ -636,6 +649,7 @@ async function loadInitialMusic(queries) {
     const intents = chipSelections.intent || ['unwind'];
     allTracks = ytSearch.getMixedFallback(intents);
     console.log(`[MUSIC] Using fallback library: ${allTracks.length} tracks for intents [${intents}]`);
+    $('sess-status').textContent = `Fallback mode — ${allTracks.length} curated tracks`;
   }
 
   currentQueue = shuffle(allTracks);
@@ -644,7 +658,9 @@ async function loadInitialMusic(queries) {
 
   if (currentQueue.length > 0) {
     playTrack(currentQueue[0]);
-    $('sess-status').textContent = `${currentQueue.length} tracks queued`;
+    if (!$('sess-status').textContent.startsWith('Fallback')) {
+      $('sess-status').textContent = `Live search — ${currentQueue.length} tracks queued`;
+    }
   } else {
     $('sess-status').textContent = 'No tracks found — try different vibe';
   }
@@ -740,6 +756,7 @@ async function startSensors() {
 
 // ==================== FACE DETECTION (MediaPipe Face Mesh — 478 landmarks, script tag) ====================
 let faceMeshInstance = null;
+let _faceScriptWaitMs = 0; // module-level so it persists across retries
 
 async function startFaceDetection() {
   const faceStatus = (msg) => console.log(`[FACE] ${msg}`);
@@ -750,14 +767,17 @@ async function startFaceDetection() {
   faceStatus(`Device: ${isIOS ? 'iOS' : isAndroid ? 'Android' : 'Desktop'}, UA: ${ua.slice(0, 80)}`);
 
   // Wait for CDN script — retry up to 15s
-  let scriptWaitMs = 0;
   if (typeof FaceMesh === 'undefined') {
-    faceStatus('Waiting for MediaPipe script from CDN...');
-    if (scriptWaitMs > 15000) { faceStatus('✗ MediaPipe script never loaded — CDN blocked?'); return; }
-    scriptWaitMs += 2000;
+    if (_faceScriptWaitMs >= 15000) {
+      faceStatus('✗ MediaPipe script never loaded after 15s — CDN blocked or slow network');
+      return;
+    }
+    faceStatus(`Waiting for MediaPipe script from CDN... (${_faceScriptWaitMs / 1000}s)`);
+    _faceScriptWaitMs += 2000;
     setTimeout(startFaceDetection, 2000);
     return;
   }
+  _faceScriptWaitMs = 0; // reset for potential future re-init
   faceStatus('✓ FaceMesh class available');
 
   // Initialize FaceMesh — try with refineLandmarks, fall back without (older WASM)
