@@ -11,13 +11,17 @@
 <title>M+E</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-:root { --accent: #ff3b5c; --dim: rgba(255,255,255,0.35); --bg: #000; --card: #0d0d0d; --border: rgba(255,255,255,0.06); }
+:root {
+  --accent: #ff3b5c; --dim: rgba(255,255,255,0.35); --bg: #0a0a0f;
+  --card: #0d0d12; --border: rgba(255,255,255,0.06);
+  --energy-hue: 220; /* shifts from 220 (blue) to 0 (red) based on energy */
+}
 
 body {
   background: var(--bg); color: #fff;
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Helvetica Neue', sans-serif;
   min-height: 100dvh; -webkit-user-select: none; user-select: none;
-  overflow-x: hidden;
+  overflow-x: hidden; transition: background-color 3s ease;
 }
 
 .view { display: none; width: 100%; max-width: 430px; margin: 0 auto; min-height: 100dvh; }
@@ -49,8 +53,18 @@ body {
 }
 .chip.active { background: rgba(255,59,92,0.15); color: var(--accent); border-color: rgba(255,59,92,0.4); }
 
-.time-row { display: flex; gap: 10px; }
-.time-row .field { flex: 1; }
+/* Energy slider */
+.slider-wrap { display: flex; align-items: center; gap: 12px; }
+.slider-wrap input[type="range"] {
+  flex: 1; -webkit-appearance: none; appearance: none;
+  height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; outline: none;
+}
+.slider-wrap input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--accent); cursor: pointer;
+}
+.slider-labels { display: flex; justify-content: space-between; font-size: 10px; color: rgba(255,255,255,0.15); margin-top: 4px; }
+.slider-val { font-size: 15px; font-weight: 600; color: var(--accent); min-width: 24px; text-align: center; }
 
 #start-btn {
   display: block; width: 100%; padding: 16px; font-size: 17px; font-weight: 600;
@@ -59,37 +73,59 @@ body {
   transition: opacity 0.3s; -webkit-tap-highlight-color: transparent;
 }
 #start-btn.ready { opacity: 1; pointer-events: auto; }
-
 .intake-status { text-align: center; font-size: 11px; color: rgba(255,255,255,0.15); margin-top: 10px; }
 
 /* ========== SESSION VIEW ========== */
-#v-session {
-  padding: env(safe-area-inset-top, 20px) 0 0; position: relative; overflow: hidden;
-}
+#v-session { padding: env(safe-area-inset-top, 20px) 0 0; position: relative; overflow: hidden; }
 
-/* Ambient glow */
+/* Ambient glow — color shifts with energy */
 .glow {
-  position: fixed; top: 50%; left: 50%; width: 350px; height: 350px;
+  position: fixed; top: 50%; left: 50%; width: 400px; height: 400px;
   transform: translate(-50%, -50%); border-radius: 50%;
-  background: radial-gradient(circle, rgba(255,59,92,0.06) 0%, transparent 70%);
+  background: radial-gradient(circle, hsla(var(--energy-hue), 80%, 50%, 0.06) 0%, transparent 70%);
   transition: all 3s ease; pointer-events: none; z-index: 0;
 }
 
-/* Session header */
-.sess-header {
-  text-align: center; padding: 12px 20px; position: relative; z-index: 2;
+/* Subtle edge pulse for silent interventions */
+.edge-pulse {
+  position: fixed; inset: 0; pointer-events: none; z-index: 8;
+  border: 2px solid transparent; transition: border-color 1.5s ease;
 }
+.edge-pulse.active { border-color: rgba(255,59,92,0.2); }
+
+/* Session header */
+.sess-header { text-align: center; padding: 12px 20px; position: relative; z-index: 2; }
 .sess-intent-tags { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; margin-top: 6px; }
 .sess-tag { padding: 4px 12px; border: 1px solid var(--border); border-radius: 14px; font-size: 11px; color: rgba(255,255,255,0.3); }
 .sess-timer { font-size: 11px; color: rgba(255,255,255,0.15); font-variant-numeric: tabular-nums; margin-top: 4px; }
-.calibration-bar {
-  height: 2px; background: rgba(255,255,255,0.06); border-radius: 1px;
-  margin: 8px 40px 0; overflow: hidden;
-}
+
+/* Calibration guidance */
+.calibration-section { text-align: center; padding: 0 40px; }
+.calibration-text { font-size: 12px; color: rgba(255,255,255,0.2); font-style: italic; }
+.calibration-bar { height: 2px; background: rgba(255,255,255,0.06); border-radius: 1px; margin: 8px 0 0; overflow: hidden; }
 .calibration-fill { height: 100%; background: var(--accent); transition: width 0.5s; width: 0%; }
 
+/* Arc timeline — thin bar showing session progress */
+.arc-timeline {
+  margin: 8px 16px; height: 24px; position: relative; z-index: 2;
+  background: rgba(255,255,255,0.03); border-radius: 4px; overflow: hidden;
+}
+.arc-path {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 100%;
+  pointer-events: none;
+}
+.arc-progress {
+  position: absolute; top: 0; bottom: 0; left: 0; width: 0%;
+  background: rgba(255,59,92,0.08); border-right: 2px solid var(--accent);
+  transition: width 1s ease;
+}
+.arc-label {
+  position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+  font-size: 9px; color: rgba(255,255,255,0.15); font-family: 'SF Mono', monospace;
+}
+
 /* YouTube player */
-.player-section { padding: 12px 16px; position: relative; z-index: 2; }
+.player-section { padding: 8px 16px; position: relative; z-index: 2; }
 .player-wrap {
   width: 100%; aspect-ratio: 16/9; border-radius: 12px; overflow: hidden;
   background: rgba(255,255,255,0.03);
@@ -102,7 +138,7 @@ body {
 .track-artist { font-size: 13px; color: var(--dim); margin-top: 2px; }
 
 /* Controls */
-.controls { display: flex; align-items: center; justify-content: center; gap: 32px; padding: 12px 0; position: relative; z-index: 2; }
+.controls { display: flex; align-items: center; justify-content: center; gap: 32px; padding: 8px 0; position: relative; z-index: 2; }
 .ctrl-btn { background: none; border: none; color: rgba(255,255,255,0.4); cursor: pointer; padding: 8px; -webkit-tap-highlight-color: transparent; }
 .ctrl-btn:active { transform: scale(0.9); }
 .ctrl-btn svg { width: 24px; height: 24px; fill: currentColor; }
@@ -114,10 +150,22 @@ body {
 .ctrl-play:active { transform: scale(0.92); }
 .ctrl-play svg { width: 24px; height: 24px; fill: #fff; }
 
+/* Moment button */
+#moment-btn {
+  display: block; margin: 4px auto; padding: 6px 20px;
+  border: 1px solid rgba(255,59,92,0.15); border-radius: 20px;
+  background: transparent; color: rgba(255,59,92,0.4); font-size: 11px;
+  cursor: pointer; position: relative; z-index: 2; transition: all 0.3s;
+  letter-spacing: 1px;
+}
+#moment-btn:active { background: rgba(255,59,92,0.1); color: var(--accent); transform: scale(0.95); }
+#moment-btn.tapped { border-color: var(--accent); color: var(--accent); }
+
 /* Nudge overlay */
 #nudge-overlay {
   position: fixed; top: 0; left: 0; right: 0; bottom: 0;
   display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 16px;
   pointer-events: none; z-index: 10;
 }
 #nudge-text {
@@ -127,20 +175,26 @@ body {
 }
 #nudge-text.visible { opacity: 1; }
 
-/* State badges (minimal, bottom of session) */
-.state-bar {
-  display: flex; gap: 6px; justify-content: center; flex-wrap: wrap;
-  padding: 8px 20px; position: relative; z-index: 2;
+/* Post-nudge feedback */
+.nudge-feedback {
+  display: none; gap: 20px; pointer-events: auto; opacity: 0; transition: opacity 0.5s;
 }
-.state-badge {
-  padding: 4px 10px; border-radius: 10px; font-size: 10px; font-weight: 600;
-  background: rgba(255,255,255,0.04); color: rgba(255,255,255,0.2);
-  font-family: 'SF Mono', monospace; letter-spacing: 0.5px;
+.nudge-feedback.visible { display: flex; opacity: 1; }
+.nf-btn {
+  width: 44px; height: 44px; border-radius: 50%;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; font-size: 20px; transition: all 0.2s;
 }
-.state-badge.hi { color: var(--accent); background: rgba(255,59,92,0.1); }
+.nf-btn:active { transform: scale(0.9); }
+.nf-btn.up:active { background: rgba(80,200,120,0.2); border-color: rgba(80,200,120,0.4); }
+.nf-btn.down:active { background: rgba(255,59,92,0.2); border-color: rgba(255,59,92,0.4); }
+
+/* Session status line */
+.sess-status { text-align: center; font-size: 11px; color: rgba(255,255,255,0.1); padding: 4px; position: relative; z-index: 2; }
 
 /* Queue */
-.queue-section { padding: 0 16px 32px; position: relative; z-index: 2; }
+.queue-section { padding: 0 16px 16px; position: relative; z-index: 2; }
 .queue-label { font-size: 10px; font-weight: 600; letter-spacing: 2px; color: rgba(255,255,255,0.12); margin-bottom: 6px; }
 .queue-item {
   display: flex; align-items: center; padding: 8px 0;
@@ -153,8 +207,30 @@ body {
 .queue-artist { font-size: 11px; color: rgba(255,255,255,0.2); }
 .queue-item.active .queue-title { color: var(--accent); }
 
-/* Session status line */
-.sess-status { text-align: center; font-size: 11px; color: rgba(255,255,255,0.1); padding: 4px; position: relative; z-index: 2; }
+/* End session button */
+#end-btn {
+  display: block; margin: 8px auto 16px; padding: 8px 24px; border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px; background: transparent; color: rgba(255,255,255,0.2);
+  font-size: 12px; cursor: pointer; position: relative; z-index: 2;
+}
+
+/* ========== SESSION RECAP ========== */
+#v-recap { padding: env(safe-area-inset-top, 48px) 20px 40px; align-items: center; }
+.recap-title { font-size: 11px; letter-spacing: 8px; color: var(--dim); font-family: 'SF Mono', monospace; margin-bottom: 8px; }
+.recap-duration { font-size: 48px; font-weight: 200; color: #fff; margin-bottom: 4px; }
+.recap-duration-label { font-size: 11px; color: rgba(255,255,255,0.15); letter-spacing: 2px; margin-bottom: 24px; }
+.recap-stats { width: 100%; max-width: 300px; }
+.recap-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.04); }
+.recap-label { font-size: 13px; color: rgba(255,255,255,0.3); }
+.recap-value { font-size: 13px; color: rgba(255,255,255,0.7); font-family: 'SF Mono', monospace; }
+.recap-moments { margin-top: 24px; text-align: center; }
+.recap-moments-count { font-size: 32px; font-weight: 200; color: var(--accent); }
+.recap-moments-label { font-size: 11px; color: rgba(255,255,255,0.2); letter-spacing: 1px; margin-top: 4px; }
+#recap-close-btn {
+  margin-top: 32px; padding: 14px 40px; border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px; background: transparent; color: rgba(255,255,255,0.4);
+  font-size: 14px; cursor: pointer;
+}
 
 /* ========== DEBUG OVERLAY ========== */
 #debug-toggle {
@@ -179,31 +255,22 @@ body {
 .dbg-log { max-height: 120px; overflow-y: auto; margin-top: 8px; }
 .dbg-log-entry { padding: 2px 0; color: rgba(255,255,255,0.3); font-size: 10px; border-bottom: 1px solid rgba(255,255,255,0.02); }
 
-/* End session button */
-#end-btn {
-  display: block; margin: 16px auto; padding: 8px 24px; border: 1px solid rgba(255,255,255,0.08);
-  border-radius: 12px; background: transparent; color: rgba(255,255,255,0.2);
-  font-size: 12px; cursor: pointer; position: relative; z-index: 2;
-}
-
-
-/* Hidden video for face detection */
-#face-video { position: fixed; top: -9999px; left: -9999px; width: 160px; height: 120px; }
-#face-canvas { display: none; }
-
 /* Token config overlay */
 #v-config {
   position: fixed; inset: 0; z-index: 9999; background: var(--bg);
   display: none; flex-direction: column; justify-content: center; align-items: center;
   padding: 40px 24px;
 }
-#v-config .brand-name { font-size: 13px; font-weight: 500; letter-spacing: 8px; color: var(--dim); font-family: 'SF Mono', 'Menlo', monospace; }
+#v-config .brand-name { font-size: 13px; font-weight: 500; letter-spacing: 8px; color: var(--dim); font-family: 'SF Mono', monospace; }
 #v-config .config-msg { font-size: 13px; color: var(--dim); text-align: center; margin: 16px 0 24px; line-height: 1.5; }
 #v-config input { width: 100%; max-width: 380px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--card); color: #fff; font-size: 14px; font-family: 'SF Mono', monospace; outline: none; }
 #v-config input:focus { border-color: rgba(255,255,255,0.2); }
 #v-config button { margin-top: 16px; padding: 12px 32px; border: none; border-radius: 12px; background: var(--accent); color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; }
 #v-config .config-status { font-size: 11px; color: var(--dim); margin-top: 12px; }
-#v-config .sync-status { font-size: 11px; color: rgba(255,255,255,0.25); margin-top: 8px; }
+
+/* Hidden face elements */
+#face-video { position: fixed; top: -9999px; left: -9999px; width: 160px; height: 120px; }
+#face-canvas { display: none; }
 </style>
 </head>
 <body>
@@ -226,11 +293,11 @@ body {
 
   <div class="field">
     <label>WHERE ARE YOU</label>
-    <input type="text" id="f-location" placeholder="Hotel room, home, office...">
+    <input type="text" id="f-location" placeholder="Home, hotel room, office...">
   </div>
 
   <div class="field">
-    <label>WHAT'S HAPPENING AROUND YOU</label>
+    <label>SET THE SCENE</label>
     <textarea id="f-situation" placeholder="Sitting in bed, lights dimmed..."></textarea>
   </div>
 
@@ -247,7 +314,7 @@ body {
   </div>
 
   <div class="field">
-    <label>WHAT DO YOU WANT</label>
+    <label>TONIGHT I WANT TO...</label>
     <div class="chips" data-field="intent">
       <div class="chip" data-v="unwind">Unwind</div>
       <div class="chip" data-v="energy">Energy</div>
@@ -259,7 +326,7 @@ body {
   </div>
 
   <div class="field">
-    <label>MUSIC VIBE</label>
+    <label>SOUND</label>
     <div class="chips" data-field="vibe">
       <div class="chip" data-v="electronic">Electronic</div>
       <div class="chip" data-v="ambient">Ambient</div>
@@ -269,41 +336,58 @@ body {
     </div>
   </div>
 
-  <div class="time-row">
-    <div class="field">
-      <label>SESSION LENGTH</label>
-      <select id="f-sleep-hours">
-        <option value="0.5">30 min</option>
-        <option value="1">1 hour</option>
-        <option value="2" selected>2 hours</option>
-        <option value="3">3 hours</option>
-      </select>
+  <div class="field">
+    <label>YOUR ENERGY RIGHT NOW</label>
+    <div class="slider-wrap">
+      <input type="range" id="f-energy" min="1" max="5" value="3" step="1">
+      <span class="slider-val" id="energy-val">3</span>
     </div>
-    <div class="field">
-      <label>WAKE UP AT</label>
-      <input type="time" id="f-wakeup" value="09:00">
+    <div class="slider-labels"><span>Drained</span><span>Wired</span></div>
+  </div>
+
+  <div class="field">
+    <label>OPENNESS TO BEING PUSHED</label>
+    <div class="chips" data-field="openness" data-single="true">
+      <div class="chip" data-v="low">Keep it subtle</div>
+      <div class="chip active" data-v="medium">I can take it</div>
+      <div class="chip" data-v="high">Push me</div>
     </div>
   </div>
 
   <div class="field">
-    <label>ANYTHING ELSE</label>
-    <textarea id="f-freetext" placeholder="Feeling tired but wired, had coffee 2 hours ago..."></textarea>
+    <label>SESSION LENGTH</label>
+    <select id="f-session-length">
+      <option value="0.5">30 min</option>
+      <option value="1">1 hour</option>
+      <option value="2" selected>2 hours</option>
+      <option value="3">3 hours</option>
+    </select>
   </div>
 
   <button id="start-btn" onclick="beginSession()">Begin Session</button>
   <div class="intake-status" id="intake-status">Select your intent to begin</div>
-
 </div>
 
 <!-- ========== SESSION VIEW ========== -->
 <div id="v-session" class="view">
   <div class="glow" id="glow"></div>
+  <div class="edge-pulse" id="edge-pulse"></div>
 
   <div class="sess-header">
     <div class="brand-name" style="font-size:11px;">M + E</div>
     <div class="sess-intent-tags" id="sess-tags"></div>
     <div class="sess-timer" id="sess-timer">00:00</div>
-    <div class="calibration-bar" id="cal-bar"><div class="calibration-fill" id="cal-fill"></div></div>
+  </div>
+
+  <div class="calibration-section" id="cal-section">
+    <div class="calibration-text">Just be natural for 2 minutes. I'm learning your baseline.</div>
+    <div class="calibration-bar"><div class="calibration-fill" id="cal-fill"></div></div>
+  </div>
+
+  <div class="arc-timeline" id="arc-timeline">
+    <canvas class="arc-path" id="arc-canvas"></canvas>
+    <div class="arc-progress" id="arc-progress"></div>
+    <div class="arc-label" id="arc-label"></div>
   </div>
 
   <div class="player-section">
@@ -321,11 +405,7 @@ body {
     <button class="ctrl-btn" id="btnNext"><svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg></button>
   </div>
 
-  <div class="state-bar" id="state-bar">
-    <div class="state-badge" id="sb-energy">Energy: --</div>
-    <div class="state-badge" id="sb-immersion">Immersion: --</div>
-    <div class="state-badge" id="sb-trajectory">Traj: --</div>
-  </div>
+  <button id="moment-btn" onclick="logMoment()">I feel something</button>
 
   <div class="sess-status" id="sess-status">Warming up...</div>
 
@@ -337,14 +417,35 @@ body {
   <button id="end-btn" onclick="endSession()">End Session</button>
 </div>
 
+<!-- ========== SESSION RECAP ========== -->
+<div id="v-recap" class="view">
+  <div class="recap-title">M + E</div>
+  <div class="recap-duration" id="recap-duration">--</div>
+  <div class="recap-duration-label">MINUTES</div>
+  <div class="recap-stats" id="recap-stats"></div>
+  <div class="recap-moments">
+    <div class="recap-moments-count" id="recap-moments-count">0</div>
+    <div class="recap-moments-label">MOMENTS CAPTURED</div>
+  </div>
+  <button id="recap-close-btn" onclick="closeRecap()">Done</button>
+</div>
+
 <!-- Nudge overlay (always present) -->
-<div id="nudge-overlay"><div id="nudge-text"></div></div>
+<div id="nudge-overlay">
+  <div id="nudge-text"></div>
+  <div class="nudge-feedback" id="nudge-feedback">
+    <button class="nf-btn up" onclick="nudgeFeedback('positive')">&#x1F44D;</button>
+    <button class="nf-btn down" onclick="nudgeFeedback('negative')">&#x1F44E;</button>
+  </div>
+</div>
 
 <!-- Debug toggle + panel -->
 <button id="debug-toggle" style="display:none" onclick="toggleDebug()">DBG</button>
 <div id="debug-panel">
   <div class="dbg-section">ENGINE STATE</div>
   <div id="dbg-state"></div>
+  <div class="dbg-section">ANALYTICS</div>
+  <div id="dbg-analytics"></div>
   <div class="dbg-section">SENSORS</div>
   <div id="dbg-sensors"></div>
   <div class="dbg-section">LOG</div>
@@ -356,16 +457,13 @@ body {
 <canvas id="face-canvas"></canvas>
 
 <!-- ========== SCRIPTS ========== -->
-<!-- face-api.js for face detection -->
 <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
-<!-- YouTube IFrame API -->
 <script src="https://www.youtube.com/iframe_api"></script>
-<!-- M+E Engine -->
 <script src="engine.js"></script>
 
 <script>
 // ============================================================
-// M+E PILOT V3 — Phone-Native App
+// M+E PILOT V4 — Phone-Native App with Structured Analytics
 // ============================================================
 
 const YT_API_KEY = 'AIzaSyAfJITiaEinEztRvBrs8CpEjFqSWg-grI8';
@@ -380,9 +478,8 @@ function checkGitHubSetup() {
     $('v-config').style.display = 'flex';
     $('v-intake').classList.remove('active');
   } else {
-    // Sync any un-pushed sessions in background
-    SessionLogger.syncPending(GITHUB_REPO, token).then(r => {
-      if (r.synced > 0) console.log(`Synced ${r.synced} pending session(s) to GitHub`);
+    AnalyticsLogger.syncPending(GITHUB_REPO, token).then(r => {
+      if (r.synced > 0) console.log(`Synced ${r.synced} pending session(s)`);
     });
   }
 }
@@ -405,18 +502,11 @@ async function saveGitHubToken() {
 
   localStorage.setItem('me_github_token', token);
   $('config-status').textContent = 'Connected!';
-
-  // Sync any pending sessions
-  const r = await SessionLogger.syncPending(GITHUB_REPO, token);
+  const r = await AnalyticsLogger.syncPending(GITHUB_REPO, token);
   if (r.synced > 0) $('config-status').textContent = `Connected! Synced ${r.synced} session(s).`;
-
-  setTimeout(() => {
-    $('v-config').style.display = 'none';
-    $('v-intake').classList.add('active');
-  }, 800);
+  setTimeout(() => { $('v-config').style.display = 'none'; $('v-intake').classList.add('active'); }, 800);
 }
 
-// Run on load
 document.addEventListener('DOMContentLoaded', checkGitHubSetup);
 
 // ==================== GLOBALS ====================
@@ -429,14 +519,14 @@ let playerReady = false;
 let currentQueue = [];
 let currentIndex = 0;
 let sessionActive = false;
-let chipSelections = {};
+let chipSelections = { openness: ['medium'] }; // default openness
 let debugOpen = false;
 let sessionTimerId = null;
 let sensorSendId = null;
 let faceDetectId = null;
 let faceModelLoaded = false;
+let lastNudgeTimestamp = null; // for nudge feedback
 
-// Sensor state
 let motionData = { ax: 0, ay: 0, az: 0, gx: 0, gy: 0, gz: 0 };
 let orientData = { alpha: 0, beta: 0, gamma: 0 };
 
@@ -445,14 +535,27 @@ const $ = id => document.getElementById(id);
 // ==================== CHIP SELECTION ====================
 document.querySelectorAll('.chips').forEach(group => {
   const field = group.dataset.field;
+  const single = group.dataset.single === 'true';
   group.querySelectorAll('.chip').forEach(chip => {
     chip.addEventListener('click', () => {
-      chip.classList.toggle('active');
-      chipSelections[field] = [...group.querySelectorAll('.chip.active')].map(c => c.dataset.v);
+      if (single) {
+        // Radio behavior — only one active
+        group.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+        chipSelections[field] = [chip.dataset.v];
+      } else {
+        chip.classList.toggle('active');
+        chipSelections[field] = [...group.querySelectorAll('.chip.active')].map(c => c.dataset.v);
+      }
       checkReady();
     });
   });
+  // Initialize from already-active chips
+  chipSelections[field] = [...group.querySelectorAll('.chip.active')].map(c => c.dataset.v);
 });
+
+// Energy slider
+$('f-energy').addEventListener('input', () => { $('energy-val').textContent = $('f-energy').value; });
 
 function checkReady() {
   const loc = $('f-location').value.trim();
@@ -466,14 +569,8 @@ $('f-location').addEventListener('input', checkReady);
 window.onYouTubeIframeAPIReady = function() {
   ytPlayer = new YT.Player('ytPlayer', {
     height: '100%', width: '100%',
-    playerVars: {
-      autoplay: 0, controls: 1, modestbranding: 1, rel: 0,
-      playsinline: 1, iv_load_policy: 3, fs: 0
-    },
-    events: {
-      onReady: () => { playerReady = true; },
-      onStateChange: onPlayerState
-    }
+    playerVars: { autoplay: 0, controls: 1, modestbranding: 1, rel: 0, playsinline: 1, iv_load_policy: 3, fs: 0 },
+    events: { onReady: () => { playerReady = true; }, onStateChange: onPlayerState }
   });
 };
 
@@ -486,16 +583,18 @@ function onPlayerState(event) {
     $('trackArtist').textContent = info.author || '';
     const dur = ytPlayer.getDuration ? ytPlayer.getDuration() : 0;
     if (engine) engine.setCurrentTrack({ title: info.title, artist: info.author, id: info.video_id, duration: dur });
-    if (logger) logger.log('play', { track: info.title, artist: info.author });
+    // V4: Log music play + track artist for variety
+    if (logger) logger.logMusic('play', { id: info.video_id, title: info.title, artist: info.author }, { reason: 'auto_play' });
+    if (engine?.musicBrain) engine.musicBrain.trackArtist(info.author);
   } else if (st === YT.PlayerState.PAUSED) {
     $('playIcon').innerHTML = '<path d="M8 5v14l11-7z"/>';
   } else if (st === YT.PlayerState.ENDED) {
+    if (logger) logger.logMusic('end', currentQueue[currentIndex]);
     if (currentIndex < currentQueue.length - 1) {
       currentIndex++;
       playTrack(currentQueue[currentIndex]);
       renderQueue();
     } else {
-      // Queue ended — get more music from engine
       loadMoreMusic();
     }
   }
@@ -525,12 +624,14 @@ async function loadInitialMusic(queries) {
   for (const q of queries) {
     let tracks = await ytSearch.search(q.query, q.count + 5);
     tracks = engine.filterYouTubeResults(tracks);
+    // V4: Sort by artist variety
+    tracks = engine.musicBrain.sortByArtistVariety(tracks);
     if (tracks.length > 0) {
       allTracks = allTracks.concat(tracks.slice(0, q.count));
+      if (logger) logger.logMusic('search', null, { query: q.query, reason: 'initial' });
     }
   }
 
-  // If no results from search, use fallbacks
   if (allTracks.length === 0) {
     const intent = chipSelections.intent?.[0] || 'unwind';
     const intervention = intent === 'energy' ? 'STIMULATE' : intent === 'focus' ? 'TRANSITION' : 'REGULATE';
@@ -556,10 +657,12 @@ async function loadMoreMusic() {
 
   let tracks = await ytSearch.search(q.query, 10);
   tracks = engine.filterYouTubeResults(tracks);
+  tracks = engine.musicBrain.sortByArtistVariety(tracks);
   if (tracks.length === 0) {
     const fallbackType = q.energy >= 6 ? 'STIMULATE' : q.energy >= 4 ? 'TRANSITION' : 'REGULATE';
     tracks = ytSearch.getFallbackTracks(fallbackType);
   }
+  if (logger) logger.logMusic('search', null, { query: q.query, reason: 'auto_refill' });
 
   currentQueue = currentQueue.concat(shuffle(tracks));
   renderQueue();
@@ -573,7 +676,7 @@ function renderQueue() {
   if (currentQueue.length <= 1) { $('queue-section').style.display = 'none'; return; }
   $('queue-section').style.display = 'block';
   let html = '';
-  for (let i = 0; i < Math.min(currentQueue.length, currentIndex + 6); i++) {
+  for (let i = currentIndex; i < Math.min(currentQueue.length, currentIndex + 6); i++) {
     const t = currentQueue[i];
     const isActive = i === currentIndex;
     html += `<div class="queue-item ${isActive ? 'active' : ''}" onclick="jumpTo(${i})">
@@ -585,6 +688,7 @@ function renderQueue() {
 }
 
 function jumpTo(idx) {
+  if (logger) logger.logMusic('skip', currentQueue[currentIndex], { reason: 'user_skip' });
   currentIndex = idx;
   playTrack(currentQueue[idx]);
   renderQueue();
@@ -594,7 +698,6 @@ function shuffle(a) { a = [...a]; for (let i = a.length - 1; i > 0; i--) { const
 
 // ==================== SENSORS ====================
 async function startSensors() {
-  // Motion
   try {
     if (typeof DeviceMotionEvent !== 'undefined' && typeof DeviceMotionEvent.requestPermission === 'function') {
       const perm = await DeviceMotionEvent.requestPermission();
@@ -608,7 +711,6 @@ async function startSensors() {
     });
   } catch (e) {}
 
-  // Orientation
   try {
     if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
       await DeviceOrientationEvent.requestPermission();
@@ -618,26 +720,26 @@ async function startSensors() {
     });
   } catch (e) {}
 
-  // Feed sensor data to engine every 1s
   sensorSendId = setInterval(() => {
     if (!engine || !engine.active) return;
     const r = v => Math.round(v * 100) / 100;
-    engine.ingestSensorData({
+    const sensorPayload = {
       accel: { x: r(motionData.ax), y: r(motionData.ay), z: r(motionData.az) },
       gyro: { x: r(motionData.gx), y: r(motionData.gy), z: r(motionData.gz) },
       orient: { alpha: r(orientData.alpha), beta: r(orientData.beta), gamma: r(orientData.gamma) }
+    };
+    engine.ingestSensorData(sensorPayload);
+    // V4: Log sensor data (downsampled in logger)
+    if (logger) logger.logSensor({
+      ax: r(motionData.ax), ay: r(motionData.ay), az: r(motionData.az),
+      gx: r(motionData.gx), gy: r(motionData.gy), gz: r(motionData.gz)
     });
   }, 1000);
 }
 
 // ==================== FACE DETECTION ====================
 async function startFaceDetection() {
-  if (typeof faceapi === 'undefined') {
-    // face-api.js not loaded yet, retry
-    setTimeout(startFaceDetection, 2000);
-    return;
-  }
-
+  if (typeof faceapi === 'undefined') { setTimeout(startFaceDetection, 2000); return; }
   try {
     const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/model/';
     await Promise.all([
@@ -646,12 +748,8 @@ async function startFaceDetection() {
       faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL)
     ]);
     faceModelLoaded = true;
-  } catch (e) {
-    console.warn('Face models failed to load:', e);
-    return;
-  }
+  } catch (e) { console.warn('Face models failed:', e); return; }
 
-  // Start front camera
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: 'user', width: { ideal: 160 }, height: { ideal: 120 } }
@@ -662,7 +760,6 @@ async function startFaceDetection() {
 
     faceAnalyzer = new FaceAnalyzer();
 
-    // Sequential face detection — consistent 3s cadence (no overlap from async drift)
     async function runFaceLoop() {
       if (!engine || !engine.active || !faceModelLoaded) {
         faceDetectId = setTimeout(runFaceLoop, 3000);
@@ -670,21 +767,19 @@ async function startFaceDetection() {
       }
       try {
         const detection = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
-          .withFaceLandmarks(true) // useTinyModel
-          .withFaceExpressions();
+          .withFaceLandmarks(true).withFaceExpressions();
         if (detection) {
           const faceData = faceAnalyzer.analyze(detection);
+          faceData.detectionConfidence = detection.detection?._score || 0.5;
           engine.ingestFaceData(faceData);
-          if (logger) logger.log('face_data', faceData);
+          if (logger) logger.logFace(faceData);
         }
       } catch (e) { /* skip frame */ }
-      // Schedule AFTER completion — guarantees consistent spacing
       faceDetectId = setTimeout(runFaceLoop, 3000);
     }
     faceDetectId = setTimeout(runFaceLoop, 1000);
   } catch (e) {
     console.warn('Camera access denied:', e);
-    // Engine will work with sensors only — graceful degradation
   }
 }
 
@@ -692,54 +787,172 @@ async function startFaceDetection() {
 function setupEngineHandlers() {
   engine.on('state', data => {
     if (data.type === 'state_update') {
-      updateStateUI(data);
+      updateSessionUI(data);
       updateDebugState(data);
+      if (logger) logger.logTick(data);
     }
     if (data.type === 'calibration' && data.status === 'complete') {
-      $('cal-bar').style.display = 'none';
+      $('cal-section').style.display = 'none';
       $('sess-status').textContent = 'Calibrated — listening';
     }
   });
 
   engine.on('command', cmd => {
-    if (cmd.type === 'nudge') showNudge(cmd.text);
+    if (cmd.type === 'nudge') showNudge(cmd.text, cmd.decision);
     if (cmd.type === 'haptic') triggerHaptic(cmd.pattern);
     if (cmd.type === 'music') handleMusicCommand(cmd);
   });
 
   engine.on('log', entry => {
-    if (logger) logger.log(entry.type, entry);
     addDebugLog(entry);
+    // Log feedback outcomes to analytics
+    if (entry.type === 'feedback' && entry.outcome && logger) {
+      logger.logFeedbackOutcome(entry.outcome);
+    }
   });
 
   engine.on('intervention', decision => {
-    if (logger) logger.log('intervention', decision);
+    if (logger) logger.logIntervention(decision);
+    // V4: Visual edge pulse for ALL interventions (including silent ones)
+    pulseEdge();
   });
 }
 
-function updateStateUI(data) {
+// ==================== SESSION UI UPDATES ====================
+function updateSessionUI(data) {
   const { energy, immersion, trajectory } = data.state;
-  $('sb-energy').textContent = `Energy: ${energy.level}`;
-  $('sb-energy').className = 'state-badge' + (energy.level === 'high' ? ' hi' : '');
-  $('sb-immersion').textContent = `Immersion: ${immersion.level}`;
-  $('sb-immersion').className = 'state-badge' + (immersion.level === 'engaged' || immersion.level === 'absorbed' ? ' hi' : '');
-  $('sb-trajectory').textContent = `Traj: ${trajectory.direction}`;
-  $('sb-trajectory').className = 'state-badge' + (trajectory.direction === 'improving' ? ' hi' : '');
 
-  // Update calibration bar
+  // V4: Ambient background color shift — energy drives hue
+  // Low energy = deep blue (220), high = warm red (0)
+  const hue = Math.round(220 - energy.value * 220);
+  document.documentElement.style.setProperty('--energy-hue', hue);
+  const glowIntensity = 0.04 + energy.value * 0.08;
+  $('glow').style.background = `radial-gradient(circle, hsla(${hue}, 80%, 50%, ${glowIntensity}) 0%, transparent 70%)`;
+
+  // Calibration progress
   if (data.calibration && !data.calibration.calibrated) {
     $('cal-fill').style.width = `${Math.round(data.calibration.progress * 100)}%`;
   }
 
-  // Update glow based on energy
-  const glowIntensity = Math.round(energy.value * 15);
-  $('glow').style.background = `radial-gradient(circle, rgba(255,59,92,${glowIntensity / 100}) 0%, transparent 70%)`;
+  // V4: Arc timeline progress
+  if (data.arc && data.arc.sessionMinutes !== undefined) {
+    const arcDuration = engine?.musicBrain?.currentArc;
+    if (arcDuration && arcDuration.length > 0) {
+      const maxT = arcDuration[arcDuration.length - 1].t;
+      const pct = maxT > 0 ? Math.min(100, (data.arc.sessionMinutes / maxT) * 100) : 0;
+      $('arc-progress').style.width = `${pct}%`;
+      $('arc-label').textContent = `${Math.round(data.arc.sessionMinutes)}m / ${Math.round(maxT)}m`;
+    }
+  }
+
+  // Status text updates based on state
+  if (data.calibration?.calibrated) {
+    const stateText = trajectory.direction === 'improving' ? 'Rising' :
+      trajectory.direction === 'declining' ? 'Settling' :
+      immersion.level === 'absorbed' ? 'Deep' :
+      immersion.level === 'engaged' ? 'Locked in' : 'Listening';
+    $('sess-status').textContent = stateText;
+  }
 }
 
+function pulseEdge() {
+  const el = $('edge-pulse');
+  el.classList.add('active');
+  setTimeout(() => el.classList.remove('active'), 2000);
+}
+
+// ==================== ARC VISUALIZATION ====================
+function drawArc(arcPoints) {
+  const canvas = $('arc-canvas');
+  if (!canvas || !arcPoints || arcPoints.length < 2) return;
+  const container = $('arc-timeline');
+  canvas.width = container.offsetWidth;
+  canvas.height = container.offsetHeight;
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  const maxT = arcPoints[arcPoints.length - 1].t;
+  const maxE = Math.max(...arcPoints.map(p => p.energy));
+  const minE = Math.min(...arcPoints.map(p => p.energy));
+  const range = maxE - minE || 1;
+
+  ctx.beginPath();
+  ctx.strokeStyle = 'rgba(255,59,92,0.15)';
+  ctx.lineWidth = 1.5;
+  arcPoints.forEach((p, i) => {
+    const x = (p.t / maxT) * canvas.width;
+    const y = canvas.height - ((p.energy - minE) / range) * (canvas.height - 4) - 2;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+}
+
+// ==================== NUDGE + HAPTIC + FEEDBACK ====================
+function showNudge(text, decision) {
+  if (!text) return;
+  lastNudgeTimestamp = decision?.timestamp || Date.now();
+  const el = $('nudge-text');
+  el.textContent = text;
+  el.classList.add('visible');
+  $('glow').style.background = `radial-gradient(circle, rgba(255,59,92,0.2) 0%, transparent 70%)`;
+
+  // Show feedback buttons after nudge text
+  setTimeout(() => {
+    $('nudge-feedback').classList.add('visible');
+  }, 1500);
+
+  setTimeout(() => {
+    el.classList.remove('visible');
+    $('glow').style.background = `radial-gradient(circle, hsla(var(--energy-hue), 80%, 50%, 0.06) 0%, transparent 70%)`;
+    // Auto-dismiss feedback after 5s total
+    setTimeout(() => { $('nudge-feedback').classList.remove('visible'); }, 2000);
+  }, 4000);
+}
+
+function nudgeFeedback(response) {
+  if (lastNudgeTimestamp && logger) {
+    logger.logNudgeFeedback(lastNudgeTimestamp, response);
+  }
+  $('nudge-feedback').classList.remove('visible');
+  // Brief visual confirmation
+  const btn = response === 'positive' ? document.querySelector('.nf-btn.up') : document.querySelector('.nf-btn.down');
+  if (btn) { btn.style.transform = 'scale(1.2)'; setTimeout(() => { btn.style.transform = ''; }, 300); }
+}
+
+function triggerHaptic(pattern) {
+  if (navigator.vibrate) {
+    switch (pattern) {
+      case 'light': navigator.vibrate(50); break;
+      case 'medium': navigator.vibrate(100); break;
+      case 'heavy': navigator.vibrate([100, 50, 100]); break;
+      case 'double': navigator.vibrate([50, 30, 50]); break;
+    }
+  }
+  // V4: Visual fallback if no vibrate API (iOS Safari)
+  if (!navigator.vibrate) pulseEdge();
+}
+
+// ==================== MOMENT CAPTURE ====================
+function logMoment() {
+  if (!engine || !sessionActive) return;
+  const state = engine.stateEstimator.state;
+  const track = currentQueue[currentIndex] || null;
+  if (logger) logger.logMoment(state, track);
+
+  // Visual feedback
+  const btn = $('moment-btn');
+  btn.classList.add('tapped');
+  btn.textContent = 'Captured';
+  setTimeout(() => { btn.classList.remove('tapped'); btn.textContent = 'I feel something'; }, 2000);
+}
+
+// ==================== MUSIC COMMANDS ====================
 function handleMusicCommand(cmd) {
   if (!ytPlayer || !playerReady) return;
   switch (cmd.command) {
     case 'skip':
+      if (logger) logger.logMusic('skip', currentQueue[currentIndex], { reason: 'engine_skip' });
       if (currentIndex < currentQueue.length - 1) {
         currentIndex++;
         playTrack(currentQueue[currentIndex]);
@@ -754,7 +967,9 @@ function handleMusicCommand(cmd) {
       if (cmd.query) {
         ytSearch.search(cmd.query.query, 5).then(tracks => {
           tracks = engine.filterYouTubeResults(tracks);
+          tracks = engine.musicBrain.sortByArtistVariety(tracks);
           if (tracks.length > 0) {
+            if (logger) logger.logMusic('search', null, { query: cmd.query.query, reason: 'engine_search' });
             currentQueue.splice(currentIndex + 1, 0, ...tracks);
             currentIndex++;
             playTrack(currentQueue[currentIndex]);
@@ -764,10 +979,10 @@ function handleMusicCommand(cmd) {
       }
       break;
     case 'queue_next':
-      // Dynamic re-queue: search and add to queue without interrupting current track
       if (cmd.query) {
         ytSearch.search(cmd.query.query, 8).then(tracks => {
           tracks = engine.filterYouTubeResults(tracks);
+          tracks = engine.musicBrain.sortByArtistVariety(tracks);
           if (tracks.length > 0) {
             currentQueue.splice(currentIndex + 1, 0, ...shuffle(tracks));
             renderQueue();
@@ -775,39 +990,8 @@ function handleMusicCommand(cmd) {
         });
       }
       break;
-    case 'seek':
-      // Smart playback positioning — jump to energy-matched section
-      if (cmd.position && ytPlayer.seekTo) {
-        ytPlayer.seekTo(cmd.position, true);
-      }
-      break;
     case 'extend':
-      // Extend current track — just let it keep playing (no-op, prevents skip)
-      break;
-  }
-}
-
-// ==================== NUDGE + HAPTIC ====================
-function showNudge(text) {
-  if (!text) return;
-  const el = $('nudge-text');
-  el.textContent = text;
-  el.classList.add('visible');
-  // Pulse glow
-  $('glow').style.background = 'radial-gradient(circle, rgba(255,59,92,0.2) 0%, transparent 70%)';
-  setTimeout(() => {
-    el.classList.remove('visible');
-    $('glow').style.background = 'radial-gradient(circle, rgba(255,59,92,0.06) 0%, transparent 70%)';
-  }, 4000);
-}
-
-function triggerHaptic(pattern) {
-  if (!navigator.vibrate) return;
-  switch (pattern) {
-    case 'light': navigator.vibrate(50); break;
-    case 'medium': navigator.vibrate(100); break;
-    case 'heavy': navigator.vibrate([100, 50, 100]); break;
-    case 'double': navigator.vibrate([50, 30, 50]); break;
+      break; // let track play naturally
   }
 }
 
@@ -819,14 +1003,13 @@ async function beginSession() {
     before: chipSelections.before || [],
     intent: chipSelections.intent || [],
     vibe: chipSelections.vibe || [],
-    sleep_in_hours: $('f-sleep-hours').value,
-    wakeup_time: $('f-wakeup').value,
-    freetext: $('f-freetext').value.trim(),
+    energy_level: $('f-energy').value,
+    openness: (chipSelections.openness || ['medium'])[0],
+    sleep_in_hours: $('f-session-length').value,
     time_context: getTimeContext(),
     submitted_at: new Date().toISOString()
   };
 
-  // Save intake to localStorage for next time
   try { localStorage.setItem('me_last_intake', JSON.stringify(context)); } catch(e) {}
 
   // Switch views
@@ -834,7 +1017,6 @@ async function beginSession() {
   $('v-session').classList.add('active');
   $('debug-toggle').style.display = 'block';
 
-  // Show intent tags
   (context.intent || []).forEach(i => {
     const tag = document.createElement('span');
     tag.className = 'sess-tag';
@@ -845,15 +1027,17 @@ async function beginSession() {
   // Initialize engine
   engine = new MEEngine();
   ytSearch = new YouTubeSearch(YT_API_KEY);
-  logger = new SessionLogger({ githubRepo: GITHUB_REPO, githubToken: getGitHubToken() });
+  logger = new AnalyticsLogger({ githubRepo: GITHUB_REPO, githubToken: getGitHubToken() });
 
   setupEngineHandlers();
-  const { queries } = engine.startSession(context);
-  logger.startSession(engine.sessionId);
-  logger.log('intake', context);
+  const { queries, arc } = engine.startSession(context);
+  logger.startSession(engine.sessionId, context);
   sessionActive = true;
 
-  // Start session timer
+  // Draw arc visualization
+  if (arc) drawArc(arc);
+
+  // Session timer
   const startTime = Date.now();
   sessionTimerId = setInterval(() => {
     const elapsed = Date.now() - startTime;
@@ -862,13 +1046,8 @@ async function beginSession() {
     $('sess-timer').textContent = `${String(min).padStart(2, '0')}:${String(sec).padStart(2, '0')}`;
   }, 1000);
 
-  // Start sensors (needs user gesture — we have it from button tap)
   await startSensors();
-
-  // Start face detection
   startFaceDetection();
-
-  // Load initial music
   await loadInitialMusic(queries);
 }
 
@@ -876,30 +1055,65 @@ async function endSession() {
   if (!sessionActive) return;
   sessionActive = false;
 
+  let sessionData = null;
   if (engine) {
     const summary = engine.stopSession();
-    if (logger) await logger.endSession(summary);
+    if (logger) sessionData = await logger.endSession(summary);
   }
 
   if (sessionTimerId) { clearInterval(sessionTimerId); sessionTimerId = null; }
   if (sensorSendId) { clearInterval(sensorSendId); sensorSendId = null; }
   if (faceDetectId) { clearTimeout(faceDetectId); faceDetectId = null; }
 
-  // Stop face camera
   const video = $('face-video');
-  if (video.srcObject) {
-    video.srcObject.getTracks().forEach(t => t.stop());
-    video.srcObject = null;
-  }
+  if (video.srcObject) { video.srcObject.getTracks().forEach(t => t.stop()); video.srcObject = null; }
+  if (ytPlayer && playerReady) { try { ytPlayer.stopVideo(); } catch(e) {} }
 
-  // Stop YouTube
-  if (ytPlayer && playerReady) {
-    try { ytPlayer.stopVideo(); } catch(e) {}
-  }
+  // V4: Show recap screen
+  showRecap(sessionData);
+}
 
-  $('sess-status').textContent = 'Session ended. Data saved.';
-  $('end-btn').textContent = 'Session saved';
-  $('end-btn').disabled = true;
+function showRecap(data) {
+  $('v-session').classList.remove('active');
+  $('v-recap').classList.add('active');
+  $('debug-toggle').style.display = 'none';
+
+  if (data && data.summary) {
+    const s = data.summary;
+    $('recap-duration').textContent = s.duration_min || '--';
+    $('recap-moments-count').textContent = s.moments || 0;
+
+    let statsHtml = '';
+    statsHtml += `<div class="recap-row"><span class="recap-label">Tracks played</span><span class="recap-value">${s.tracks_played}</span></div>`;
+    statsHtml += `<div class="recap-row"><span class="recap-label">Interventions</span><span class="recap-value">${s.interventions_total}</span></div>`;
+    if (s.interventions_total > 0) {
+      statsHtml += `<div class="recap-row"><span class="recap-label">Landed</span><span class="recap-value">${s.interventions_positive} / ${s.interventions_total}</span></div>`;
+    }
+    if (s.avg_energy !== null) {
+      statsHtml += `<div class="recap-row"><span class="recap-label">Avg energy</span><span class="recap-value">${s.avg_energy}</span></div>`;
+      statsHtml += `<div class="recap-row"><span class="recap-label">Avg immersion</span><span class="recap-value">${s.avg_immersion}</span></div>`;
+    }
+    statsHtml += `<div class="recap-row"><span class="recap-label">Face readings</span><span class="recap-value">${s.face_readings}</span></div>`;
+    statsHtml += `<div class="recap-row"><span class="recap-label">Your feedback</span><span class="recap-value">${s.user_feedback_count} ratings</span></div>`;
+    $('recap-stats').innerHTML = statsHtml;
+  }
+}
+
+function closeRecap() {
+  $('v-recap').classList.remove('active');
+  $('v-intake').classList.add('active');
+  // Reset session state
+  $('sess-tags').innerHTML = '';
+  $('sess-timer').textContent = '00:00';
+  $('cal-section').style.display = '';
+  $('cal-fill').style.width = '0%';
+  $('arc-progress').style.width = '0%';
+  $('trackTitle').textContent = 'Starting...';
+  $('trackArtist').textContent = '';
+  $('sess-status').textContent = 'Warming up...';
+  $('queue-list').innerHTML = '';
+  currentQueue = [];
+  currentIndex = 0;
 }
 
 function getTimeContext() {
@@ -925,12 +1139,23 @@ function updateDebugState(data) {
   html += `<div class="dbg-row"><span class="dbg-label">Energy</span><span class="dbg-val">${state.energy.level} (${state.energy.value}) [${state.energy.confidence}]</span></div>`;
   html += `<div class="dbg-row"><span class="dbg-label">Immersion</span><span class="dbg-val">${state.immersion.level} (${state.immersion.value}) [${state.immersion.confidence}]</span></div>`;
   html += `<div class="dbg-row"><span class="dbg-label">Trajectory</span><span class="dbg-val">${state.trajectory.direction} (${state.trajectory.value})</span></div>`;
-  html += `<div class="dbg-row"><span class="dbg-label">Calibration</span><span class="dbg-val ${calibration.calibrated ? 'accent' : ''}">${calibration.calibrated ? 'COMPLETE' : Math.round(calibration.progress * 100) + '%'}</span></div>`;
+  html += `<div class="dbg-row"><span class="dbg-label">Calibration</span><span class="dbg-val ${calibration.calibrated ? 'accent' : ''}">${calibration.calibrated ? 'DONE' : Math.round(calibration.progress * 100) + '%'}</span></div>`;
   html += `<div class="dbg-row"><span class="dbg-label">Arc Target</span><span class="dbg-val">${arc.target} @ ${arc.sessionMinutes}m</span></div>`;
   html += `<div class="dbg-row"><span class="dbg-label">Cooldown</span><span class="dbg-val">${cooldown.remaining}s (${cooldown.failures} fails)</span></div>`;
   $('dbg-state').innerHTML = html;
 
-  // Sensors
+  // Analytics counts
+  if (logger) {
+    let aHtml = '';
+    aHtml += `<div class="dbg-row"><span class="dbg-label">Ticks</span><span class="dbg-val">${logger.data.timeline.length}</span></div>`;
+    aHtml += `<div class="dbg-row"><span class="dbg-label">Interventions</span><span class="dbg-val">${logger.data.interventions.length}</span></div>`;
+    aHtml += `<div class="dbg-row"><span class="dbg-label">Music events</span><span class="dbg-val">${logger.data.music.length}</span></div>`;
+    aHtml += `<div class="dbg-row"><span class="dbg-label">Face reads</span><span class="dbg-val">${logger.data.face.length}</span></div>`;
+    aHtml += `<div class="dbg-row"><span class="dbg-label">Sensor avgs</span><span class="dbg-val">${logger.data.sensors.length}</span></div>`;
+    aHtml += `<div class="dbg-row"><span class="dbg-label">Moments</span><span class="dbg-val accent">${logger.data.moments.length}</span></div>`;
+    $('dbg-analytics').innerHTML = aHtml;
+  }
+
   const r = v => Math.round(v * 10) / 10;
   let sHtml = '';
   sHtml += `<div class="dbg-row"><span class="dbg-label">Accel</span><span class="dbg-val">${r(motionData.ax)}, ${r(motionData.ay)}, ${r(motionData.az)}</span></div>`;
@@ -953,13 +1178,14 @@ function addDebugLog(entry) {
 $('btnPlay').addEventListener('click', playPauseToggle);
 $('btnNext').addEventListener('click', () => {
   if (currentQueue.length === 0) return;
-  if (logger) logger.log('skip', { track: $('trackTitle').textContent });
+  if (logger) logger.logMusic('skip', currentQueue[currentIndex], { reason: 'user_skip' });
   currentIndex = (currentIndex + 1) % currentQueue.length;
   playTrack(currentQueue[currentIndex]);
   renderQueue();
 });
 $('btnPrev').addEventListener('click', () => {
   if (currentQueue.length === 0) return;
+  if (logger) logger.logMusic('skip', currentQueue[currentIndex], { reason: 'user_prev' });
   currentIndex = currentIndex > 0 ? currentIndex - 1 : currentQueue.length - 1;
   playTrack(currentQueue[currentIndex]);
   renderQueue();
@@ -972,9 +1198,8 @@ function loadSavedIntake() {
     if (!saved) return;
     if (saved.location) $('f-location').value = saved.location;
     if (saved.situation) $('f-situation').value = saved.situation;
-    if (saved.freetext) $('f-freetext').value = saved.freetext;
-    if (saved.sleep_in_hours) $('f-sleep-hours').value = saved.sleep_in_hours;
-    if (saved.wakeup_time) $('f-wakeup').value = saved.wakeup_time;
+    if (saved.energy_level) { $('f-energy').value = saved.energy_level; $('energy-val').textContent = saved.energy_level; }
+    if (saved.sleep_in_hours) $('f-session-length').value = saved.sleep_in_hours;
     ['before', 'intent', 'vibe'].forEach(field => {
       const vals = saved[field] || [];
       if (!vals.length) return;
@@ -985,14 +1210,23 @@ function loadSavedIntake() {
         if (vals.includes(chip.dataset.v)) chip.classList.add('active');
       });
     });
+    if (saved.openness) {
+      chipSelections.openness = [saved.openness];
+      const group = document.querySelector('.chips[data-field="openness"]');
+      if (group) {
+        group.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+        const target = group.querySelector(`.chip[data-v="${saved.openness}"]`);
+        if (target) target.classList.add('active');
+      }
+    }
     checkReady();
   } catch (e) {}
 }
 
-// ==================== EXPORT (for console) ====================
-window.MEGetLog = () => SessionLogger.getAllSessions();
-window.MEExport = () => SessionLogger.exportAll();
+// ==================== EXPORTS ====================
 window.MEStatus = () => engine ? engine.getStatus() : 'No active session';
+window.MEData = () => logger ? logger.data : 'No logger';
+window.MEExport = () => AnalyticsLogger.exportAll();
 
 // ==================== INIT ====================
 loadSavedIntake();
