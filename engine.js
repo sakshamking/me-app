@@ -156,10 +156,13 @@ class StateEstimator {
     // Kalman filters for each dimension
     // Q = process noise (how fast true state changes between ticks)
     // R = default measurement noise (overridden per-measurement by confidence)
+    // Q = process noise. Higher = state can change faster between ticks.
+    // V4 fix: Q was 0.005/0.003 → flatline in 31-min pilot. State MUST respond to measurements.
+    // With MediaPipe (richer signal, more frequent), these values let the filter breathe.
     this.kf = {
-      energy:    new KalmanFilter({ Q: 0.005, R: 0.3, x0: 0.5, P0: 1 }),   // Affect changes slowly
-      immersion: new KalmanFilter({ Q: 0.003, R: 0.35, x0: 0.4, P0: 1 }),  // Immersion even slower
-      movement:  new KalmanFilter({ Q: 0.02, R: 0.2, x0: 0.5, P0: 1 })     // Physical state changes fast
+      energy:    new KalmanFilter({ Q: 0.03, R: 0.3, x0: 0.5, P0: 1 }),    // Was 0.005 → flatlined
+      immersion: new KalmanFilter({ Q: 0.02, R: 0.35, x0: 0.4, P0: 1 }),   // Was 0.003 → flatlined
+      movement:  new KalmanFilter({ Q: 0.04, R: 0.2, x0: 0.5, P0: 1 })     // Was 0.02 → adequate but bump slightly
     };
 
     this.state = {
@@ -179,6 +182,15 @@ class StateEstimator {
     this.MAX_FACE_HISTORY = 12;
     this.MAX_SENSOR_HISTORY = 60;
     this.MAX_STATE_HISTORY = 60;
+
+    // V4: Music interaction signals (W-6: signals beyond biometrics)
+    this.musicInteractions = [];  // { type: 'skip'|'complete'|'moment', t, trackElapsed }
+    this.MAX_MUSIC_INTERACTIONS = 20;
+
+    // V4: Signal-scarcity detection (W-2: design for 5 contexts)
+    this._lastFaceTime = 0;
+    this._signalRegime = 'unknown'; // 'rich' | 'sparse' | 'absent'
+    this._regimeDetectedAt = 0;
   }
 
   addFaceData(data) {
@@ -191,6 +203,12 @@ class StateEstimator {
     if (this.sensorHistory.length > this.MAX_SENSOR_HISTORY) this.sensorHistory.shift();
   }
 
+  // V4: Ingest music interaction events as state signals (W-6)
+  addMusicInteraction(type, trackElapsed) {
+    this.musicInteractions.push({ type, t: Date.now(), trackElapsed: trackElapsed || 0 });
+    if (this.musicInteractions.length > this.MAX_MUSIC_INTERACTIONS) this.musicInteractions.shift();
+  }
+
   estimate(context) {
     const now = Date.now();
 
@@ -199,9 +217,17 @@ class StateEstimator {
     this.kf.immersion.predict();
     this.kf.movement.predict();
 
+    // === DETECT SIGNAL REGIME (W-2) ===
+    this._detectSignalRegime(now);
+
     // === UPDATE: incorporate available measurements ===
     this._updateFromFace(now, context);
     this._updateFromSensors(now, context);
+    this._updateFromMusicInteraction(now);
+
+    // === TIME-BASED UNCERTAINTY GROWTH (W-4) ===
+    // If no face data for >60s, actively grow uncertainty — state can't be flat forever
+    this._applyTimeDrift(now);
 
     // === READ STATE from filters ===
     const energyVal = Math.max(0, Math.min(1, this.kf.energy.x));
@@ -342,6 +368,78 @@ class StateEstimator {
     }
   }
 
+  // V4: Detect signal regime — rich / sparse / absent (W-2)
+  _detectSignalRegime(now) {
+    const lastFace = this.faceHistory.length > 0 ? this.faceHistory[this.faceHistory.length - 1] : null;
+    const faceAge = lastFace ? (now - lastFace.t) : Infinity;
+
+    // Check face read frequency over last 2 minutes
+    const twoMinAgo = now - 120000;
+    const recentFaceCount = this.faceHistory.filter(f => f.t > twoMinAgo).length;
+
+    let regime;
+    if (recentFaceCount >= 20) regime = 'rich';       // ~10+ reads per min
+    else if (recentFaceCount >= 3) regime = 'sparse';  // Some reads but gaps
+    else regime = 'absent';                             // <3 in 2 min
+
+    if (regime !== this._signalRegime) {
+      this._signalRegime = regime;
+      this._regimeDetectedAt = now;
+    }
+  }
+
+  // V4: Music interaction → state signal (W-6: signals beyond biometrics)
+  _updateFromMusicInteraction(now) {
+    const twoMinAgo = now - 120000;
+    const recent = this.musicInteractions.filter(m => m.t > twoMinAgo);
+    if (recent.length === 0) return;
+
+    for (const interaction of recent) {
+      if (interaction._processed) continue;
+      interaction._processed = true;
+
+      if (interaction.type === 'skip') {
+        // Skip = dissatisfaction. Slight energy dip + immersion drop
+        this.kf.immersion.update(Math.max(0, this.kf.immersion.x - 0.08), 0.4);
+      } else if (interaction.type === 'complete') {
+        // Natural track completion = satisfaction. Immersion boost
+        this.kf.immersion.update(Math.min(1, this.kf.immersion.x + 0.05), 0.35);
+      } else if (interaction.type === 'moment') {
+        // "I feel something" press = peak experience signal
+        this.kf.energy.update(Math.min(1, this.kf.energy.x + 0.10), 0.25);    // Strong signal
+        this.kf.immersion.update(Math.min(1, this.kf.immersion.x + 0.12), 0.25);
+      }
+    }
+  }
+
+  // V4: Time-based uncertainty growth (W-4: "I don't know" ≠ "do nothing")
+  _applyTimeDrift(now) {
+    const lastFace = this.faceHistory.length > 0 ? this.faceHistory[this.faceHistory.length - 1] : null;
+    const faceAge = lastFace ? (now - lastFace.t) / 1000 : Infinity;
+
+    if (faceAge > 60) {
+      // No face for >60s: grow uncertainty — covariance increases beyond normal Q
+      // This prevents the Kalman from being confidently wrong about a stale state
+      const extraUncertainty = Math.min(0.05, (faceAge - 60) / 1000 * 0.01);
+      this.kf.energy.P += extraUncertainty;
+      this.kf.immersion.P += extraUncertainty;
+    }
+
+    // In sparse/absent regime, gently drift energy toward arc target (W-4)
+    // The system should follow the arc when it can't see the user
+    if (this._signalRegime === 'absent' || this._signalRegime === 'sparse') {
+      // Only drift if we have arc context
+      if (this._arcTarget !== undefined) {
+        const arcNorm = this._arcTarget / 10; // arc is 0-10, energy is 0-1
+        const gap = arcNorm - this.kf.energy.x;
+        // Gentle drift: 2% of gap per tick toward arc, high noise (uncertain)
+        if (Math.abs(gap) > 0.05) {
+          this.kf.energy.update(this.kf.energy.x + gap * 0.02, 0.8);
+        }
+      }
+    }
+  }
+
   // Phase 2b: Hysteresis on energy levels — dead bands prevent oscillation
   _classifyEnergyWithHysteresis(value, now) {
     // Dead band thresholds: enter at one value, exit at another
@@ -454,6 +552,8 @@ class StateEstimator {
       eyes: lastFace.eyes || 'Unknown', headPose: lastFace.headPose || 'Unknown',
       nod: lastFace.nod || 'Unknown', brow: lastFace.brow || 'Unknown',
       faceReadings: this.faceHistory.length, sensorReadings: this.sensorHistory.length,
+      signalRegime: this._signalRegime,
+      musicInteractions: this.musicInteractions.length,
       kalman: {
         energy: this.kf.energy.toJSON(),
         immersion: this.kf.immersion.toJSON(),
@@ -625,10 +725,12 @@ class InterventionEngine {
     this.recentActions = [];
     this.MAX_RECENT = 5;
 
-    // Phase 1a: Circuit breaker — 3 strikes on same reason → blocked for session
+    // Phase 1a: Circuit breaker — 3 strikes on same reason → blocked (with recovery)
     this.reasonFailures = {};    // { reason: { neutral: N, negative: N } }
     this.blockedReasons = new Set();
+    this.blockedAt = {};         // { reason: timestamp } — for recovery timing
     this.REASON_STRIKE_LIMIT = 3; // consecutive neutral/negative on same reason → block
+    this.RECOVERY_TIME = 600000;  // V4: 10 min silence → unblock and retry (was permanent)
 
     // Phase 1b: Hourly intervention cap
     this.interventionTimestamps = []; // timestamps of all interventions
@@ -761,7 +863,19 @@ class InterventionEngine {
       if (this.observationCount > 5) candidate = { cat: 'stimulate', int: 'moderate', reason: 'detached_persistent' };
     }
 
-    // === CIRCUIT BREAKER: Block reasons that have failed 3+ times ===
+    // === CIRCUIT BREAKER: Block reasons that have failed 3+ times (with recovery) ===
+    // V4: Recovery — unblock reasons after RECOVERY_TIME (10 min) of silence
+    if (this.blockedReasons.size > 0) {
+      for (const reason of [...this.blockedReasons]) {
+        const blockedTime = this.blockedAt[reason] || 0;
+        if (now - blockedTime > this.RECOVERY_TIME) {
+          this.blockedReasons.delete(reason);
+          delete this.blockedAt[reason];
+          this.reasonFailures[reason] = { bad: 0 }; // Reset strikes
+        }
+      }
+    }
+
     if (candidate && this.blockedReasons.has(candidate.reason)) {
       this._emitNearDecision(candidate, 'blocked_by_circuit_breaker', state);
       return null;
@@ -823,6 +937,7 @@ class InterventionEngine {
         this.reasonFailures[reason].bad++;
         if (this.reasonFailures[reason].bad >= this.REASON_STRIKE_LIMIT) {
           this.blockedReasons.add(reason);
+          this.blockedAt[reason] = Date.now(); // V4: timestamp for recovery
         }
       }
     }
@@ -1127,152 +1242,170 @@ class MusicBrain {
 }
 
 // ============================================================
-// FACE ANALYZER — Extracts behavioral signals from face-api.js detections
+// FACE ANALYZER — MediaPipe Face Landmarker (478 landmarks + 52 blendshapes)
+// Replaces face-api.js (68 landmarks, archived, fails at angles)
 // ============================================================
 
 class FaceAnalyzer {
   constructor() {
-    this.prevLandmarks = null;
-    this.prevTimestamp = 0;
     this.headPoseHistory = [];
+    this.blendshapeHistory = [];
     this.MAX_POSE_HISTORY = 10;
+    this.MAX_BLENDSHAPE_HISTORY = 8;
   }
 
-  // Takes face-api.js detection result, returns engine-compatible face data
-  analyze(detection) {
-    if (!detection || !detection.landmarks) {
+  // Takes MediaPipe FaceLandmarker result, returns engine-compatible face data
+  analyze(result) {
+    if (!result || !result.faceLandmarks || result.faceLandmarks.length === 0) {
       return { eyes: 'Unknown', headPose: 'Unknown', nod: 'None', brow: 'Normal', mouth: 'Closed', engagement: 30 };
     }
 
-    const landmarks = detection.landmarks;
-    const positions = landmarks.positions || landmarks._positions || [];
-    if (positions.length < 68) {
+    // Extract blendshapes (52 coefficients, 0-1 each)
+    const bs = this._getBlendshapes(result);
+    if (!bs) {
       return { eyes: 'Unknown', headPose: 'Unknown', nod: 'None', brow: 'Normal', mouth: 'Closed', engagement: 30 };
     }
 
-    const eyes = this._analyzeEyes(positions);
-    const headPose = this._analyzeHeadPose(positions);
+    // Store for temporal analysis
+    this.blendshapeHistory.push({ ...bs, t: Date.now() });
+    if (this.blendshapeHistory.length > this.MAX_BLENDSHAPE_HISTORY) this.blendshapeHistory.shift();
+
+    const eyes = this._analyzeEyes(bs);
+    const headPose = this._analyzeHeadPose(result);
     const nod = this._analyzeNod(headPose);
-    const brow = this._analyzeBrow(positions);
-    const mouth = this._analyzeMouth(positions);
-    const engagement = this._computeEngagement(detection, eyes, headPose, mouth);
+    const brow = this._analyzeBrow(bs);
+    const mouth = this._analyzeMouth(bs);
+    const engagement = this._computeEngagement(bs, eyes, headPose, mouth);
 
-    this.prevLandmarks = positions;
-    this.prevTimestamp = Date.now();
-
-    return { eyes, headPose: headPose.pose, nod, brow, mouth, engagement };
+    return { eyes, headPose: headPose.pose, nod, brow, mouth, engagement, blendshapes: bs };
   }
 
-  _analyzeEyes(pos) {
-    // Eye Aspect Ratio (EAR) using 68-point landmarks
-    // Left eye: 36-41, Right eye: 42-47
-    const leftEAR = this._ear(pos[36], pos[37], pos[38], pos[39], pos[40], pos[41]);
-    const rightEAR = this._ear(pos[42], pos[43], pos[44], pos[45], pos[46], pos[47]);
-    const avgEAR = (leftEAR + rightEAR) / 2;
-
-    if (avgEAR > 0.25) return 'Open';
-    if (avgEAR > 0.17) return 'Droopy';
-    return 'Closed';
+  _getBlendshapes(result) {
+    if (!result.faceBlendshapes || result.faceBlendshapes.length === 0) return null;
+    const categories = result.faceBlendshapes[0].categories;
+    if (!categories) return null;
+    // Convert array of {categoryName, score} to flat object
+    const bs = {};
+    for (const c of categories) bs[c.categoryName] = c.score;
+    return bs;
   }
 
-  _ear(p1, p2, p3, p4, p5, p6) {
-    const dist = (a, b) => Math.sqrt((a.x - b.x) ** 2 + (a.y - b.y) ** 2);
-    const vertical = dist(p2, p6) + dist(p3, p5);
-    const horizontal = dist(p1, p4);
-    return horizontal > 0 ? vertical / (2 * horizontal) : 0;
+  _analyzeEyes(bs) {
+    const blinkL = bs.eyeBlinkLeft || 0;
+    const blinkR = bs.eyeBlinkRight || 0;
+    const avgBlink = (blinkL + blinkR) / 2;
+
+    if (avgBlink > 0.6) return 'Closed';
+    if (avgBlink > 0.3) return 'Droopy';
+    return 'Open';
   }
 
-  _analyzeHeadPose(pos) {
-    // Simplified head pose from nose tip (30) relative to face bounding box
-    const nose = pos[30];
-    const leftCheek = pos[0];
-    const rightCheek = pos[16];
-    const chin = pos[8];
-    const forehead = pos[27]; // bridge of nose top
-
-    const faceWidth = Math.abs(rightCheek.x - leftCheek.x);
-    const faceHeight = Math.abs(chin.y - forehead.y);
-
-    // Pitch: nose position relative to face center vertically
-    const faceCenterY = (forehead.y + chin.y) / 2;
-    const pitchRatio = (nose.y - faceCenterY) / (faceHeight || 1);
+  _analyzeHeadPose(result) {
+    // Use facial transformation matrix for head pose if available
+    let pitch = 0, yaw = 0;
+    if (result.facialTransformationMatrixes && result.facialTransformationMatrixes.length > 0) {
+      const m = result.facialTransformationMatrixes[0].data;
+      // Extract Euler angles from rotation matrix (first 3x3)
+      // pitch = rotation around X, yaw = rotation around Y
+      pitch = Math.asin(-m[6]) || 0;   // -m[2][0]
+      yaw = Math.atan2(m[4], m[0]) || 0; // m[1][0], m[0][0]
+    } else {
+      // Fallback: estimate from landmarks (nose tip vs face center)
+      const landmarks = result.faceLandmarks[0];
+      if (landmarks && landmarks.length >= 468) {
+        const nose = landmarks[1];   // nose tip
+        const chin = landmarks[152]; // chin
+        const forehead = landmarks[10]; // forehead
+        const faceCenterY = (forehead.y + chin.y) / 2;
+        const faceHeight = Math.abs(chin.y - forehead.y) || 0.1;
+        pitch = (nose.y - faceCenterY) / faceHeight;
+      }
+    }
 
     let pose;
-    if (pitchRatio > 0.15) pose = 'Down';
-    else if (pitchRatio < -0.05) pose = 'Up';
+    if (pitch > 0.3) pose = 'Down';
+    else if (pitch < -0.15) pose = 'Up';
     else pose = 'Forward';
 
-    return { pose, pitch: pitchRatio, faceHeight };
+    return { pose, pitch, yaw };
   }
 
   _analyzeNod(headPose) {
-    this.headPoseHistory.push({ pitch: headPose.pitch, t: Date.now() });
+    this.headPoseHistory.push({ pitch: headPose.pitch, yaw: headPose.yaw, t: Date.now() });
     if (this.headPoseHistory.length > this.MAX_POSE_HISTORY) this.headPoseHistory.shift();
 
     if (this.headPoseHistory.length < 3) return 'None';
 
-    // Compute pitch variance over recent history
     const pitches = this.headPoseHistory.map(h => h.pitch);
     const mean = pitches.reduce((a, b) => a + b, 0) / pitches.length;
     const variance = pitches.reduce((s, v) => s + (v - mean) ** 2, 0) / pitches.length;
 
-    if (variance > 0.01) return 'Active';
-    if (variance > 0.003) return 'Light';
+    if (variance > 0.02) return 'Active';
+    if (variance > 0.005) return 'Light';
     return 'None';
   }
 
-  _analyzeBrow(pos) {
-    // Distance from brow midpoint to eye center
-    const leftBrowMid = { x: (pos[19].x + pos[20].x) / 2, y: (pos[19].y + pos[20].y) / 2 };
-    const leftEyeCenter = { x: (pos[36].x + pos[39].x) / 2, y: (pos[36].y + pos[39].y) / 2 };
-    const browDist = Math.abs(leftBrowMid.y - leftEyeCenter.y);
-    const faceHeight = Math.abs(pos[8].y - pos[27].y);
-    const browRatio = browDist / (faceHeight || 1);
-
-    return browRatio > 0.12 ? 'Raised' : 'Normal';
+  _analyzeBrow(bs) {
+    const browUp = (bs.browInnerUp || 0) + (bs.browOuterUpLeft || 0) + (bs.browOuterUpRight || 0);
+    return browUp > 0.4 ? 'Raised' : 'Normal';
   }
 
-  _analyzeMouth(pos) {
-    // Lip separation: top lip (62) to bottom lip (66)
-    const topLip = pos[62];
-    const bottomLip = pos[66];
-    const mouthOpen = Math.abs(bottomLip.y - topLip.y);
-    const faceHeight = Math.abs(pos[8].y - pos[27].y);
-    const mouthRatio = mouthOpen / (faceHeight || 1);
-
-    return mouthRatio > 0.06 ? 'Open' : 'Closed';
+  _analyzeMouth(bs) {
+    const jawOpen = bs.jawOpen || 0;
+    return jawOpen > 0.15 ? 'Open' : 'Closed';
   }
 
-  _computeEngagement(detection, eyes, headPose, mouth) {
+  _computeEngagement(bs, eyes, headPose, mouth) {
+    // D-046: No facial expression classification (emotion labels killed — Barrett 2019).
+    // Engagement from STRUCTURAL blendshapes only: eye openness, attention direction, micro-expressions.
+
     let score = 50;
 
-    // Detection confidence (amplified — varies naturally with angle/lighting/distance)
-    const confidence = detection.detection?._score || detection.score || 0.5;
-    score += (confidence - 0.5) * 60;
+    // Eye openness — wide open = alert/engaged, droopy = disengaged
+    const eyeWide = ((bs.eyeWideLeft || 0) + (bs.eyeWideRight || 0)) / 2;
+    const eyeSquint = ((bs.eyeSquintLeft || 0) + (bs.eyeSquintRight || 0)) / 2;
+    if (eyes === 'Open') score += 10;
+    else if (eyes === 'Droopy') score -= 8;
+    else score -= 18; // Closed
+    score += eyeWide * 15;   // Wide eyes = heightened attention
+    score += eyeSquint * 8;  // Squinting = focused concentration
 
-    // Eyes (wider range)
-    if (eyes === 'Open') score += 12;
-    else if (eyes === 'Droopy') score -= 10;
-    else score -= 20;
+    // Head pose — forward/engaged vs looking away
+    if (headPose.pose === 'Forward') score += 6;
+    else if (headPose.pose === 'Down') score -= 10;
+    else score -= 4; // Up
 
-    // Head pose
-    if (headPose.pose === 'Forward') score += 8;
-    else if (headPose.pose === 'Down') score -= 15;
-    else if (headPose.pose === 'Up') score -= 5;
+    // Mouth — reactions (jaw drop, smile indicators without emotion labels)
+    if (mouth === 'Open') score += 6;
+    const mouthMovement = (bs.mouthLeft || 0) + (bs.mouthRight || 0) +
+                           (bs.mouthPucker || 0) + (bs.mouthFunnel || 0);
+    score += Math.min(mouthMovement * 10, 8); // Active mouth = reacting to something
 
-    // Mouth — open indicates reaction/engagement
-    if (mouth === 'Open') score += 8;
+    // Brow activity — any brow movement = processing/reacting
+    const browActivity = (bs.browInnerUp || 0) + (bs.browDownLeft || 0) + (bs.browDownRight || 0);
+    score += Math.min(browActivity * 8, 6);
 
-    // D-046: Facial expression classification KILLED — unreliable in nightlife (T1 evidence).
-    // Engagement derived from structural features only: eyes, head pose, mouth, movement.
-
-    // Head movement variance — subtle movement = engaged (swaying, nodding to music)
+    // Head movement — subtle = engaged (nodding to music, swaying)
     if (this.headPoseHistory.length >= 3) {
       const pitches = this.headPoseHistory.slice(-5).map(h => h.pitch);
       const mean = pitches.reduce((a, b) => a + b, 0) / pitches.length;
       const variance = pitches.reduce((s, v) => s + (v - mean) ** 2, 0) / pitches.length;
-      if (variance > 0.003 && variance < 0.02) score += 8; // subtle movement
-      else if (variance >= 0.02) score -= 3; // too fidgety
+      if (variance > 0.005 && variance < 0.03) score += 8; // subtle rhythmic movement
+      else if (variance >= 0.03) score -= 3; // too fidgety
+    }
+
+    // Blendshape temporal variance — frozen face = zoned out, active face = engaged
+    if (this.blendshapeHistory.length >= 3) {
+      const recent = this.blendshapeHistory.slice(-4);
+      const keys = ['eyeSquintLeft', 'browInnerUp', 'jawOpen', 'mouthLeft'];
+      let totalVar = 0;
+      for (const key of keys) {
+        const vals = recent.map(b => b[key] || 0);
+        const m = vals.reduce((a, b) => a + b, 0) / vals.length;
+        totalVar += vals.reduce((s, v) => s + (v - m) ** 2, 0) / vals.length;
+      }
+      if (totalVar > 0.01) score += 6;  // Face is alive
+      else if (totalVar < 0.001) score -= 4; // Frozen/zoned out
     }
 
     return Math.max(0, Math.min(100, Math.round(score)));
@@ -1451,9 +1584,28 @@ class MEEngine {
   }
 
   setCurrentTrack(track) {
+    // V4: If a previous track was playing, log natural completion as music interaction
+    if (this.currentTrack && this.trackStartedAt) {
+      const elapsed = (Date.now() - this.trackStartedAt) / 1000;
+      if (elapsed > 60) { // Only count as completion if played >60s
+        this.stateEstimator.addMusicInteraction('complete', elapsed);
+      }
+    }
     this.currentTrack = track;
     this.trackStartedAt = Date.now();
     this._pendingSeek = true; // trigger seek evaluation on next tick
+  }
+
+  // V4: Log user skip as music interaction
+  onTrackSkipped() {
+    const elapsed = this.trackStartedAt ? (Date.now() - this.trackStartedAt) / 1000 : 0;
+    this.stateEstimator.addMusicInteraction('skip', elapsed);
+  }
+
+  // V4: Log moment button press as music interaction
+  onMomentPress() {
+    const elapsed = this.trackStartedAt ? (Date.now() - this.trackStartedAt) / 1000 : 0;
+    this.stateEstimator.addMusicInteraction('moment', elapsed);
   }
 
   _tick() {
@@ -1468,6 +1620,8 @@ class MEEngine {
       this._emit('state', { type: 'calibration', status: 'complete', baseline: this.calibrator.baseline });
     }
 
+    // V4: Pass arc target to StateEstimator for sparse-signal drift (W-4)
+    this.stateEstimator._arcTarget = this.musicBrain.getTargetEnergy(sessionElapsed);
     const state = this.stateEstimator.estimate(this.context);
 
     this._emit('state', {
@@ -1499,6 +1653,20 @@ class MEEngine {
     if (decision) this._executeDecision(decision, state, sessionElapsed);
     // adaptArc KILLED (Phase 3a) — arc is immutable. System closes gap via interventions, not by redrawing the map.
     // _evaluateMusic KILLED (Phase 1c) — one decision point, one feedback loop. Music changes go through InterventionEngine only.
+
+    // V4: Autoplay reassertion — if engine hasn't searched in 5+ min, proactively search
+    // This prevents YouTube queue from driving the entire session when circuit breaker is active
+    if (!this._lastEngineSearchTime) this._lastEngineSearchTime = now;
+    if (decision && decision.action && decision.action.includes('music')) this._lastEngineSearchTime = now;
+    const silenceMin = (now - this._lastEngineSearchTime) / 60000;
+    if (silenceMin > 5 && this.calibrator.calibrated) {
+      const query = this.musicBrain.getNextSearchQuery(state, sessionElapsed);
+      if (query) {
+        this._emit('command', { type: 'music', command: 'queue_next', query });
+        this._lastEngineSearchTime = now;
+        this._emit('log', { type: 'autoplay_reassert', message: `Engine silent ${Math.round(silenceMin)}m — proactive search: ${query.query}` });
+      }
+    }
 
     // V4: Seek jumping KILLED — always play tracks from the beginning.
     // Jumping to 35%/70% was disorienting on phone. Let the music breathe.
