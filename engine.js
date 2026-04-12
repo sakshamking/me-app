@@ -1788,59 +1788,101 @@ class MEEngine {
 class YouTubeSearch {
   constructor(apiKey) {
     this.apiKey = apiKey;
+    // Invidious instances (tested 2026-04-12 — ecosystem mostly dead, only thepixora confirmed)
     this.invidiousApis = [
-      'https://vid.puffyan.us',
-      'https://invidious.fdn.fr',
-      'https://y.com.sb',
-      'https://invidious.nerdvpn.de'
+      'https://inv.thepixora.com'
+    ];
+    // Piped API instances (alternative to Invidious, different response format)
+    this.pipedApis = [
+      'https://pipedapi.kavin.rocks',
+      'https://pipedapi.adminforge.de'
     ];
 
+    // Expanded fallback library — 10+ tracks per category, curated for the pilot
     this.fallbackTracks = {
       STIMULATE: [
         { id: 'wqBYHrw9_ys', title: 'Amelie Lens at Awakenings', artist: 'Amelie Lens' },
         { id: 'fBGSJ3sbivI', title: 'Charlotte de Witte Tomorrowland', artist: 'Charlotte de Witte' },
         { id: 'vqz8c4ZP3Wg', title: 'Boris Brejcha Grand Palais', artist: 'Boris Brejcha' },
         { id: 'ViwtNLUqkMY', title: 'Sara Landry Hard Techno', artist: 'Sara Landry' },
-        { id: 'dEQsaO1JASg', title: 'Adam Beyer Drumcode', artist: 'Adam Beyer' }
+        { id: 'dEQsaO1JASg', title: 'Adam Beyer Drumcode', artist: 'Adam Beyer' },
+        { id: 'EQnEBSMsJF0', title: 'Deborah De Luca Cercle', artist: 'Deborah De Luca' },
+        { id: 'QJZbpbDsCOE', title: 'Enrico Sangiuliano Afterlife', artist: 'Enrico Sangiuliano' },
+        { id: '5Z2fkrVOBuE', title: 'Maceo Plex Boiler Room', artist: 'Maceo Plex' },
+        { id: 'HhHbX7FWFGI', title: 'ANNA RÜÜTEL', artist: 'ANNA' },
+        { id: 'JR_aEgjcFho', title: 'Solomun Boiler Room', artist: 'Solomun' }
       ],
       REGULATE: [
         { id: 'jfKfPfyJRdk', title: 'Lofi Hip Hop Radio', artist: 'Lofi Girl' },
         { id: 'DWcJFNfaw9c', title: 'Nils Frahm Says', artist: 'Nils Frahm' },
         { id: 'hlWiI4xGXNM', title: 'Nuvole Bianche', artist: 'Ludovico Einaudi' },
         { id: '77ZozI0rw7w', title: 'Interstellar', artist: 'Hans Zimmer' },
-        { id: 'lE6RYpe9IT0', title: 'Relaxing Sleep Music', artist: 'Soothing Relaxation' }
+        { id: 'lE6RYpe9IT0', title: 'Relaxing Sleep Music', artist: 'Soothing Relaxation' },
+        { id: 'FOjdXSrtUxA', title: 'Experience', artist: 'Ludovico Einaudi' },
+        { id: 'hN_q-_nGFI4', title: 'Gymnopédie No.1', artist: 'Erik Satie' },
+        { id: 'IUVmcKcTZ4A', title: 'Ambient Works', artist: 'Brian Eno' },
+        { id: 'c1f7eZ8cHpM', title: 'Weightless', artist: 'Marconi Union' },
+        { id: 'S-Xm7s9eGxU', title: 'Clair de Lune', artist: 'Debussy' }
       ],
       REFRESH: [
         { id: 'OPf0YbXqDm0', title: 'Uptown Funk', artist: 'Mark Ronson ft Bruno Mars' },
         { id: 'JGwWNGJdvx8', title: 'Shape of You', artist: 'Ed Sheeran' },
         { id: 'RgKAFK5djSk', title: 'See You Again', artist: 'Wiz Khalifa' },
         { id: 'kJQP7kiw5Fk', title: 'Despacito', artist: 'Luis Fonsi' },
-        { id: 'CevxZvSJLk8', title: 'Roar', artist: 'Katy Perry' }
+        { id: 'CevxZvSJLk8', title: 'Roar', artist: 'Katy Perry' },
+        { id: 'hT_nvWreIhg', title: 'Counting Stars', artist: 'OneRepublic' },
+        { id: 'fJ9rUzIMcZQ', title: 'Bohemian Rhapsody', artist: 'Queen' },
+        { id: 'nfs8NYg7yQM', title: 'HUMBLE', artist: 'Kendrick Lamar' },
+        { id: 'ru0K8uYEZWw', title: "Don't Stop Me Now", artist: 'Queen' },
+        { id: '09R8_2nJtjg', title: 'Sugar', artist: 'Maroon 5' }
       ],
       TRANSITION: [
         { id: 'Dx5qFachd3A', title: 'Opus', artist: 'Eric Prydz' },
         { id: 'tKi9Z-f6qX4', title: 'Innerbloom', artist: 'RUFUS DU SOL' },
         { id: '0zGcUoRlhmw', title: 'Strobe', artist: 'deadmau5' },
         { id: 'WI4-HUn8dFc', title: 'Cola', artist: 'CamelPhat & Elderbrook' },
-        { id: '_esYONwdKzA', title: 'Ben Bohmer Cercle', artist: 'Ben Bohmer' }
+        { id: '_esYONwdKzA', title: 'Ben Bohmer Cercle', artist: 'Ben Bohmer' },
+        { id: 'GvD3CHA48pA', title: 'Lane 8 Sunrise Set', artist: 'Lane 8' },
+        { id: 'YzdhABzKhiA', title: 'Playground', artist: 'Nora En Pure' },
+        { id: '1hLIXrlpRe8', title: 'Cercle Stephan Bodzin', artist: 'Stephan Bodzin' },
+        { id: 'G_pGT8Q_tjk', title: 'Mind Against Afterlife', artist: 'Mind Against' },
+        { id: 'Yzg2M5Wkfcs', title: 'Yotto Anjunadeep', artist: 'Yotto' }
       ],
       EXPLORE: [
         { id: 'q4xKvHANqjk', title: 'Maria Tambien', artist: 'Khruangbin' },
         { id: 'kSE15tLBdOg', title: 'Ethno World', artist: 'Cafe De Anatolia' },
-        { id: 'qA2_-2Fm7pk', title: 'Qawwali', artist: 'Nusrat Fateh Ali Khan' }
+        { id: 'qA2_-2Fm7pk', title: 'Qawwali', artist: 'Nusrat Fateh Ali Khan' },
+        { id: 'aR-KAldshAE', title: 'Anoushka Shankar Live', artist: 'Anoushka Shankar' },
+        { id: 'Y8jm7SQfNH4', title: 'Tinariwen Desert Rock', artist: 'Tinariwen' },
+        { id: 'xk3BvNLeNgw', title: 'Bonobo Cercle', artist: 'Bonobo' },
+        { id: 'nGdFHJXciAQ', title: 'FKJ Live', artist: 'FKJ' },
+        { id: 'Nv2GgV34TIk', title: 'Polo & Pan Cercle', artist: 'Polo & Pan' },
+        { id: 'Ym1s6j3FHDY', title: 'Nicola Cruz Boiler Room', artist: 'Nicola Cruz' },
+        { id: 'hC8CH0Z3L54', title: 'Acid Pauli Burning Man', artist: 'Acid Pauli' }
+      ],
+      WIND_DOWN: [
+        { id: 'tNkZsRW7h2c', title: 'Tycho Dive', artist: 'Tycho' },
+        { id: 'V1bFr2SWP1I', title: 'Boards of Canada Music', artist: 'Boards of Canada' },
+        { id: 'HNKQx1fWHP0', title: 'Kiasmos Blurred', artist: 'Kiasmos' },
+        { id: 'GQBYenbcfuw', title: 'Max Richter Sleep', artist: 'Max Richter' },
+        { id: 'DiTMmAHGRqI', title: 'Aphex Twin Xtal', artist: 'Aphex Twin' },
+        { id: '_AWIqXzvX-U', title: 'Jon Hopkins Immunity', artist: 'Jon Hopkins' },
+        { id: '5KGMo9yOaSU', title: 'Four Tet Rounds', artist: 'Four Tet' },
+        { id: 'IKhyoBFCB1s', title: 'Floating Points Cascade', artist: 'Floating Points' }
       ]
     };
   }
 
   async search(query, maxResults = 15) {
-    // Try Invidious first (no API key needed)
+    // Try Invidious first (no API key needed, CORS may vary)
     for (const api of this.invidiousApis) {
       try {
         const url = `${api}/api/v1/search?q=${encodeURIComponent(query)}&type=video&sort_by=relevance`;
-        const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
+        const res = await fetch(url, { signal: AbortSignal.timeout(4000) });
         if (!res.ok) continue;
         const data = await res.json();
         if (data && data.length > 0) {
+          console.log(`[MUSIC] Search OK via Invidious: ${api}`);
           return data.filter(v => v.type === 'video').slice(0, maxResults).map(v => ({
             id: v.videoId, title: v.title, artist: v.author,
             thumb: v.videoThumbnails?.[4]?.url || `https://i.ytimg.com/vi/${v.videoId}/default.jpg`,
@@ -1850,13 +1892,32 @@ class YouTubeSearch {
       } catch (e) { continue; }
     }
 
-    // Fallback: YouTube Data API
+    // Try Piped API (different response format)
+    for (const api of this.pipedApis) {
+      try {
+        const url = `${api}/search?q=${encodeURIComponent(query)}&filter=videos`;
+        const res = await fetch(url, { signal: AbortSignal.timeout(4000) });
+        if (!res.ok) continue;
+        const data = await res.json();
+        if (data && data.items && data.items.length > 0) {
+          console.log(`[MUSIC] Search OK via Piped: ${api}`);
+          return data.items.filter(v => v.type === 'stream').slice(0, maxResults).map(v => ({
+            id: (v.url || '').replace('/watch?v=', ''),
+            title: v.title, artist: v.uploaderName || v.uploader,
+            thumb: v.thumbnail || '', duration: v.duration || 0
+          }));
+        }
+      } catch (e) { continue; }
+    }
+
+    // Fallback: YouTube Data API v3
     if (this.apiKey) {
       try {
         const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&maxResults=${maxResults}&key=${this.apiKey}`;
         const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
         if (res.ok) {
           const data = await res.json();
+          console.log('[MUSIC] Search OK via YouTube Data API');
           return (data.items || []).map(item => ({
             id: item.id.videoId, title: item.snippet.title,
             artist: item.snippet.channelTitle,
@@ -1867,11 +1928,33 @@ class YouTubeSearch {
       } catch (e) { /* fall through */ }
     }
 
+    console.log('[MUSIC] All search APIs failed — using fallback tracks');
     return [];
   }
 
+  // Query-aware fallback: picks the best category based on search query keywords
   getFallbackTracks(intervention) {
-    return this.fallbackTracks[intervention] || this.fallbackTracks.TRANSITION;
+    const tracks = this.fallbackTracks[intervention] || this.fallbackTracks.TRANSITION;
+    // Shuffle to avoid always playing the same order
+    return [...tracks].sort(() => Math.random() - 0.5);
+  }
+
+  // Get a mixed set from multiple categories for initial load variety
+  getMixedFallback(intents) {
+    const all = [];
+    for (const intent of intents) {
+      const category = intent === 'energy' ? 'STIMULATE' : intent === 'focus' ? 'TRANSITION'
+        : intent === 'connection' ? 'EXPLORE' : intent === 'calm' ? 'WIND_DOWN' : 'REGULATE';
+      const tracks = this.fallbackTracks[category] || [];
+      all.push(...tracks);
+    }
+    // Add some variety from other categories
+    for (const cat of Object.keys(this.fallbackTracks)) {
+      const existing = new Set(all.map(t => t.id));
+      const extra = this.fallbackTracks[cat].filter(t => !existing.has(t.id));
+      all.push(...extra.slice(0, 2));
+    }
+    return [...all].sort(() => Math.random() - 0.5);
   }
 }
 

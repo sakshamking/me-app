@@ -633,9 +633,9 @@ async function loadInitialMusic(queries) {
   }
 
   if (allTracks.length === 0) {
-    const intent = chipSelections.intent?.[0] || 'unwind';
-    const intervention = intent === 'energy' ? 'STIMULATE' : intent === 'focus' ? 'TRANSITION' : 'REGULATE';
-    allTracks = ytSearch.getFallbackTracks(intervention);
+    const intents = chipSelections.intent || ['unwind'];
+    allTracks = ytSearch.getMixedFallback(intents);
+    console.log(`[MUSIC] Using fallback library: ${allTracks.length} tracks for intents [${intents}]`);
   }
 
   currentQueue = shuffle(allTracks);
