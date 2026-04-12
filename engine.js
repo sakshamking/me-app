@@ -1242,89 +1242,80 @@ class MusicBrain {
 }
 
 // ============================================================
-// FACE ANALYZER — MediaPipe Face Landmarker (478 landmarks + 52 blendshapes)
-// Replaces face-api.js (68 landmarks, archived, fails at angles)
+// FACE ANALYZER — face-api.js (68 landmarks, EAR-based eye detection)
+// Interface: analyze(detection) → { eyes, headPose, nod, brow, mouth, engagement }
+// Compatible with StateEstimator.addFaceData()
 // ============================================================
 
 class FaceAnalyzer {
   constructor() {
     this.headPoseHistory = [];
-    this.blendshapeHistory = [];
     this.MAX_POSE_HISTORY = 10;
-    this.MAX_BLENDSHAPE_HISTORY = 8;
   }
 
-  // Takes MediaPipe FaceLandmarker result, returns engine-compatible face data
-  analyze(result) {
-    if (!result || !result.faceLandmarks || result.faceLandmarks.length === 0) {
+  // Takes face-api.js detection result, returns engine-compatible face data
+  analyze(detection) {
+    if (!detection || !detection.landmarks) {
       return { eyes: 'Unknown', headPose: 'Unknown', nod: 'None', brow: 'Normal', mouth: 'Closed', engagement: 30 };
     }
 
-    // Extract blendshapes (52 coefficients, 0-1 each)
-    const bs = this._getBlendshapes(result);
-    if (!bs) {
-      return { eyes: 'Unknown', headPose: 'Unknown', nod: 'None', brow: 'Normal', mouth: 'Closed', engagement: 30 };
-    }
+    const positions = detection.landmarks.positions;
+    const expressions = detection.expressions || {};
 
-    // Store for temporal analysis
-    this.blendshapeHistory.push({ ...bs, t: Date.now() });
-    if (this.blendshapeHistory.length > this.MAX_BLENDSHAPE_HISTORY) this.blendshapeHistory.shift();
-
-    const eyes = this._analyzeEyes(bs);
-    const headPose = this._analyzeHeadPose(result);
+    const eyes = this._analyzeEyes(positions);
+    const headPose = this._analyzeHeadPose(positions);
     const nod = this._analyzeNod(headPose);
-    const brow = this._analyzeBrow(bs);
-    const mouth = this._analyzeMouth(bs);
-    const engagement = this._computeEngagement(bs, eyes, headPose, mouth);
+    const brow = this._analyzeBrow(positions);
+    const mouth = this._analyzeMouth(positions);
+    const engagement = this._computeEngagement(eyes, headPose, mouth, expressions);
 
-    return { eyes, headPose: headPose.pose, nod, brow, mouth, engagement, blendshapes: bs };
+    return { eyes, headPose: headPose.pose, nod, brow, mouth, engagement };
   }
 
-  _getBlendshapes(result) {
-    if (!result.faceBlendshapes || result.faceBlendshapes.length === 0) return null;
-    const categories = result.faceBlendshapes[0].categories;
-    if (!categories) return null;
-    // Convert array of {categoryName, score} to flat object
-    const bs = {};
-    for (const c of categories) bs[c.categoryName] = c.score;
-    return bs;
-  }
+  _analyzeEyes(positions) {
+    // Eye Aspect Ratio (EAR) using face-api.js 68-point landmarks
+    // Left eye: points 36-41, Right eye: points 42-47
+    const leftEAR = this._computeEAR(positions, [36, 37, 38, 39, 40, 41]);
+    const rightEAR = this._computeEAR(positions, [42, 43, 44, 45, 46, 47]);
+    const avgEAR = (leftEAR + rightEAR) / 2;
 
-  _analyzeEyes(bs) {
-    const blinkL = bs.eyeBlinkLeft || 0;
-    const blinkR = bs.eyeBlinkRight || 0;
-    const avgBlink = (blinkL + blinkR) / 2;
-
-    if (avgBlink > 0.6) return 'Closed';
-    if (avgBlink > 0.3) return 'Droopy';
+    if (avgEAR < 0.18) return 'Closed';
+    if (avgEAR < 0.24) return 'Droopy';
     return 'Open';
   }
 
-  _analyzeHeadPose(result) {
-    // Use facial transformation matrix for head pose if available
+  _computeEAR(positions, indices) {
+    // EAR = (|p1-p5| + |p2-p4|) / (2 * |p0-p3|)
+    const p = indices.map(i => positions[i]);
+    if (!p[0] || !p[3]) return 0.3; // default open
+    const vertical1 = Math.hypot(p[1].x - p[5].x, p[1].y - p[5].y);
+    const vertical2 = Math.hypot(p[2].x - p[4].x, p[2].y - p[4].y);
+    const horizontal = Math.hypot(p[0].x - p[3].x, p[0].y - p[3].y);
+    return horizontal > 0 ? (vertical1 + vertical2) / (2 * horizontal) : 0.3;
+  }
+
+  _analyzeHeadPose(positions) {
+    // Crude head pose from nose tip (30) relative to face center
+    const noseTip = positions[30];
+    const leftCheek = positions[0];
+    const rightCheek = positions[16];
+    const chin = positions[8];
+    const forehead = positions[27]; // bridge of nose top as proxy
+
     let pitch = 0, yaw = 0;
-    if (result.facialTransformationMatrixes && result.facialTransformationMatrixes.length > 0) {
-      const m = result.facialTransformationMatrixes[0].data;
-      // Extract Euler angles from rotation matrix (first 3x3)
-      // pitch = rotation around X, yaw = rotation around Y
-      pitch = Math.asin(-m[6]) || 0;   // -m[2][0]
-      yaw = Math.atan2(m[4], m[0]) || 0; // m[1][0], m[0][0]
-    } else {
-      // Fallback: estimate from landmarks (nose tip vs face center)
-      const landmarks = result.faceLandmarks[0];
-      if (landmarks && landmarks.length >= 468) {
-        const nose = landmarks[1];   // nose tip
-        const chin = landmarks[152]; // chin
-        const forehead = landmarks[10]; // forehead
-        const faceCenterY = (forehead.y + chin.y) / 2;
-        const faceHeight = Math.abs(chin.y - forehead.y) || 0.1;
-        pitch = (nose.y - faceCenterY) / faceHeight;
-      }
+    if (noseTip && leftCheek && rightCheek && chin && forehead) {
+      const faceCenterX = (leftCheek.x + rightCheek.x) / 2;
+      const faceCenterY = (forehead.y + chin.y) / 2;
+      const faceWidth = Math.abs(rightCheek.x - leftCheek.x) || 1;
+      const faceHeight = Math.abs(chin.y - forehead.y) || 1;
+
+      yaw = (noseTip.x - faceCenterX) / faceWidth;
+      pitch = (noseTip.y - faceCenterY) / faceHeight;
     }
 
     let pose;
-    if (pitch > 0.3) pose = 'Down';
-    else if (pitch < -0.15) pose = 'Up';
+    if (pitch > 0.15) pose = 'Down';
+    else if (pitch < -0.1) pose = 'Up';
     else pose = 'Forward';
 
     return { pose, pitch, yaw };
@@ -1345,45 +1336,61 @@ class FaceAnalyzer {
     return 'None';
   }
 
-  _analyzeBrow(bs) {
-    const browUp = (bs.browInnerUp || 0) + (bs.browOuterUpLeft || 0) + (bs.browOuterUpRight || 0);
-    return browUp > 0.4 ? 'Raised' : 'Normal';
+  _analyzeBrow(positions) {
+    // Brow raise: distance from brow points (17-21 left, 22-26 right) to eye top
+    const browL = positions[19]; // left brow center
+    const eyeL = positions[37]; // left eye top
+    const browR = positions[24]; // right brow center
+    const eyeR = positions[44]; // right eye top
+
+    if (!browL || !eyeL || !browR || !eyeR) return 'Normal';
+
+    const leftDist = Math.abs(browL.y - eyeL.y);
+    const rightDist = Math.abs(browR.y - eyeR.y);
+    const avgDist = (leftDist + rightDist) / 2;
+
+    // Normalized by face height
+    const chin = positions[8];
+    const forehead = positions[27];
+    const faceHeight = Math.abs(chin.y - forehead.y) || 1;
+    const normalized = avgDist / faceHeight;
+
+    return normalized > 0.18 ? 'Raised' : 'Normal';
   }
 
-  _analyzeMouth(bs) {
-    const jawOpen = bs.jawOpen || 0;
-    return jawOpen > 0.15 ? 'Open' : 'Closed';
+  _analyzeMouth(positions) {
+    // Mouth open: distance from top lip (62) to bottom lip (66)
+    const topLip = positions[62];
+    const bottomLip = positions[66];
+    if (!topLip || !bottomLip) return 'Closed';
+
+    const mouthOpen = Math.abs(bottomLip.y - topLip.y);
+    const chin = positions[8];
+    const forehead = positions[27];
+    const faceHeight = Math.abs(chin.y - forehead.y) || 1;
+    const normalized = mouthOpen / faceHeight;
+
+    return normalized > 0.06 ? 'Open' : 'Closed';
   }
 
-  _computeEngagement(bs, eyes, headPose, mouth) {
+  _computeEngagement(eyes, headPose, mouth, expressions) {
     // D-046: No facial expression classification (emotion labels killed — Barrett 2019).
-    // Engagement from STRUCTURAL blendshapes only: eye openness, attention direction, micro-expressions.
+    // Engagement from structural features only.
 
     let score = 50;
 
-    // Eye openness — wide open = alert/engaged, droopy = disengaged
-    const eyeWide = ((bs.eyeWideLeft || 0) + (bs.eyeWideRight || 0)) / 2;
-    const eyeSquint = ((bs.eyeSquintLeft || 0) + (bs.eyeSquintRight || 0)) / 2;
+    // Eye openness
     if (eyes === 'Open') score += 10;
     else if (eyes === 'Droopy') score -= 8;
     else score -= 18; // Closed
-    score += eyeWide * 15;   // Wide eyes = heightened attention
-    score += eyeSquint * 8;  // Squinting = focused concentration
 
-    // Head pose — forward/engaged vs looking away
+    // Head pose
     if (headPose.pose === 'Forward') score += 6;
     else if (headPose.pose === 'Down') score -= 10;
     else score -= 4; // Up
 
-    // Mouth — reactions (jaw drop, smile indicators without emotion labels)
+    // Mouth reaction
     if (mouth === 'Open') score += 6;
-    const mouthMovement = (bs.mouthLeft || 0) + (bs.mouthRight || 0) +
-                           (bs.mouthPucker || 0) + (bs.mouthFunnel || 0);
-    score += Math.min(mouthMovement * 10, 8); // Active mouth = reacting to something
-
-    // Brow activity — any brow movement = processing/reacting
-    const browActivity = (bs.browInnerUp || 0) + (bs.browDownLeft || 0) + (bs.browDownRight || 0);
-    score += Math.min(browActivity * 8, 6);
 
     // Head movement — subtle = engaged (nodding to music, swaying)
     if (this.headPoseHistory.length >= 3) {
@@ -1394,19 +1401,13 @@ class FaceAnalyzer {
       else if (variance >= 0.03) score -= 3; // too fidgety
     }
 
-    // Blendshape temporal variance — frozen face = zoned out, active face = engaged
-    if (this.blendshapeHistory.length >= 3) {
-      const recent = this.blendshapeHistory.slice(-4);
-      const keys = ['eyeSquintLeft', 'browInnerUp', 'jawOpen', 'mouthLeft'];
-      let totalVar = 0;
-      for (const key of keys) {
-        const vals = recent.map(b => b[key] || 0);
-        const m = vals.reduce((a, b) => a + b, 0) / vals.length;
-        totalVar += vals.reduce((s, v) => s + (v - m) ** 2, 0) / vals.length;
-      }
-      if (totalVar > 0.01) score += 6;  // Face is alive
-      else if (totalVar < 0.001) score -= 4; // Frozen/zoned out
-    }
+    // Use face-api.js expression scores as mild engagement signal (not classification)
+    // Higher neutral = less engaged; higher surprise/happy = more engaged
+    const neutral = expressions.neutral || 0;
+    const surprise = expressions.surprised || 0;
+    const happy = expressions.happy || 0;
+    score += (surprise + happy) * 10;
+    score -= neutral > 0.8 ? 5 : 0;
 
     return Math.max(0, Math.min(100, Math.round(score)));
   }
