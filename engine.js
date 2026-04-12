@@ -1782,7 +1782,7 @@ class MEEngine {
 }
 
 // ============================================================
-// YOUTUBE SEARCH — Invidious (no key) + YouTube Data API (fallback)
+// YOUTUBE SEARCH — YouTube Data API v3 (primary) + Invidious/Piped (fallback)
 // ============================================================
 
 class YouTubeSearch {
@@ -1874,11 +1874,38 @@ class YouTubeSearch {
   }
 
   async search(query, maxResults = 15) {
-    // Try Invidious first (no API key needed, CORS may vary)
+    // PRIMARY: YouTube Data API v3 (reliable, free 100 searches/day, CORS-safe)
+    if (this.apiKey) {
+      try {
+        const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&videoCategoryId=10&maxResults=${maxResults}&key=${this.apiKey}`;
+        const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.items && data.items.length > 0) {
+            console.log(`[MUSIC] Search OK via YouTube Data API (${data.items.length} results)`);
+            return data.items.map(item => ({
+              id: item.id.videoId, title: item.snippet.title,
+              artist: item.snippet.channelTitle,
+              thumb: item.snippet.thumbnails?.default?.url || '',
+              duration: 0
+            }));
+          }
+        } else {
+          const err = await res.json().catch(() => ({}));
+          console.warn(`[MUSIC] YouTube API error: ${res.status}`, err.error?.message || '');
+          // If quota exceeded, log it clearly
+          if (res.status === 403) console.warn('[MUSIC] YouTube API quota likely exceeded — falling back');
+        }
+      } catch (e) {
+        console.warn('[MUSIC] YouTube API fetch failed:', e.message);
+      }
+    }
+
+    // FALLBACK 1: Invidious (volunteer-run, unreliable — kept as backup)
     for (const api of this.invidiousApis) {
       try {
         const url = `${api}/api/v1/search?q=${encodeURIComponent(query)}&type=video&sort_by=relevance`;
-        const res = await fetch(url, { signal: AbortSignal.timeout(4000) });
+        const res = await fetch(url, { signal: AbortSignal.timeout(3000) });
         if (!res.ok) continue;
         const data = await res.json();
         if (data && data.length > 0) {
@@ -1892,11 +1919,11 @@ class YouTubeSearch {
       } catch (e) { continue; }
     }
 
-    // Try Piped API (different response format)
+    // FALLBACK 2: Piped API (also volunteer-run)
     for (const api of this.pipedApis) {
       try {
         const url = `${api}/search?q=${encodeURIComponent(query)}&filter=videos`;
-        const res = await fetch(url, { signal: AbortSignal.timeout(4000) });
+        const res = await fetch(url, { signal: AbortSignal.timeout(3000) });
         if (!res.ok) continue;
         const data = await res.json();
         if (data && data.items && data.items.length > 0) {
@@ -1908,24 +1935,6 @@ class YouTubeSearch {
           }));
         }
       } catch (e) { continue; }
-    }
-
-    // Fallback: YouTube Data API v3
-    if (this.apiKey) {
-      try {
-        const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=${encodeURIComponent(query)}&type=video&maxResults=${maxResults}&key=${this.apiKey}`;
-        const res = await fetch(url, { signal: AbortSignal.timeout(5000) });
-        if (res.ok) {
-          const data = await res.json();
-          console.log('[MUSIC] Search OK via YouTube Data API');
-          return (data.items || []).map(item => ({
-            id: item.id.videoId, title: item.snippet.title,
-            artist: item.snippet.channelTitle,
-            thumb: item.snippet.thumbnails?.default?.url || '',
-            duration: 0
-          }));
-        }
-      } catch (e) { /* fall through */ }
     }
 
     console.log('[MUSIC] All search APIs failed — using fallback tracks');
