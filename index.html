@@ -457,7 +457,7 @@ body {
 <canvas id="face-canvas"></canvas>
 
 <!-- ========== SCRIPTS ========== -->
-<script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1657299874/face_mesh.js" crossorigin="anonymous"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 <script src="engine.js"></script>
 
@@ -738,56 +738,71 @@ async function startSensors() {
   }, 1000);
 }
 
-// ==================== FACE DETECTION (face-api.js — TinyFaceDetector) ====================
+// ==================== FACE DETECTION (MediaPipe Face Mesh — 478 landmarks, script tag) ====================
+let faceMeshInstance = null;
 
 async function startFaceDetection() {
-  if (typeof faceapi === 'undefined') {
-    // face-api.js defer script not loaded yet, retry
+  if (typeof FaceMesh === 'undefined') {
+    // face_mesh.js not loaded yet, retry
+    console.log('Waiting for MediaPipe Face Mesh script...');
     setTimeout(startFaceDetection, 2000);
     return;
   }
 
   try {
-    const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/model/';
-    await Promise.all([
-      faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
-      faceapi.nets.faceLandmark68TinyNet.loadFromUri(MODEL_URL),
-      faceapi.nets.faceExpressionNet.loadFromUri(MODEL_URL)
-    ]);
-    faceModelLoaded = true;
-    console.log('face-api.js models loaded');
+    faceMeshInstance = new FaceMesh({
+      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1657299874/${file}`
+    });
+
+    faceMeshInstance.setOptions({
+      selfieMode: true,
+      maxNumFaces: 1,
+      refineLandmarks: true,  // 478 landmarks (includes iris)
+      minDetectionConfidence: 0.3,
+      minTrackingConfidence: 0.3
+    });
+
+    faceAnalyzer = new FaceAnalyzer();
+
+    faceMeshInstance.onResults((results) => {
+      if (!engine || !engine.active) return;
+      if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
+        const landmarks = results.multiFaceLandmarks[0];
+        const faceData = faceAnalyzer.analyze(landmarks);
+        faceData.detectionConfidence = 0.8;
+        if (!faceModelLoaded) {
+          faceModelLoaded = true;
+          console.log('MediaPipe Face Mesh first detection — model active');
+        }
+        engine.ingestFaceData(faceData);
+        if (logger) logger.logFace(faceData);
+      }
+    });
+
+    console.log('MediaPipe Face Mesh initialized, loading models on first frame...');
   } catch (e) {
-    console.warn('face-api.js models failed to load:', e);
+    console.warn('MediaPipe Face Mesh init failed:', e);
     return;
   }
 
+  // Start camera
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'user', width: { ideal: 320 }, height: { ideal: 240 } }
+      video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }
     });
     const video = $('face-video');
     video.srcObject = stream;
     await new Promise(resolve => { video.onloadedmetadata = () => { video.play().then(resolve); }; });
 
-    faceAnalyzer = new FaceAnalyzer();
-
     async function runFaceLoop() {
-      if (!engine || !engine.active || !faceModelLoaded) {
+      if (!engine || !engine.active) {
         faceDetectId = setTimeout(runFaceLoop, 3000);
         return;
       }
       try {
-        const detection = await faceapi.detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
-          .withFaceLandmarks(true)
-          .withFaceExpressions();
-        if (detection) {
-          const faceData = faceAnalyzer.analyze(detection);
-          faceData.detectionConfidence = detection.detection.score || 0.5;
-          engine.ingestFaceData(faceData);
-          if (logger) logger.logFace(faceData);
-        }
-      } catch (e) { /* skip frame */ }
-      faceDetectId = setTimeout(runFaceLoop, 3000);
+        await faceMeshInstance.send({ image: video });
+      } catch (e) { /* skip frame — model may still be loading */ }
+      faceDetectId = setTimeout(runFaceLoop, 2000);
     }
     faceDetectId = setTimeout(runFaceLoop, 1000);
   } catch (e) {

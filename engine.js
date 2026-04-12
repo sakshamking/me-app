@@ -1242,8 +1242,9 @@ class MusicBrain {
 }
 
 // ============================================================
-// FACE ANALYZER — face-api.js (68 landmarks, EAR-based eye detection)
-// Interface: analyze(detection) → { eyes, headPose, nod, brow, mouth, engagement }
+// FACE ANALYZER — MediaPipe Face Mesh (478 landmarks + iris, legacy script API)
+// Input: array of 478 {x, y, z} landmarks (0-1 normalized)
+// Output: { eyes, headPose, nod, brow, mouth, engagement }
 // Compatible with StateEstimator.addFaceData()
 // ============================================================
 
@@ -1253,64 +1254,63 @@ class FaceAnalyzer {
     this.MAX_POSE_HISTORY = 10;
   }
 
-  // Takes face-api.js detection result, returns engine-compatible face data
-  analyze(detection) {
-    if (!detection || !detection.landmarks) {
+  // Takes MediaPipe Face Mesh landmarks array [{x, y, z}, ...]
+  analyze(landmarks) {
+    if (!landmarks || landmarks.length < 468) {
       return { eyes: 'Unknown', headPose: 'Unknown', nod: 'None', brow: 'Normal', mouth: 'Closed', engagement: 30 };
     }
 
-    const positions = detection.landmarks.positions;
-    const expressions = detection.expressions || {};
-
-    const eyes = this._analyzeEyes(positions);
-    const headPose = this._analyzeHeadPose(positions);
+    const eyes = this._analyzeEyes(landmarks);
+    const headPose = this._analyzeHeadPose(landmarks);
     const nod = this._analyzeNod(headPose);
-    const brow = this._analyzeBrow(positions);
-    const mouth = this._analyzeMouth(positions);
-    const engagement = this._computeEngagement(eyes, headPose, mouth, expressions);
+    const brow = this._analyzeBrow(landmarks);
+    const mouth = this._analyzeMouth(landmarks);
+    const engagement = this._computeEngagement(eyes, headPose, mouth, landmarks);
 
     return { eyes, headPose: headPose.pose, nod, brow, mouth, engagement };
   }
 
-  _analyzeEyes(positions) {
-    // Eye Aspect Ratio (EAR) using face-api.js 68-point landmarks
-    // Left eye: points 36-41, Right eye: points 42-47
-    const leftEAR = this._computeEAR(positions, [36, 37, 38, 39, 40, 41]);
-    const rightEAR = this._computeEAR(positions, [42, 43, 44, 45, 46, 47]);
+  _analyzeEyes(landmarks) {
+    // EAR from MediaPipe 478-point landmarks
+    // Left eye: 33(outer), 160(upper1), 158(upper2), 133(inner), 153(lower1), 144(lower2)
+    // Right eye: 362(outer), 385(upper1), 387(upper2), 263(inner), 373(lower1), 380(lower2)
+    const leftEAR = this._computeEAR(landmarks, [33, 160, 158, 133, 153, 144]);
+    const rightEAR = this._computeEAR(landmarks, [362, 385, 387, 263, 373, 380]);
     const avgEAR = (leftEAR + rightEAR) / 2;
 
-    if (avgEAR < 0.18) return 'Closed';
-    if (avgEAR < 0.24) return 'Droopy';
+    if (avgEAR < 0.15) return 'Closed';
+    if (avgEAR < 0.22) return 'Droopy';
     return 'Open';
   }
 
-  _computeEAR(positions, indices) {
+  _computeEAR(landmarks, indices) {
     // EAR = (|p1-p5| + |p2-p4|) / (2 * |p0-p3|)
-    const p = indices.map(i => positions[i]);
-    if (!p[0] || !p[3]) return 0.3; // default open
-    const vertical1 = Math.hypot(p[1].x - p[5].x, p[1].y - p[5].y);
-    const vertical2 = Math.hypot(p[2].x - p[4].x, p[2].y - p[4].y);
-    const horizontal = Math.hypot(p[0].x - p[3].x, p[0].y - p[3].y);
-    return horizontal > 0 ? (vertical1 + vertical2) / (2 * horizontal) : 0.3;
+    const p = indices.map(i => landmarks[i]);
+    if (!p[0] || !p[3]) return 0.25;
+    const dist = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
+    const vertical1 = dist(p[1], p[5]);
+    const vertical2 = dist(p[2], p[4]);
+    const horizontal = dist(p[0], p[3]);
+    return horizontal > 0 ? (vertical1 + vertical2) / (2 * horizontal) : 0.25;
   }
 
-  _analyzeHeadPose(positions) {
-    // Crude head pose from nose tip (30) relative to face center
-    const noseTip = positions[30];
-    const leftCheek = positions[0];
-    const rightCheek = positions[16];
-    const chin = positions[8];
-    const forehead = positions[27]; // bridge of nose top as proxy
+  _analyzeHeadPose(landmarks) {
+    // High-accuracy head pose from dense landmarks
+    const nose = landmarks[1];       // nose tip
+    const chin = landmarks[152];     // chin
+    const forehead = landmarks[10];  // forehead
+    const leftCheek = landmarks[234];
+    const rightCheek = landmarks[454];
 
     let pitch = 0, yaw = 0;
-    if (noseTip && leftCheek && rightCheek && chin && forehead) {
+    if (nose && chin && forehead && leftCheek && rightCheek) {
       const faceCenterX = (leftCheek.x + rightCheek.x) / 2;
       const faceCenterY = (forehead.y + chin.y) / 2;
-      const faceWidth = Math.abs(rightCheek.x - leftCheek.x) || 1;
-      const faceHeight = Math.abs(chin.y - forehead.y) || 1;
+      const faceWidth = Math.abs(rightCheek.x - leftCheek.x) || 0.01;
+      const faceHeight = Math.abs(chin.y - forehead.y) || 0.01;
 
-      yaw = (noseTip.x - faceCenterX) / faceWidth;
-      pitch = (noseTip.y - faceCenterY) / faceHeight;
+      yaw = (nose.x - faceCenterX) / faceWidth;
+      pitch = (nose.y - faceCenterY) / faceHeight;
     }
 
     let pose;
@@ -1336,46 +1336,41 @@ class FaceAnalyzer {
     return 'None';
   }
 
-  _analyzeBrow(positions) {
-    // Brow raise: distance from brow points (17-21 left, 22-26 right) to eye top
-    const browL = positions[19]; // left brow center
-    const eyeL = positions[37]; // left eye top
-    const browR = positions[24]; // right brow center
-    const eyeR = positions[44]; // right eye top
+  _analyzeBrow(landmarks) {
+    // Brow raise: distance from brow center to eye upper lid
+    const leftBrow = landmarks[107];    // left brow center
+    const leftEyeTop = landmarks[159];  // left eye top
+    const rightBrow = landmarks[336];   // right brow center
+    const rightEyeTop = landmarks[386]; // right eye top
 
-    if (!browL || !eyeL || !browR || !eyeR) return 'Normal';
+    if (!leftBrow || !leftEyeTop || !rightBrow || !rightEyeTop) return 'Normal';
 
-    const leftDist = Math.abs(browL.y - eyeL.y);
-    const rightDist = Math.abs(browR.y - eyeR.y);
+    const leftDist = Math.abs(leftBrow.y - leftEyeTop.y);
+    const rightDist = Math.abs(rightBrow.y - rightEyeTop.y);
     const avgDist = (leftDist + rightDist) / 2;
 
-    // Normalized by face height
-    const chin = positions[8];
-    const forehead = positions[27];
-    const faceHeight = Math.abs(chin.y - forehead.y) || 1;
+    const faceHeight = Math.abs(landmarks[152].y - landmarks[10].y) || 0.01;
     const normalized = avgDist / faceHeight;
 
-    return normalized > 0.18 ? 'Raised' : 'Normal';
+    return normalized > 0.12 ? 'Raised' : 'Normal';
   }
 
-  _analyzeMouth(positions) {
-    // Mouth open: distance from top lip (62) to bottom lip (66)
-    const topLip = positions[62];
-    const bottomLip = positions[66];
+  _analyzeMouth(landmarks) {
+    // Mouth open: distance from upper lip center (13) to lower lip center (14)
+    const topLip = landmarks[13];
+    const bottomLip = landmarks[14];
     if (!topLip || !bottomLip) return 'Closed';
 
     const mouthOpen = Math.abs(bottomLip.y - topLip.y);
-    const chin = positions[8];
-    const forehead = positions[27];
-    const faceHeight = Math.abs(chin.y - forehead.y) || 1;
+    const faceHeight = Math.abs(landmarks[152].y - landmarks[10].y) || 0.01;
     const normalized = mouthOpen / faceHeight;
 
-    return normalized > 0.06 ? 'Open' : 'Closed';
+    return normalized > 0.04 ? 'Open' : 'Closed';
   }
 
-  _computeEngagement(eyes, headPose, mouth, expressions) {
+  _computeEngagement(eyes, headPose, mouth, landmarks) {
     // D-046: No facial expression classification (emotion labels killed — Barrett 2019).
-    // Engagement from structural features only.
+    // Engagement from structural features + 3D depth + iris gaze.
 
     let score = 50;
 
@@ -1401,13 +1396,25 @@ class FaceAnalyzer {
       else if (variance >= 0.03) score -= 3; // too fidgety
     }
 
-    // Use face-api.js expression scores as mild engagement signal (not classification)
-    // Higher neutral = less engaged; higher surprise/happy = more engaged
-    const neutral = expressions.neutral || 0;
-    const surprise = expressions.surprised || 0;
-    const happy = expressions.happy || 0;
-    score += (surprise + happy) * 10;
-    score -= neutral > 0.8 ? 5 : 0;
+    // 3D depth: face closer to camera = leaning in = more engaged
+    const noseZ = landmarks[1].z || 0;
+    if (noseZ < -0.05) score += 4;   // leaning in
+    else if (noseZ > 0.05) score -= 3; // leaning back
+
+    // Iris gaze (landmarks 468-477 when refineLandmarks=true)
+    if (landmarks.length >= 478) {
+      const leftIris = landmarks[468];     // left iris center
+      const leftEyeInner = landmarks[133];
+      const leftEyeOuter = landmarks[33];
+
+      if (leftIris && leftEyeInner && leftEyeOuter) {
+        const eyeWidth = Math.abs(leftEyeInner.x - leftEyeOuter.x) || 0.01;
+        const gazeRatio = (leftIris.x - leftEyeOuter.x) / eyeWidth;
+        // 0.4-0.6 = looking at screen, outside = looking away
+        if (gazeRatio > 0.3 && gazeRatio < 0.7) score += 4;
+        else score -= 3;
+      }
+    }
 
     return Math.max(0, Math.min(100, Math.round(score)));
   }
