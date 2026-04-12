@@ -1,6 +1,7 @@
-// M+E Intelligence Engine V3 — Browser Edition
-// Ported from pilot-v2/engine/ (Node.js) to client-side JavaScript
-// All classes run in-browser. No server dependency.
+// M+E Intelligence Engine V4 — Browser Edition
+// Built on V3 Session 59 engine (Kalman, circuit breaker, hysteresis, congruence gate)
+// V4 changes: multi-intent blending, min play enforcement, direct intake wiring,
+// structured analytics logger, artist variety tracking
 
 // ============================================================
 // CALIBRATOR — Baseline Learning (2 min window)
@@ -97,7 +98,52 @@ class Calibrator {
 }
 
 // ============================================================
-// STATE ESTIMATOR — Multi-signal fusion, hold-last-value, confidence decay
+// KALMAN FILTER — Lightweight 1D filter for browser (replaces EMA + hold-last-value)
+// Based on kalmanjs (MIT) — principled uncertainty growth when measurements are missing
+// ============================================================
+
+class KalmanFilter {
+  constructor(options = {}) {
+    this.R = options.R || 1;    // Measurement noise (higher = trust measurements less)
+    this.Q = options.Q || 0.01; // Process noise (higher = state changes faster)
+    this.x = options.x0 || 0.5; // State estimate
+    this.P = options.P0 || 1;   // Estimate covariance (uncertainty)
+  }
+
+  // Predict step: state propagates, uncertainty grows
+  predict() {
+    // State: x_k = x_{k-1} (near-constant model)
+    // Covariance: P_k = P_{k-1} + Q
+    this.P = this.P + this.Q;
+    return this.x;
+  }
+
+  // Update step: incorporate a measurement
+  update(measurement, measurementNoise) {
+    const R = measurementNoise !== undefined ? measurementNoise : this.R;
+    // Kalman gain: how much to trust the measurement vs the prediction
+    const K = this.P / (this.P + R);
+    // Update state: blend prediction with measurement
+    this.x = this.x + K * (measurement - this.x);
+    // Update covariance: uncertainty shrinks after measurement
+    this.P = (1 - K) * this.P;
+    return this.x;
+  }
+
+  // Get current confidence (inverse of uncertainty, 0-1 scale)
+  getConfidence() {
+    // Map covariance to 0-1: low P = high confidence
+    return Math.max(0, Math.min(1, 1 / (1 + this.P)));
+  }
+
+  toJSON() { return { x: this.x, P: this.P, confidence: this.getConfidence() }; }
+}
+
+// ============================================================
+// STATE ESTIMATOR — Kalman-filtered multi-signal fusion with hysteresis
+// Phase 2a: Kalman replaces EMA + hold-last-value
+// Phase 2b: Hysteresis dead bands on state boundaries
+// Phase 2c: Separate energy/immersion feature extraction
 // ============================================================
 
 class StateEstimator {
@@ -106,16 +152,30 @@ class StateEstimator {
     this.faceHistory = [];
     this.sensorHistory = [];
     this.stateHistory = [];
+
+    // Kalman filters for each dimension
+    // Q = process noise (how fast true state changes between ticks)
+    // R = default measurement noise (overridden per-measurement by confidence)
+    this.kf = {
+      energy:    new KalmanFilter({ Q: 0.005, R: 0.3, x0: 0.5, P0: 1 }),   // Affect changes slowly
+      immersion: new KalmanFilter({ Q: 0.003, R: 0.35, x0: 0.4, P0: 1 }),  // Immersion even slower
+      movement:  new KalmanFilter({ Q: 0.02, R: 0.2, x0: 0.5, P0: 1 })     // Physical state changes fast
+    };
+
     this.state = {
       energy: { level: 'medium', value: 0.5, confidence: 0 },
       immersion: { level: 'observing', value: 0.4, confidence: 0 },
       trajectory: { direction: 'flat', value: 0, confidence: 0 },
       raw: {}
     };
-    this.lastFaceEnergy = null;
-    this.lastFaceImmersion = null;
-    this.FACE_STALE_MS = 30000;
-    this.FACE_DECAY_MS = 120000;
+
+    // Phase 2b: Hysteresis — current levels + hold timers
+    this._currentEnergyLevel = 'medium';
+    this._currentImmersionLevel = 'observing';
+    this._energyLevelHoldUntil = 0;   // timestamp — no transition before this
+    this._immersionLevelHoldUntil = 0;
+    this.MIN_LEVEL_HOLD_MS = 15000;   // 3 ticks minimum hold after any transition
+
     this.MAX_FACE_HISTORY = 12;
     this.MAX_SENSOR_HISTORY = 60;
     this.MAX_STATE_HISTORY = 60;
@@ -132,199 +192,225 @@ class StateEstimator {
   }
 
   estimate(context) {
-    const energy = this._estimateEnergy(context);
-    const immersion = this._estimateImmersion(context);
-    this.stateHistory.push({ t: Date.now(), energy: energy.value, immersion: immersion.value });
+    const now = Date.now();
+
+    // === PREDICT: all filters propagate forward, uncertainty grows ===
+    this.kf.energy.predict();
+    this.kf.immersion.predict();
+    this.kf.movement.predict();
+
+    // === UPDATE: incorporate available measurements ===
+    this._updateFromFace(now, context);
+    this._updateFromSensors(now, context);
+
+    // === READ STATE from filters ===
+    const energyVal = Math.max(0, Math.min(1, this.kf.energy.x));
+    const immersionVal = Math.max(0, Math.min(1, this.kf.immersion.x));
+    const energyConf = this.kf.energy.getConfidence();
+    const immersionConf = this.kf.immersion.getConfidence();
+
+    // Phase 2b: Hysteresis level classification
+    const energyLevel = this._classifyEnergyWithHysteresis(energyVal, now);
+    const immersionLevel = this._classifyImmersionWithHysteresis(immersionVal, now);
+
+    const energy = { level: energyLevel, value: Math.round(energyVal * 100) / 100, confidence: Math.round(energyConf * 100) / 100 };
+    const immersion = { level: immersionLevel, value: Math.round(immersionVal * 100) / 100, confidence: Math.round(immersionConf * 100) / 100 };
+
+    this.stateHistory.push({ t: now, energy: energy.value, immersion: immersion.value });
     if (this.stateHistory.length > this.MAX_STATE_HISTORY) this.stateHistory.shift();
+
     const trajectory = this._estimateTrajectory();
-    this.state = { energy, immersion, trajectory, raw: this._getRawSignals(), timestamp: Date.now() };
+    this.state = { energy, immersion, trajectory, raw: this._getRawSignals(), timestamp: now };
     return this.state;
   }
 
-  _estimateEnergy(context) {
-    const now = Date.now();
+  // Phase 2c: Extract ENERGY features from face data (separate from immersion)
+  _updateFromFace(now, context) {
     const recent = this.faceHistory.slice(-6);
-    const recentSensors = this.sensorHistory.slice(-10);
-    const latestFaceTime = recent.length > 0 ? recent[recent.length - 1].t : 0;
+    if (recent.length === 0) return; // No face data → predict-only, uncertainty grows naturally
+
+    const latestFaceTime = recent[recent.length - 1].t;
     const faceAge = now - latestFaceTime;
-    const faceFresh = recent.length > 0 && faceAge < this.FACE_STALE_MS;
+    if (faceAge > 30000) return; // Stale face → predict-only (Kalman handles uncertainty growth)
 
-    let faceValue = null, faceConfidence = 0;
+    const latest = recent[recent.length - 1];
 
-    if (faceFresh) {
-      // PRIMARY signal: engagement score (continuous 0-100, the only truly variable face metric)
-      const engValues = recent.map(f => (f.engagement || 50) / 100);
-      const latestEng = engValues[engValues.length - 1];
-      const avgEng = engValues.reduce((a, b) => a + b, 0) / engValues.length;
+    // --- ENERGY observation: activity indicators ---
+    // Use engagement score (now expression-free) as base, plus structural modifiers
+    const engValues = recent.map(f => (f.engagement || 50) / 100);
+    const avgEng = engValues.reduce((a, b) => a + b, 0) / engValues.length;
+    let energyObs = avgEng;
 
-      // MODIFIERS from categorical features (adjust, don't drive)
-      const latest = recent[recent.length - 1];
-      let modifier = 0;
-      if (latest.eyes === 'Droopy') modifier -= 0.08;
-      else if (latest.eyes === 'Closed') modifier -= 0.18;
-      if (latest.nod === 'Active') modifier += 0.12;
-      else if (latest.nod === 'Light') modifier += 0.05;
-      if (latest.brow === 'Raised') modifier += 0.06;
-      if (latest.mouth === 'Open') modifier += 0.06;
+    // Categorical modifiers (adjust, don't drive)
+    if (latest.nod === 'Active') energyObs += 0.10;
+    else if (latest.nod === 'Light') energyObs += 0.04;
+    if (latest.mouth === 'Open') energyObs += 0.05;
+    if (latest.eyes === 'Closed') energyObs -= 0.15;
+    else if (latest.eyes === 'Droopy') energyObs -= 0.06;
 
-      // TREND amplification: recent direction matters (energy shifting up or down)
-      const trend = latestEng - avgEng;
-      faceValue = avgEng + modifier + trend * 0.5;
-
-      // Calibrator-relative adjustment (boosted influence)
-      if (this.calibrator.calibrated) {
-        const engDelta = this.calibrator.getDelta('engagement', recent[recent.length - 1].engagement || 50);
-        faceValue += engDelta * 0.12;
-      }
-
-      faceValue = Math.max(0, Math.min(1, faceValue));
-      faceConfidence = Math.min(1, recent.length / 4); // faster confidence ramp (was /6)
-      this.lastFaceEnergy = { value: faceValue, confidence: faceConfidence, timestamp: now };
-    } else if (this.lastFaceEnergy) {
-      const staleness = now - this.lastFaceEnergy.timestamp;
-      const decayFactor = Math.max(0, 1 - staleness / this.FACE_DECAY_MS);
-      faceValue = this.lastFaceEnergy.value;
-      faceConfidence = this.lastFaceEnergy.confidence * decayFactor;
+    // Calibrator delta (baseline-relative, D-047)
+    if (this.calibrator.calibrated) {
+      const engDelta = this.calibrator.getDelta('engagement', latest.engagement || 50);
+      energyObs += engDelta * 0.10;
     }
 
-    let sensorValue = null, sensorConfidence = 0;
+    energyObs = Math.max(0, Math.min(1, energyObs));
+
+    // Measurement noise = f(1/confidence). Detection confidence → filter trust
+    const detConf = latest.detectionConfidence || 0.5;
+    const faceR = 0.1 + (1 - detConf) * 0.8; // High confidence → R=0.1, low → R=0.9
+    this.kf.energy.update(energyObs, faceR);
+
+    // --- IMMERSION observation: stability indicators (independent from energy) ---
+    const engStd = this._std(engValues);
+    // High avg + low variance = deeply immersed
+    let immObs = avgEng * 0.5 + Math.max(0, 0.4 - engStd) * 0.6;
+
+    // Eye consistency
+    const eyeStates = recent.map(f => f.eyes);
+    const openCount = eyeStates.filter(e => e === 'Open').length;
+    immObs += (openCount / eyeStates.length) * 0.08;
+
+    // Head consistency (staying put = immersed)
+    const headPoses = recent.map(f => f.headPose);
+    const headCons = this._consistency(headPoses);
+    immObs += headCons * 0.08;
+
+    // Rhythmic nodding (immersion signal in music context)
+    const nods = recent.map(f => f.nod);
+    const lightNods = nods.filter(n => n === 'Light' || n === 'Active').length;
+    if (lightNods > nods.length * 0.3) immObs += 0.08;
+
+    // Wind-down context: closed/droopy eyes + consistency = immersed in rest
+    const intent = context?.intent || [];
+    const isWindDown = intent.includes('sleep_prep') || intent.includes('unwind');
+    if (isWindDown) {
+      const closedCount = eyeStates.filter(e => e === 'Closed' || e === 'Droopy').length;
+      if (closedCount > eyeStates.length * 0.5 && this._consistency(eyeStates) > 0.5) immObs += 0.12;
+    }
+
+    immObs = Math.max(0, Math.min(1, immObs));
+    this.kf.immersion.update(immObs, faceR * 1.1); // Slightly higher noise for immersion
+  }
+
+  _updateFromSensors(now, context) {
+    const recentSensors = this.sensorHistory.slice(-10);
+    if (recentSensors.length === 0) return;
+
+    // Movement from accelerometer
     const movements = recentSensors.filter(s => s.accel)
       .map(s => Math.abs(Math.sqrt(s.accel.x ** 2 + s.accel.y ** 2 + s.accel.z ** 2) - 9.8));
     if (movements.length > 0) {
       const avgMov = movements.reduce((a, b) => a + b, 0) / movements.length;
-      let movDelta = avgMov;
-      if (this.calibrator.calibrated) movDelta = this.calibrator.getDelta('movement', avgMov);
-      sensorValue = 0.5 + Math.min(0.35, Math.max(-0.35, movDelta * 0.15));
-      sensorConfidence = 0.55; // boosted from 0.4
+      let movNorm = avgMov;
+      if (this.calibrator.calibrated) movNorm = this.calibrator.getDelta('movement', avgMov);
+      const movValue = 0.5 + Math.min(0.35, Math.max(-0.35, movNorm * 0.15));
 
-      // Movement BURST detection — sharp accel spike = energy event
+      // Burst detection
       const maxMov = Math.max(...movements);
-      if (maxMov > avgMov * 2.5 && maxMov > 0.5) {
-        sensorValue = Math.min(1, sensorValue + 0.1);
-        sensorConfidence = 0.65;
-      }
+      const burstBonus = (maxMov > avgMov * 2.5 && maxMov > 0.5) ? 0.1 : 0;
+
+      this.kf.movement.update(Math.min(1, movValue + burstBonus), 0.2);
+      // Movement contributes to energy estimate
+      this.kf.energy.update(Math.min(1, movValue + burstBonus), 0.4); // Higher R — sensor is secondary to face for energy
     }
 
-    // Gyro data — rotational movement indicates body engagement
+    // Gyro → body engagement
     const gyroMags = recentSensors.filter(s => s.gyro)
       .map(s => Math.sqrt(s.gyro.x ** 2 + s.gyro.y ** 2 + s.gyro.z ** 2));
-    if (gyroMags.length > 0 && sensorValue !== null) {
+    if (gyroMags.length > 0) {
       const avgGyro = gyroMags.reduce((a, b) => a + b, 0) / gyroMags.length;
-      if (avgGyro > 5) { sensorValue = Math.min(1, sensorValue + 0.08); sensorConfidence = Math.min(1, sensorConfidence + 0.1); }
+      if (avgGyro > 5) {
+        this.kf.energy.update(Math.min(1, this.kf.energy.x + 0.06), 0.5);
+      }
     }
 
+    // Heart rate → energy contribution
     const hrReadings = recentSensors.filter(s => s.hr && s.hr > 0).map(s => s.hr);
-    if (hrReadings.length > 0) {
+    if (hrReadings.length > 0 && this.calibrator.calibrated && this.calibrator.baseline?.heartRate) {
       const avgHR = hrReadings.reduce((a, b) => a + b, 0) / hrReadings.length;
-      if (this.calibrator.calibrated && this.calibrator.baseline.heartRate) {
-        const hrDelta = this.calibrator.getDelta('heartRate', avgHR);
-        const hrContrib = 0.5 + Math.min(0.3, Math.max(-0.3, hrDelta * 0.12));
-        if (sensorValue !== null) { sensorValue = (sensorValue + hrContrib) / 2; sensorConfidence = 0.65; }
-        else { sensorValue = hrContrib; sensorConfidence = 0.55; }
-      }
+      const hrDelta = this.calibrator.getDelta('heartRate', avgHR);
+      const hrValue = 0.5 + Math.min(0.3, Math.max(-0.3, hrDelta * 0.12));
+      this.kf.energy.update(hrValue, 0.5); // HR is noisy in nightlife, high R
     }
 
-    const intent = context?.intent || [];
-    const isWindDown = intent.includes('sleep_prep') || intent.includes('unwind');
-    let timeDrift = 0;
-    if (isWindDown && this.stateHistory.length > 12) {
-      timeDrift = -0.01 * (this.stateHistory.length * 5 / 60);
-    }
-
-    let value;
-    if (faceValue !== null && sensorValue !== null) {
-      const tot = faceConfidence + sensorConfidence;
-      value = (faceValue * faceConfidence + sensorValue * sensorConfidence) / tot;
-    } else if (faceValue !== null) value = faceValue;
-    else if (sensorValue !== null) value = sensorValue;
-    else value = 0.5;
-
-    value = Math.max(0, Math.min(1, value + timeDrift));
-    const confidence = Math.max(faceConfidence || 0, sensorConfidence || 0);
-    let level;
-    if (value < 0.3) level = 'low';
-    else if (value < 0.55) level = 'medium';
-    else if (value < 0.75) level = 'high';
-    else level = 'overextended';
-    return { level, value: Math.round(value * 100) / 100, confidence: Math.round(confidence * 100) / 100 };
-  }
-
-  _estimateImmersion(context) {
-    const now = Date.now();
-    const recent = this.faceHistory.slice(-6);
-    const recentSensors = this.sensorHistory.slice(-10);
-    const latestFaceTime = recent.length > 0 ? recent[recent.length - 1].t : 0;
-    const faceFresh = recent.length > 0 && (now - latestFaceTime) < this.FACE_STALE_MS;
-    const intent = context?.intent || [];
-    const isWindDown = intent.includes('sleep_prep') || intent.includes('unwind');
-
-    let faceValue = null, faceConfidence = 0;
-
-    if (faceFresh) {
-      // PRIMARY: engagement stability = immersion (steady high engagement = absorbed)
-      const engValues = recent.map(f => (f.engagement || 50) / 100);
-      const avgEng = engValues.reduce((a, b) => a + b, 0) / engValues.length;
-      const engStd = this._std(engValues);
-      // High avg + low variance = deeply immersed; low avg OR high variance = detached
-      let immBase = avgEng * 0.6 + Math.max(0, 0.4 - engStd) * 0.6;
-
-      // MODIFIERS from categorical features
-      const eyeStates = recent.map(f => f.eyes);
-      const eyeCons = this._consistency(eyeStates);
-      const headPoses = recent.map(f => f.headPose);
-      const headCons = this._consistency(headPoses);
-
-      if (isWindDown) {
-        const closedCount = eyeStates.filter(e => e === 'Closed' || e === 'Droopy').length;
-        if (closedCount > eyeStates.length * 0.6 && eyeCons > 0.5) immBase += 0.15;
-      } else {
-        const openCount = eyeStates.filter(e => e === 'Open').length;
-        immBase += (openCount / eyeStates.length) * 0.1;
-      }
-
-      // Head consistency — staying put = immersed
-      immBase += headCons * 0.1;
-
-      // Light nods = rhythmic engagement (immersion signal)
-      const nods = recent.map(f => f.nod);
-      const lightNods = nods.filter(n => n === 'Light' || n === 'Active').length;
-      if (lightNods > nods.length * 0.3) immBase += 0.1;
-
-      faceValue = Math.max(0, Math.min(1, immBase));
-      faceConfidence = Math.min(1, recent.length / 4);
-      this.lastFaceImmersion = { value: faceValue, confidence: faceConfidence, timestamp: now };
-    } else if (this.lastFaceImmersion) {
-      const staleness = now - this.lastFaceImmersion.timestamp;
-      const decayFactor = Math.max(0, 1 - staleness / this.FACE_DECAY_MS);
-      faceValue = this.lastFaceImmersion.value;
-      faceConfidence = this.lastFaceImmersion.confidence * decayFactor;
-    }
-
-    let sensorValue = null, sensorConfidence = 0;
-    const gyroMags = recentSensors.filter(s => s.gyro)
-      .map(s => Math.sqrt(s.gyro.x ** 2 + s.gyro.y ** 2 + s.gyro.z ** 2));
+    // Low gyro → immersion contribution (stillness = absorption)
     if (gyroMags.length > 3) {
       const avgGyro = gyroMags.reduce((a, b) => a + b, 0) / gyroMags.length;
-      sensorValue = Math.max(0, 1 - avgGyro / 50) * 0.7;
-      sensorConfidence = 0.35;
+      const stillness = Math.max(0, 1 - avgGyro / 50) * 0.7;
+      this.kf.immersion.update(stillness, 0.6); // Secondary signal, high noise
+    }
+  }
+
+  // Phase 2b: Hysteresis on energy levels — dead bands prevent oscillation
+  _classifyEnergyWithHysteresis(value, now) {
+    // Dead band thresholds: enter at one value, exit at another
+    const thresholds = {
+      low:          { enterBelow: 0.27, exitAbove: 0.33 },  // Enter low < 0.27, exit low > 0.33
+      medium:       { enterBelow: 0.52, exitAbove: 0.58 },  // Enter medium < 0.52, exit medium > 0.58
+      high:         { enterBelow: 0.72, exitAbove: 0.78 }   // Enter high < 0.72, exit high > 0.78
+    };
+
+    // Hold timer: no transition allowed within MIN_LEVEL_HOLD_MS of last transition
+    if (now < this._energyLevelHoldUntil) return this._currentEnergyLevel;
+
+    let newLevel;
+    const current = this._currentEnergyLevel;
+
+    // Determine new level based on current level + hysteresis
+    if (current === 'low') {
+      newLevel = value > thresholds.low.exitAbove ? 'medium' : 'low';
+    } else if (current === 'medium') {
+      if (value < thresholds.low.enterBelow) newLevel = 'low';
+      else if (value > thresholds.medium.exitAbove) newLevel = 'high';
+      else newLevel = 'medium';
+    } else if (current === 'high') {
+      if (value < thresholds.medium.enterBelow) newLevel = 'medium';
+      else if (value > thresholds.high.exitAbove) newLevel = 'overextended';
+      else newLevel = 'high';
+    } else { // overextended
+      newLevel = value < thresholds.high.enterBelow ? 'high' : 'overextended';
     }
 
-    let value;
-    if (faceValue !== null && sensorValue !== null) {
-      const tot = faceConfidence + sensorConfidence;
-      value = (faceValue * faceConfidence + sensorValue * sensorConfidence) / tot;
-    } else if (faceValue !== null) value = faceValue;
-    else if (sensorValue !== null) value = sensorValue;
-    else value = 0.4;
+    if (newLevel !== current) {
+      this._currentEnergyLevel = newLevel;
+      this._energyLevelHoldUntil = now + this.MIN_LEVEL_HOLD_MS;
+    }
+    return this._currentEnergyLevel;
+  }
 
-    value = Math.max(0, Math.min(1, value));
-    const confidence = Math.max(faceConfidence || 0, sensorConfidence || 0);
-    let level;
-    if (value < 0.2) level = 'detached';
-    else if (value < 0.45) level = 'observing';
-    else if (value < 0.7) level = 'engaged';
-    else level = 'absorbed';
-    return { level, value: Math.round(value * 100) / 100, confidence: Math.round(confidence * 100) / 100 };
+  // Phase 2b: Hysteresis on immersion levels
+  _classifyImmersionWithHysteresis(value, now) {
+    const thresholds = {
+      detached:  { enterBelow: 0.17, exitAbove: 0.23 },
+      observing: { enterBelow: 0.42, exitAbove: 0.48 },
+      engaged:   { enterBelow: 0.67, exitAbove: 0.73 }
+    };
+
+    if (now < this._immersionLevelHoldUntil) return this._currentImmersionLevel;
+
+    let newLevel;
+    const current = this._currentImmersionLevel;
+
+    if (current === 'detached') {
+      newLevel = value > thresholds.detached.exitAbove ? 'observing' : 'detached';
+    } else if (current === 'observing') {
+      if (value < thresholds.detached.enterBelow) newLevel = 'detached';
+      else if (value > thresholds.observing.exitAbove) newLevel = 'engaged';
+      else newLevel = 'observing';
+    } else if (current === 'engaged') {
+      if (value < thresholds.observing.enterBelow) newLevel = 'observing';
+      else if (value > thresholds.engaged.exitAbove) newLevel = 'absorbed';
+      else newLevel = 'engaged';
+    } else { // absorbed
+      newLevel = value < thresholds.engaged.enterBelow ? 'engaged' : 'absorbed';
+    }
+
+    if (newLevel !== current) {
+      this._currentImmersionLevel = newLevel;
+      this._immersionLevelHoldUntil = now + this.MIN_LEVEL_HOLD_MS;
+    }
+    return this._currentImmersionLevel;
   }
 
   _estimateTrajectory() {
@@ -367,7 +453,12 @@ class StateEstimator {
       avgEngagement30s: Math.round(avgEng),
       eyes: lastFace.eyes || 'Unknown', headPose: lastFace.headPose || 'Unknown',
       nod: lastFace.nod || 'Unknown', brow: lastFace.brow || 'Unknown',
-      faceReadings: this.faceHistory.length, sensorReadings: this.sensorHistory.length
+      faceReadings: this.faceHistory.length, sensorReadings: this.sensorHistory.length,
+      kalman: {
+        energy: this.kf.energy.toJSON(),
+        immersion: this.kf.immersion.toJSON(),
+        movement: this.kf.movement.toJSON()
+      }
     };
   }
 
@@ -467,7 +558,30 @@ class FeedbackLoop {
       if (iDelta < -0.10) { score -= 1; factors.push('lost_immersion'); }
     }
 
-    // Lower threshold to count as positive (was 2, now 1)
+    // Phase 2d: Trajectory-adjusted attribution
+    // If pre-intervention trajectory was already moving in the "right" direction,
+    // discount positive outcomes — the trajectory might have done the work, not the intervention
+    if (score > 0) {
+      const trajectoryAlreadyHelping =
+        (cat === 'stimulate' && pre.trajectoryDir === 'improving') ||
+        (cat === 'regulate' && pre.trajectoryDir === 'declining') ||
+        (cat === 'hold' && (pre.trajectoryDir === 'flat' || pre.trajectoryDir === 'improving'));
+      if (trajectoryAlreadyHelping) {
+        score = Math.ceil(score * 0.5); // 50% discount — trajectory was already doing this
+        factors.push('trajectory_discount');
+      }
+    }
+    // If trajectory was AGAINST the intervention goal and we still got positive, boost
+    if (score > 0) {
+      const trajectoryFighting =
+        (cat === 'stimulate' && pre.trajectoryDir === 'declining') ||
+        (cat === 'regulate' && pre.trajectoryDir === 'improving');
+      if (trajectoryFighting) {
+        score = Math.min(4, score + 1); // Bonus — intervention overcame adverse trajectory
+        factors.push('trajectory_boost');
+      }
+    }
+
     let outcome;
     if (score >= 1) outcome = 'positive';
     else if (score <= -1) outcome = 'negative';
@@ -501,8 +615,8 @@ class FeedbackLoop {
 class InterventionEngine {
   constructor(feedback) {
     this.feedback = feedback;
-    this.baseCooldown = 45000; // 45s base (was 60s — more responsive)
-    this.MAX_COOLDOWN = 180000; // hard cap: 3 min (was uncapped at 455s)
+    this.baseCooldown = 45000; // 45s base
+    this.MAX_COOLDOWN = 180000; // hard cap: 3 min
     this.lastInterventionTime = 0;
     this.consecutiveFailures = 0;
     this.lastFailureDecayTime = Date.now();
@@ -510,6 +624,19 @@ class InterventionEngine {
     this.lastObservedState = null;
     this.recentActions = [];
     this.MAX_RECENT = 5;
+
+    // Phase 1a: Circuit breaker — 3 strikes on same reason → blocked for session
+    this.reasonFailures = {};    // { reason: { neutral: N, negative: N } }
+    this.blockedReasons = new Set();
+    this.REASON_STRIKE_LIMIT = 3; // consecutive neutral/negative on same reason → block
+
+    // Phase 1b: Hourly intervention cap
+    this.interventionTimestamps = []; // timestamps of all interventions
+    this.MAX_PER_HOUR = 5;           // hard ceiling regardless of tolerance
+
+    // Phase 1b: Consecutive neutral/negative suppression
+    this.consecutiveNeutralNegative = 0;
+    this.suppressionUntil = 0; // timestamp — when >0 and now < this, only hold/safety
 
     this.nudgeLibrary = {
       stimulate: {
@@ -558,16 +685,29 @@ class InterventionEngine {
     const now = Date.now();
     const { energy, immersion, trajectory } = state;
 
+    // === GATE: Absorption — only extend track, no interventions ===
     if (immersion.level === 'absorbed') {
       this.observationCount = 0;
       if (context.trackElapsed > 240) return this._makeDecision('hold', 'subtle', 'absorbed_extend', state);
       return null;
     }
 
-    // Time-decay consecutive failures (every 90s of inactivity, decay by 0.3)
+    // === GATE: Hourly cap — prune old timestamps, enforce ceiling ===
+    this.interventionTimestamps = this.interventionTimestamps.filter(t => now - t < 3600000);
+    if (this.interventionTimestamps.length >= this.MAX_PER_HOUR) return null;
+
+    // === GATE: 15-min suppression after 3 consecutive neutral/negative ===
+    if (now < this.suppressionUntil) {
+      // Only hold/safety interventions allowed during suppression
+      if (immersion.level === 'engaged' && context.trackElapsed > 200)
+        return this._makeDecision('hold', 'subtle', 'suppression_hold', state);
+      return null;
+    }
+
+    // Time-decay consecutive failures (every 180s of inactivity, decay by 0.15)
     const sinceLastDecay = now - this.lastFailureDecayTime;
-    if (sinceLastDecay > 90000 && this.consecutiveFailures > 0) {
-      this.consecutiveFailures = Math.max(0, this.consecutiveFailures - 0.3 * Math.floor(sinceLastDecay / 90000));
+    if (sinceLastDecay > 180000 && this.consecutiveFailures > 0) {
+      this.consecutiveFailures = Math.max(0, this.consecutiveFailures - 0.15 * Math.floor(sinceLastDecay / 180000));
       this.lastFailureDecayTime = now;
     }
     const effectiveCooldown = Math.min(this.MAX_COOLDOWN, this.baseCooldown * Math.pow(1.3, this.consecutiveFailures));
@@ -578,47 +718,69 @@ class InterventionEngine {
     const isWindDown = intent.includes('sleep_prep') || intent.includes('unwind') || intent.includes('escape');
     const isActive = intent.includes('energy') || intent.includes('focus');
 
+    // === CANDIDATE GENERATION (same logic, but candidates go through circuit breaker) ===
+    let candidate = null;
+
     if (trajectory.direction === 'declining' && trajectory.confidence > 0.3) {
       this.observationCount++;
-      if (this.observationCount <= 2) return null;
-      else if (this.observationCount <= 4) {
-        if (energy.level === 'low' && !isWindDown) return this._makeDecision('stimulate', 'subtle', 'declining_low_energy', state);
-        else if (energy.level === 'high' || energy.level === 'overextended') return this._makeDecision('regulate', 'subtle', 'declining_overextended', state);
-        else return this._makeDecision('transition', 'subtle', 'declining_mid', state);
-      } else if (this.observationCount <= 6) {
-        if (energy.level === 'low' && !isWindDown) return this._makeDecision('stimulate', 'moderate', 'declining_persistent_low', state);
-        else return this._makeDecision('transition', 'moderate', 'declining_persistent', state);
+      if (this.observationCount <= 3) { /* minimum 3 ticks (15s) observation before acting */ }
+      else if (this.observationCount <= 5) {
+        if (energy.level === 'low' && !isWindDown) candidate = { cat: 'stimulate', int: 'subtle', reason: 'declining_low_energy' };
+        else if (energy.level === 'high' || energy.level === 'overextended') candidate = { cat: 'regulate', int: 'subtle', reason: 'declining_overextended' };
+        else candidate = { cat: 'transition', int: 'subtle', reason: 'declining_mid' };
+      } else if (this.observationCount <= 8) {
+        if (energy.level === 'low' && !isWindDown) candidate = { cat: 'stimulate', int: 'moderate', reason: 'declining_persistent_low' };
+        else candidate = { cat: 'transition', int: 'moderate', reason: 'declining_persistent' };
       } else {
-        if (!isWindDown) return this._makeDecision('stimulate', 'direct', 'declining_critical', state);
-        else return this._makeDecision('hold', 'moderate', 'winddown_settling', state);
+        if (!isWindDown) candidate = { cat: 'stimulate', int: 'direct', reason: 'declining_critical' };
+        else candidate = { cat: 'hold', int: 'moderate', reason: 'winddown_settling' };
       }
     }
 
-    if (trajectory.direction !== 'declining') this.observationCount = Math.max(0, this.observationCount - 1);
+    if (!candidate && trajectory.direction !== 'declining') this.observationCount = Math.max(0, this.observationCount - 1);
 
-    if (context.arcEnergy !== undefined) {
+    if (!candidate && context.arcEnergy !== undefined) {
       const mismatch = energy.value * 10 - context.arcEnergy;
       if (Math.abs(mismatch) > 3 && context.trackElapsed > 60) {
-        if (mismatch > 0) return this._makeDecision('regulate', 'subtle', 'energy_above_arc', state);
-        else if (!isWindDown) return this._makeDecision('stimulate', 'subtle', 'energy_below_arc', state);
+        if (mismatch > 0) candidate = { cat: 'regulate', int: 'subtle', reason: 'energy_above_arc' };
+        else if (!isWindDown) candidate = { cat: 'stimulate', int: 'subtle', reason: 'energy_below_arc' };
       }
     }
 
-    if (trajectory.direction === 'volatile' && trajectory.confidence > 0.3)
-      return this._makeDecision('transition', 'subtle', 'volatile_stabilize', state);
+    if (!candidate && trajectory.direction === 'volatile' && trajectory.confidence > 0.3)
+      candidate = { cat: 'transition', int: 'subtle', reason: 'volatile_stabilize' };
 
-    if (energy.level === 'low' && isActive && immersion.level !== 'engaged')
-      return this._makeDecision('stimulate', 'moderate', 'low_energy_active_intent', state);
+    if (!candidate && energy.level === 'low' && isActive && immersion.level !== 'engaged')
+      candidate = { cat: 'stimulate', int: 'moderate', reason: 'low_energy_active_intent' };
 
-    if (immersion.level === 'engaged' && trajectory.direction === 'improving' && context.trackElapsed > 200)
-      return this._makeDecision('hold', 'subtle', 'high_engagement_extend', state);
+    if (!candidate && immersion.level === 'engaged' && trajectory.direction === 'improving' && context.trackElapsed > 200)
+      candidate = { cat: 'hold', int: 'subtle', reason: 'high_engagement_extend' };
 
-    if (immersion.level === 'detached' && context.trackElapsed > 90) {
+    if (!candidate && immersion.level === 'detached' && context.trackElapsed > 90) {
       this.observationCount++;
-      if (this.observationCount > 3) return this._makeDecision('stimulate', 'moderate', 'detached_persistent', state);
+      if (this.observationCount > 5) candidate = { cat: 'stimulate', int: 'moderate', reason: 'detached_persistent' };
     }
 
+    // === CIRCUIT BREAKER: Block reasons that have failed 3+ times ===
+    if (candidate && this.blockedReasons.has(candidate.reason)) {
+      this._emitNearDecision(candidate, 'blocked_by_circuit_breaker', state);
+      return null;
+    }
+
+    // === FIRE or DO NOTHING ===
+    if (candidate) return this._makeDecision(candidate.cat, candidate.int, candidate.reason, state);
     return null;
+  }
+
+  // Phase 4b: Log near-decisions (interventions considered but not fired)
+  _emitNearDecision(candidate, blockReason, state) {
+    // Stored for offline causal analysis — these are the control group
+    if (this._nearDecisionLog) {
+      this._nearDecisionLog.push({
+        candidate, blockReason, state: { energy: state.energy.level, immersion: state.immersion.level },
+        timestamp: Date.now()
+      });
+    }
   }
 
   _makeDecision(category, intensity, reason, state) {
@@ -637,22 +799,49 @@ class InterventionEngine {
     };
 
     this.lastInterventionTime = Date.now();
+    this.interventionTimestamps.push(Date.now()); // Phase 1b: hourly cap tracking
     this.recentActions.push(decision);
     if (this.recentActions.length > this.MAX_RECENT) this.recentActions.shift();
     if (this.feedback) this.feedback.registerIntervention(decision, state);
     return decision;
   }
 
-  onFeedback(outcome) {
+  onFeedback(outcome, reason) {
+    // Global consecutive failure tracking
     if (outcome === 'negative') { this.consecutiveFailures = Math.min(4, this.consecutiveFailures + 1.5); }
     else if (outcome === 'positive') { this.consecutiveFailures = Math.max(0, this.consecutiveFailures - 2); }
     else { this.consecutiveFailures = Math.min(4, this.consecutiveFailures + 0.3); }
     this.lastFailureDecayTime = Date.now();
+
+    // Phase 1a: Per-reason circuit breaker
+    if (reason) {
+      if (!this.reasonFailures[reason]) this.reasonFailures[reason] = { bad: 0 };
+      if (outcome === 'positive') {
+        this.reasonFailures[reason].bad = Math.max(0, this.reasonFailures[reason].bad - 1);
+      } else {
+        // Neutral and negative both count as strikes (L86: neutral = mild failure)
+        this.reasonFailures[reason].bad++;
+        if (this.reasonFailures[reason].bad >= this.REASON_STRIKE_LIMIT) {
+          this.blockedReasons.add(reason);
+        }
+      }
+    }
+
+    // Phase 1b: Consecutive neutral/negative → 15-min suppression
+    if (outcome === 'positive') {
+      this.consecutiveNeutralNegative = 0;
+    } else {
+      this.consecutiveNeutralNegative++;
+      if (this.consecutiveNeutralNegative >= 3) {
+        this.suppressionUntil = Date.now() + 900000; // 15 minutes
+        this.consecutiveNeutralNegative = 0;
+      }
+    }
   }
 
   toJSON() {
     return {
-      cooldown: this.baseCooldown * Math.pow(1.5, this.consecutiveFailures),
+      cooldown: this.baseCooldown * Math.pow(1.3, this.consecutiveFailures),
       consecutiveFailures: this.consecutiveFailures, observationCount: this.observationCount,
       recentActions: this.recentActions.slice(-3).map(a => ({ category: a.category, intensity: a.intensity, reason: a.reason, text: a.text }))
     };
@@ -746,29 +935,58 @@ class MusicBrain {
     this.currentProfile = null;
     this.currentArc = null;
     this.arcAdaptations = 0;
+
+    // V4: Artist variety tracking — avoid consecutive same-artist plays
+    this.recentArtists = [];
+    this.MAX_RECENT_ARTISTS = 4;
+    // V4: All selected intents (not just first)
+    this.allIntents = [];
+    this.allVibes = [];
   }
 
   initialize(context) {
-    const intent = (context.intent || [])[0] || 'unwind';
+    // V4: Store all intents/vibes for blended query generation
+    this.allIntents = context.intent || [];
+    this.allVibes = context.vibe || [];
+    const primaryIntent = this.allIntents[0] || 'unwind';
     const sleepHours = parseFloat(context.sleep_in_hours) || 3;
-    this.currentProfile = this.sonicProfiles[intent] || this.sonicProfiles.unwind;
-    this.currentArc = this._designArc(intent, sleepHours);
-    return { profile: intent, arcPoints: this.currentArc.length, sessionDuration: this.currentArc[this.currentArc.length - 1]?.t || 30 };
+    this.currentProfile = this.sonicProfiles[primaryIntent] || this.sonicProfiles.unwind;
+    this.currentArc = this._designArc(primaryIntent, sleepHours);
+    return { profile: primaryIntent, arcPoints: this.currentArc.length, sessionDuration: this.currentArc[this.currentArc.length - 1]?.t || 30 };
   }
 
   buildInitialQueries(context) {
-    const intent = (context.intent || [])[0] || 'unwind';
-    const vibe = (context.vibe || [])[0] || 'mixed';
-    const profile = this.sonicProfiles[intent] || this.sonicProfiles.unwind;
-    const vibeQueries = profile.vibes[vibe] || profile.vibes.mixed;
+    const intents = context.intent || [];
+    const vibes = context.vibe || [];
+    const primaryIntent = intents[0] || 'unwind';
+    const primaryVibe = vibes[0] || 'mixed';
+    const profile = this.sonicProfiles[primaryIntent] || this.sonicProfiles.unwind;
     const queries = [];
     const phases = this._getArcPhases();
+
     for (const phase of phases) {
-      const baseQuery = vibeQueries[Math.floor(Math.random() * vibeQueries.length)];
+      // V4: Primary query from primary intent+vibe
+      const primaryVibeQueries = profile.vibes[primaryVibe] || profile.vibes.mixed;
+      const baseQuery = primaryVibeQueries[Math.floor(Math.random() * primaryVibeQueries.length)];
       queries.push({
         query: baseQuery, phase: phase.name, energy: phase.energy, count: phase.trackCount,
         duration: profile.trackDuration.min + Math.random() * (profile.trackDuration.max - profile.trackDuration.min)
       });
+
+      // V4: Blend — add 1 query from a secondary intent if available
+      if (intents.length > 1) {
+        const secIntent = intents[1 + Math.floor(Math.random() * (intents.length - 1))];
+        const secProfile = this.sonicProfiles[secIntent];
+        if (secProfile) {
+          const secVibe = vibes.length > 1 ? vibes[Math.floor(Math.random() * vibes.length)] : primaryVibe;
+          const secVibeQueries = secProfile.vibes[secVibe] || secProfile.vibes.mixed;
+          queries.push({
+            query: secVibeQueries[Math.floor(Math.random() * secVibeQueries.length)],
+            phase: phase.name, energy: Math.round((phase.energy + secProfile.energyRange[0]) / 2),
+            count: 2, duration: secProfile.trackDuration.min
+          });
+        }
+      }
     }
     return queries;
   }
@@ -778,8 +996,16 @@ class MusicBrain {
     const targetEnergy = this.getTargetEnergy(sessionElapsed);
     const energyDesc = this._energyToDescriptor(targetEnergy);
     const stateMod = this._stateToModifier(state);
-    const vibeKeys = Object.keys(this.currentProfile.vibes);
-    const randomVibe = this.currentProfile.vibes[vibeKeys[Math.floor(Math.random() * vibeKeys.length)]];
+
+    // V4: Blend across all selected intents, not just primary
+    let pool = this.currentProfile;
+    if (this.allIntents.length > 1 && Math.random() < 0.35) {
+      // 35% chance: pull from a secondary intent's profile for variety
+      const secIntent = this.allIntents[1 + Math.floor(Math.random() * (this.allIntents.length - 1))];
+      pool = this.sonicProfiles[secIntent] || this.currentProfile;
+    }
+    const vibeKeys = Object.keys(pool.vibes);
+    const randomVibe = pool.vibes[vibeKeys[Math.floor(Math.random() * vibeKeys.length)]];
     const baseQuery = randomVibe[Math.floor(Math.random() * randomVibe.length)];
     return {
       query: `${baseQuery} ${energyDesc} ${stateMod}`.trim(),
@@ -811,6 +1037,21 @@ class MusicBrain {
     });
   }
 
+  // V4: Track artist and deprioritize repeats when ordering results
+  trackArtist(artist) {
+    if (!artist) return;
+    this.recentArtists.push(artist.toLowerCase());
+    if (this.recentArtists.length > this.MAX_RECENT_ARTISTS) this.recentArtists.shift();
+  }
+
+  sortByArtistVariety(tracks) {
+    if (this.recentArtists.length === 0) return tracks;
+    // Partition: new artists first, then recent artists
+    const fresh = tracks.filter(t => !this.recentArtists.includes((t.artist || '').toLowerCase()));
+    const repeat = tracks.filter(t => this.recentArtists.includes((t.artist || '').toLowerCase()));
+    return [...fresh, ...repeat];
+  }
+
   getTargetEnergy(sessionMinutes) {
     if (!this.currentArc || this.currentArc.length < 2) return 5;
     const maxT = this.currentArc[this.currentArc.length - 1].t;
@@ -825,55 +1066,9 @@ class MusicBrain {
     return this.currentArc[this.currentArc.length - 1].energy;
   }
 
-  adaptArc(state, sessionElapsed) {
-    if (!this.currentArc || !this.currentProfile) return;
-    const [minE, maxE] = this.currentProfile.energyRange;
-    const stateEnergy = (state.energy?.value || 0.5) * 10;
-    const targetEnergy = this.getTargetEnergy(sessionElapsed);
-    const mismatch = stateEnergy - targetEnergy;
-
-    // LIVE RESHAPING: arc bends toward actual state (not just on trajectory events)
-    // If user energy is consistently above/below arc, pull the arc toward them
-    if (Math.abs(mismatch) > 1.5) {
-      const pull = mismatch * 0.15; // gentle pull toward actual state
-      for (let i = 0; i < this.currentArc.length; i++) {
-        if (this.currentArc[i].t > sessionElapsed && this.currentArc[i].t < sessionElapsed + 10) {
-          this.currentArc[i].energy = Math.max(minE, Math.min(maxE, this.currentArc[i].energy + pull));
-        }
-      }
-      this.arcAdaptations++;
-    }
-
-    // Trajectory-based adaptation (kept but more aggressive)
-    if (state.trajectory?.direction === 'improving' && state.energy?.level === 'high') {
-      // Extend the peak — stretch next 3 arc points forward
-      let stretched = 0;
-      for (let i = 0; i < this.currentArc.length && stretched < 3; i++) {
-        if (this.currentArc[i].t > sessionElapsed) { this.currentArc[i].t *= 1.08; stretched++; }
-      }
-      this.arcAdaptations++;
-    }
-    if (state.trajectory?.direction === 'declining') {
-      // Drop energy on upcoming arc points (3 points, not just 1)
-      let dropped = 0;
-      for (let i = 0; i < this.currentArc.length && dropped < 3; i++) {
-        if (this.currentArc[i].t > sessionElapsed) {
-          this.currentArc[i].energy = Math.max(minE, this.currentArc[i].energy - 0.8);
-          dropped++;
-        }
-      }
-      this.arcAdaptations++;
-    }
-    if (state.trajectory?.direction === 'volatile') {
-      // Smooth upcoming arc — reduce variance
-      const upcoming = this.currentArc.filter(p => p.t > sessionElapsed).slice(0, 5);
-      if (upcoming.length > 2) {
-        const avgE = upcoming.reduce((s, p) => s + p.energy, 0) / upcoming.length;
-        upcoming.forEach(p => { p.energy = p.energy * 0.6 + avgE * 0.4; });
-        this.arcAdaptations++;
-      }
-    }
-  }
+  // adaptArc() KILLED — Session 59 Phase 3a.
+  // The arc is the designed experience. Immutable. System closes gaps via interventions, not by redrawing the map.
+  // DJ override (D-012) is the only valid arc mutation source — not yet implemented.
 
   _designArc(intent, sleepHours) {
     const profile = this.sonicProfiles[intent] || this.sonicProfiles.unwind;
@@ -1068,17 +1263,8 @@ class FaceAnalyzer {
     // Mouth — open indicates reaction/engagement
     if (mouth === 'Open') score += 8;
 
-    // Full expression profile (use all emotions, not just max of happy/surprised)
-    if (detection.expressions) {
-      const expr = detection.expressions;
-      score += (expr.happy || 0) * 25;
-      score += (expr.surprised || 0) * 15;
-      score -= (expr.angry || 0) * 15;
-      score -= (expr.disgusted || 0) * 15;
-      score -= (expr.sad || 0) * 10;
-      // Neutral face = lower engagement signal
-      score -= (expr.neutral || 0) * 8;
-    }
+    // D-046: Facial expression classification KILLED — unreliable in nightlife (T1 evidence).
+    // Engagement derived from structural features only: eyes, head pose, mouth, movement.
 
     // Head movement variance — subtle movement = engaged (swaying, nodding to music)
     if (this.headPoseHistory.length >= 3) {
@@ -1094,6 +1280,97 @@ class FaceAnalyzer {
 }
 
 // ============================================================
+// GUEST MODELER — Per-session learning + cross-event skeleton (Phase 4a)
+// Bifurcated: trait layer (stable across events) + state layer (this session)
+// ============================================================
+
+class GuestModeler {
+  constructor() {
+    // State layer — this session only, fast-learning
+    this.sessionModel = {
+      interventionResponses: {},   // { reason: { positive: N, neutral: N, negative: N } }
+      nudgeTolerance: 'MEDIUM',    // LOW / MEDIUM / HIGH — from intake
+      intentVector: null,          // { energy, calmness } from intake
+      initialEnergy: 0.5,         // V4: Self-reported energy level (1-5 → 0-1)
+      calibrationBaseline: null,   // Snapshot from Calibrator
+      peakMoments: [],             // Timestamps of detected peaks
+    };
+
+    // Trait layer — placeholder for cross-event persistence
+    this.traitLayer = {
+      arousalPreference: 0.5,
+      nudgeReceptivity: 0.5,
+      socialOpenness: 0.5,
+    };
+  }
+
+  initFromIntake(context) {
+    const intent = context.intent || [];
+
+    // V4: Direct intake wiring — openness feeds nudge tolerance directly
+    if (context.openness) {
+      const map = { low: 'LOW', medium: 'MEDIUM', high: 'HIGH' };
+      this.sessionModel.nudgeTolerance = map[context.openness] || 'MEDIUM';
+    } else {
+      // Fallback: infer from intent (V3 behavior)
+      if (intent.includes('energy') || intent.includes('focus')) this.sessionModel.nudgeTolerance = 'HIGH';
+      else if (intent.includes('escape') || intent.includes('sleep_prep')) this.sessionModel.nudgeTolerance = 'LOW';
+    }
+
+    // V4: Direct energy level from intake slider (1-5 → 0-1)
+    if (context.energy_level) {
+      this.sessionModel.initialEnergy = (parseInt(context.energy_level) - 1) / 4;
+    }
+
+    // V4: Use "before" context to adjust initial energy estimate
+    const before = context.before || [];
+    let energyMod = 0;
+    if (before.includes('exercise')) energyMod += 0.15;
+    if (before.includes('work')) energyMod += 0.05;
+    if (before.includes('nothing')) energyMod -= 0.1;
+    if (before.includes('social')) energyMod += 0.1;
+    this.sessionModel.initialEnergy = Math.max(0, Math.min(1, this.sessionModel.initialEnergy + energyMod));
+
+    // Intent vector from actual selections
+    this.sessionModel.intentVector = {
+      energy: intent.includes('energy') ? 0.8 : intent.includes('sleep_prep') ? 0.2 : 0.5,
+      calmness: intent.includes('unwind') || intent.includes('sleep_prep') ? 0.8 : 0.3,
+    };
+
+    // V4: Set initial nudge receptivity from openness
+    if (context.openness === 'high') this.traitLayer.nudgeReceptivity = 0.7;
+    else if (context.openness === 'low') this.traitLayer.nudgeReceptivity = 0.3;
+  }
+
+  // Record intervention outcome for this session's learning
+  recordOutcome(reason, outcome) {
+    if (!this.sessionModel.interventionResponses[reason]) {
+      this.sessionModel.interventionResponses[reason] = { positive: 0, neutral: 0, negative: 0 };
+    }
+    this.sessionModel.interventionResponses[reason][outcome]++;
+
+    // Update nudge receptivity based on outcomes
+    if (outcome === 'positive') this.traitLayer.nudgeReceptivity = Math.min(1, this.traitLayer.nudgeReceptivity + 0.05);
+    else if (outcome === 'negative') this.traitLayer.nudgeReceptivity = Math.max(0, this.traitLayer.nudgeReceptivity - 0.1);
+  }
+
+  // Get nudge tolerance threshold modifier for InterventionEngine
+  getNudgeThreshold() {
+    const toleranceMap = { LOW: 1, MEDIUM: 3, HIGH: 5 };
+    return toleranceMap[this.sessionModel.nudgeTolerance] || 3;
+  }
+
+  toJSON() {
+    return {
+      nudgeTolerance: this.sessionModel.nudgeTolerance,
+      initialEnergy: this.sessionModel.initialEnergy,
+      nudgeReceptivity: Math.round(this.traitLayer.nudgeReceptivity * 100) / 100,
+      interventionResponses: this.sessionModel.interventionResponses
+    };
+  }
+}
+
+// ============================================================
 // ME ENGINE — Main orchestrator (client-side)
 // ============================================================
 
@@ -1104,6 +1381,10 @@ class MEEngine {
     this.stateEstimator = new StateEstimator(this.calibrator);
     this.intervention = new InterventionEngine(this.feedback);
     this.musicBrain = new MusicBrain();
+    this.guestModeler = new GuestModeler();
+
+    // Phase 4b: Near-decision log — interventions considered but not fired (control group)
+    this.intervention._nearDecisionLog = [];
 
     this.active = false;
     this.sessionId = null;
@@ -1127,12 +1408,23 @@ class MEEngine {
     this.sessionId = 'S-' + Date.now().toString(36);
     this.calibrator.start();
     this.musicBrain.initialize(context);
+    this.guestModeler.initFromIntake(context);
+    // Phase 4c: Wire nudge tolerance to intervention engine hourly cap
+    this.intervention.MAX_PER_HOUR = this.guestModeler.getNudgeThreshold();
+
+    // V4: Seed Kalman filters from intake energy level (warm start instead of cold 0.5)
+    const initialEnergy = this.guestModeler.sessionModel.initialEnergy;
+    if (initialEnergy !== undefined) {
+      this.stateEstimator.kf.energy.x = initialEnergy;
+      this.stateEstimator.kf.energy.P = 0.5; // moderate uncertainty — we trust intake somewhat
+    }
+
     this.loopId = setInterval(() => this._tick(), 5000);
 
     this._emit('log', {
       type: 'engine_start',
       message: `Engine started — calibrating for ${this.calibrator.calibrationDuration / 1000}s`,
-      context: { intent: context.intent, vibe: context.vibe, sleepHours: context.sleep_in_hours }
+      context: { intent: context.intent, vibe: context.vibe, sleepHours: context.sleep_in_hours, initialEnergy }
     });
 
     return { queries: this.musicBrain.buildInitialQueries(context), arc: this.musicBrain.currentArc };
@@ -1185,7 +1477,7 @@ class MEEngine {
       calibration: { calibrated: this.calibrator.calibrated, progress: this.calibrator.getProgress() },
       arc: { target: Math.round(this.musicBrain.getTargetEnergy(sessionElapsed) * 10) / 10, sessionMinutes: Math.round(sessionElapsed * 10) / 10 },
       cooldown: {
-        remaining: Math.max(0, Math.round((this.intervention.lastInterventionTime + this.intervention.baseCooldown * Math.pow(1.5, this.intervention.consecutiveFailures) - now) / 1000)),
+        remaining: Math.max(0, Math.round((this.intervention.lastInterventionTime + this.intervention.baseCooldown * Math.pow(1.3, this.intervention.consecutiveFailures) - now) / 1000)),
         failures: this.intervention.consecutiveFailures
       },
       timestamp: now
@@ -1193,7 +1485,8 @@ class MEEngine {
 
     const feedbackOutcomes = this.feedback.tick(state);
     for (const outcome of feedbackOutcomes) {
-      this.intervention.onFeedback(outcome.outcome.outcome);
+      this.intervention.onFeedback(outcome.outcome.outcome, outcome.intervention.reason);
+      this.guestModeler.recordOutcome(outcome.intervention.reason, outcome.outcome.outcome);
       this._emit('log', { type: 'feedback', message: `"${outcome.intervention.reason}" scored: ${outcome.outcome.outcome}`, outcome });
     }
 
@@ -1204,10 +1497,12 @@ class MEEngine {
     }, sessionElapsed);
 
     if (decision) this._executeDecision(decision, state, sessionElapsed);
-    this.musicBrain.adaptArc(state, sessionElapsed);
+    // adaptArc KILLED (Phase 3a) — arc is immutable. System closes gap via interventions, not by redrawing the map.
+    // _evaluateMusic KILLED (Phase 1c) — one decision point, one feedback loop. Music changes go through InterventionEngine only.
 
-    // CONTINUOUS MUSIC EVALUATION — independent of intervention engine
-    this._evaluateMusic(state, sessionElapsed);
+    // V4: Seek jumping KILLED — always play tracks from the beginning.
+    // Jumping to 35%/70% was disorienting on phone. Let the music breathe.
+    if (this._pendingSeek) this._pendingSeek = false;
 
     this._emit('log', {
       type: 'tick',
@@ -1219,66 +1514,8 @@ class MEEngine {
     });
   }
 
-  // Continuous music adaptation — runs every tick, separate from intervention decisions
-  _evaluateMusic(state, sessionElapsed) {
-    const targetEnergy = this.musicBrain.getTargetEnergy(sessionElapsed);
-    const stateEnergy = (state.energy?.value || 0.5) * 10; // scale 0-10
-    const mismatch = Math.abs(stateEnergy - targetEnergy);
-    const trackElapsed = this.trackStartedAt ? (Date.now() - this.trackStartedAt) / 1000 : 0;
-
-    // Track state changes for dynamic re-queuing
-    const currentStateKey = `${state.energy?.level}_${state.immersion?.level}`;
-    if (this._lastMusicStateKey && this._lastMusicStateKey !== currentStateKey) {
-      this._stateChangeCount = (this._stateChangeCount || 0) + 1;
-    }
-    this._lastMusicStateKey = currentStateKey;
-
-    // DYNAMIC RE-QUEUE: state shifted significantly — prep new music
-    if (this._stateChangeCount >= 2) {
-      this._stateChangeCount = 0;
-      const query = this.musicBrain.getNextSearchQuery(state, sessionElapsed);
-      if (query) {
-        this._emit('command', { type: 'music', command: 'queue_next', query, reason: 'state_shift' });
-        this._emit('log', { type: 'music_requeue', message: `State shifted → queuing new music`, state: currentStateKey });
-      }
-    }
-
-    // ENERGY MISMATCH: if music energy is wrong for 3+ ticks (15s), force change
-    if (mismatch > 2) {
-      this._musicMismatchCount = (this._musicMismatchCount || 0) + 1;
-      if (this._musicMismatchCount >= 3) {
-        this._musicMismatchCount = 0;
-        const query = this.musicBrain.getNextSearchQuery(state, sessionElapsed);
-        if (query) {
-          this._emit('command', { type: 'music', command: 'search_and_play', query, reason: 'energy_mismatch' });
-          this._emit('log', {
-            type: 'music_adapt', message: `Energy mismatch: state=${stateEnergy.toFixed(1)} target=${targetEnergy.toFixed(1)}`,
-            mismatch: mismatch.toFixed(1)
-          });
-        }
-      }
-    } else {
-      this._musicMismatchCount = Math.max(0, (this._musicMismatchCount || 0) - 1);
-    }
-
-    // PROACTIVE TRANSITION: track playing too long + user not absorbed → move on
-    if (trackElapsed > 210 && state.immersion?.level !== 'absorbed') {
-      const query = this.musicBrain.getNextSearchQuery(state, sessionElapsed);
-      if (query) {
-        this._emit('command', { type: 'music', command: 'search_and_play', query, reason: 'track_refresh' });
-        this.trackStartedAt = Date.now(); // reset to prevent rapid re-trigger
-      }
-    }
-
-    // SEEK SUGGESTION: on new track, suggest energy-matched position
-    if (this._pendingSeek && this.currentTrack) {
-      const seekPos = this._getSeekPosition(this.currentTrack.duration, targetEnergy);
-      if (seekPos > 15) {
-        this._emit('command', { type: 'music', command: 'seek', position: seekPos, reason: 'energy_match' });
-      }
-      this._pendingSeek = false;
-    }
-  }
+  // _evaluateMusic() KILLED — Session 59 Phase 1c.
+  // One decision point (InterventionEngine), one feedback loop. No parallel music actuator.
 
   // Estimate where in a track to start based on target energy
   _getSeekPosition(trackDuration, targetEnergy) {
@@ -1294,12 +1531,42 @@ class MEEngine {
     this._emit('log', { type: 'intervention_fired', message: `[${decision.category}/${decision.intensity}] ${decision.reason}`, decision });
     this._emit('intervention', decision);
 
-    if (decision.text) this._emit('command', { type: 'nudge', text: decision.text });
+    if (decision.text) this._emit('command', { type: 'nudge', text: decision.text, decision });
     if (decision.haptic) this._emit('command', { type: 'haptic', pattern: decision.haptic });
     if (decision.action) {
-      const musicCommand = this.musicBrain.interpretAction(decision.action, state, sessionElapsed);
-      if (musicCommand) this._emit('command', { type: 'music', ...musicCommand });
+      let action = decision.action;
+
+      // V4: Minimum play enforcement — no skip if track played < 90s
+      const trackElapsed = this.trackStartedAt ? (Date.now() - this.trackStartedAt) / 1000 : 0;
+      if (action === 'skip_track' && trackElapsed < 90) {
+        // Downgrade: queue next track instead of interrupting current
+        action = (decision.category === 'stimulate') ? 'music_shift_up' : 'music_shift_down';
+        this._emit('log', { type: 'min_play_guard', message: `Skip blocked (${Math.round(trackElapsed)}s < 90s) — downgraded to ${action}` });
+      }
+
+      // Phase 3c: Congruence gate — ensure music action direction matches intervention category
+      const congruent = this._checkCongruence(decision.category, action);
+      if (congruent) {
+        const musicCommand = this.musicBrain.interpretAction(action, state, sessionElapsed);
+        if (musicCommand) this._emit('command', { type: 'music', ...musicCommand });
+      } else {
+        this._emit('log', { type: 'congruence_block', message: `Music action "${action}" blocked — incongruent with "${decision.category}"` });
+      }
     }
+  }
+
+  // Phase 3c: Congruence gate — arousal direction alignment between intervention and music
+  _checkCongruence(category, action) {
+    // Map: which music actions are congruent with which intervention categories
+    const congruenceMap = {
+      stimulate: ['music_shift_up', 'volume_up', 'skip_track'],           // Energizing actions
+      regulate:  ['music_shift_down', 'volume_down', 'skip_track'],       // Calming actions
+      transition: ['music_arc_align', 'skip_track', 'music_shift_up', 'music_shift_down'], // Either direction OK
+      hold:      ['extend_track']                                          // Only extend
+    };
+    const allowed = congruenceMap[category];
+    if (!allowed) return true; // Unknown category — pass through
+    return allowed.includes(action);
   }
 
   getNextSearchQuery() {
@@ -1330,7 +1597,9 @@ class MEEngine {
       calibration: this.calibrator.calibrated ? 'complete' : `${Math.round(this.calibrator.getProgress() * 100)}%`,
       finalState: state,
       interventions: { total: feedback.completed, stats: feedback.stats, recentOutcomes: feedback.recentOutcomes },
-      arcAdaptations: this.musicBrain.arcAdaptations,
+      guestModel: this.guestModeler.toJSON(),
+      nearDecisions: (this.intervention._nearDecisionLog || []).length,
+      blockedReasons: Array.from(this.intervention.blockedReasons),
       profile: this.musicBrain.toJSON().profile
     };
   }
@@ -1431,165 +1700,291 @@ class YouTubeSearch {
 }
 
 // ============================================================
-// SESSION LOGGER — localStorage + GitHub auto-commit
+// ANALYTICS LOGGER — V4 Structured data capture for analysis
+// Replaces V3 SessionLogger. Typed event streams, auto-sync to GitHub.
+// Data format designed for pandas/analysis in Claude Code sessions.
 // ============================================================
 
-class SessionLogger {
+class AnalyticsLogger {
   constructor(options = {}) {
-    this.sessionId = null;
-    this.events = [];
-    this.githubRepo = options.githubRepo || null;   // 'owner/repo'
+    this.githubRepo = options.githubRepo || null;
     this.githubToken = options.githubToken || null;
-    this.autoSaveInterval = null;
-    this.githubSaveInterval = null;
-    this._fileShas = {};  // track GitHub file SHAs for updates
     this._githubSaving = false;
+    this._fileSha = null;
+    this._autoSaveId = null;
+    this._githubSaveId = null;
+    this._sensorBuffer = [];
+    this._sessionStart = null;
+
+    this.data = {
+      version: '4.0',
+      session_id: null,
+      meta: {},
+      timeline: [],      // 5s engine ticks — main time series
+      interventions: [],  // each intervention with outcome attached
+      music: [],          // play/skip/search/queue events
+      face: [],           // every face detection result
+      sensors: [],        // downsampled to 5s averages
+      moments: [],        // user-tapped "I feel something"
+      nudge_feedback: [], // user thumbs up/down on nudges
+      summary: null       // computed at session end
+    };
   }
 
-  startSession(sessionId) {
-    this.sessionId = sessionId;
-    this.events = [];
-    this.log('session_start', { sessionId, startedAt: new Date().toISOString(), userAgent: navigator.userAgent });
-    // Auto-save to localStorage every 30s
-    this.autoSaveInterval = setInterval(() => this._saveToLocalStorage(), 30000);
-    // Auto-save to GitHub every 2 min (if token available)
+  startSession(sessionId, intake) {
+    this._sessionStart = Date.now();
+    this.data.session_id = sessionId;
+    this.data.meta = {
+      started_at: new Date().toISOString(),
+      ended_at: null,
+      duration_min: 0,
+      intake,
+      device: {
+        userAgent: navigator.userAgent,
+        screen: `${screen.width}x${screen.height}`,
+        platform: navigator.platform,
+        touchPoints: navigator.maxTouchPoints || 0
+      },
+      engine_version: '4.0'
+    };
+    this._autoSaveId = setInterval(() => this._saveLocal(), 30000);
     if (this.githubRepo && this.githubToken) {
-      this.githubSaveInterval = setInterval(() => this._saveToGitHub(), 120000);
+      this._githubSaveId = setInterval(() => this._saveGitHub(), 120000);
     }
   }
 
-  log(event, data) {
-    const entry = { event, ...data, ts: new Date().toISOString(), sessionId: this.sessionId };
-    this.events.push(entry);
+  _elapsed() { return this._sessionStart ? Math.round((Date.now() - this._sessionStart) / 1000) : 0; }
+
+  // --- Typed log methods ---
+
+  logTick(stateData) {
+    // stateData comes from engine 'state' event (type: state_update)
+    const st = stateData.state;
+    this.data.timeline.push({
+      t: Date.now(), s: this._elapsed(),
+      e_val: st.energy.value, e_lvl: st.energy.level, e_conf: st.energy.confidence,
+      i_val: st.immersion.value, i_lvl: st.immersion.level, i_conf: st.immersion.confidence,
+      traj: st.trajectory.direction, traj_val: st.trajectory.value,
+      arc: stateData.arc?.target || null,
+      cd: stateData.cooldown?.remaining || 0,
+      cal: stateData.calibration?.calibrated ? 1 : (stateData.calibration?.progress || 0)
+    });
   }
 
-  async endSession(summary) {
-    this.log('session_end', { summary });
-    if (this.autoSaveInterval) { clearInterval(this.autoSaveInterval); this.autoSaveInterval = null; }
-    if (this.githubSaveInterval) { clearInterval(this.githubSaveInterval); this.githubSaveInterval = null; }
-    this._saveToLocalStorage();
-    this._markSynced(this.sessionId, false);
-    if (this.githubRepo && this.githubToken) {
-      const ok = await this._saveToGitHub();
-      if (ok) this._markSynced(this.sessionId, true);
+  logIntervention(decision) {
+    this.data.interventions.push({
+      t: decision.timestamp || Date.now(), s: this._elapsed(),
+      cat: decision.category, int: decision.intensity, reason: decision.reason,
+      text: decision.text || null, action: decision.action || null, haptic: decision.haptic || null,
+      state: decision.state || null,
+      outcome: null, score: null, factors: null // filled when feedback arrives
+    });
+  }
+
+  logFeedbackOutcome(outcome) {
+    // Match to the intervention by timestamp
+    const intRecord = this.data.interventions.find(i => i.t === outcome.timestamp);
+    if (intRecord) {
+      intRecord.outcome = outcome.outcome.outcome;
+      intRecord.score = outcome.outcome.score;
+      intRecord.factors = outcome.outcome.factors;
     }
-    return this.events;
   }
 
-  _saveToLocalStorage() {
+  logMusic(eventType, track, extra = {}) {
+    this.data.music.push({
+      t: Date.now(), s: this._elapsed(),
+      event: eventType,
+      track_id: track?.id || null, title: track?.title || null, artist: track?.artist || null,
+      query: extra.query || null, reason: extra.reason || null
+    });
+  }
+
+  logFace(faceData) {
+    this.data.face.push({
+      t: Date.now(), s: this._elapsed(),
+      eyes: faceData.eyes, head: faceData.headPose, nod: faceData.nod,
+      brow: faceData.brow, mouth: faceData.mouth,
+      eng: faceData.engagement, conf: faceData.detectionConfidence || null
+    });
+  }
+
+  logSensor(sensorData) {
+    this._sensorBuffer.push(sensorData);
+    // Flush every 5 readings → 1 averaged entry (5s at 1s intervals)
+    if (this._sensorBuffer.length >= 5) {
+      const avg = (key) => {
+        const vals = this._sensorBuffer.map(s => s[key]).filter(v => v !== undefined);
+        return vals.length > 0 ? Math.round(vals.reduce((a, b) => a + b, 0) / vals.length * 100) / 100 : 0;
+      };
+      this.data.sensors.push({
+        t: Date.now(), s: this._elapsed(),
+        ax: avg('ax'), ay: avg('ay'), az: avg('az'),
+        gx: avg('gx'), gy: avg('gy'), gz: avg('gz')
+      });
+      this._sensorBuffer = [];
+    }
+  }
+
+  logMoment(state, track) {
+    this.data.moments.push({
+      t: Date.now(), s: this._elapsed(),
+      state: { e: state.energy?.level, i: state.immersion?.level, traj: state.trajectory?.direction },
+      track: track?.title || null
+    });
+  }
+
+  logNudgeFeedback(interventionTimestamp, response) {
+    this.data.nudge_feedback.push({
+      t: Date.now(), s: this._elapsed(),
+      intervention_t: interventionTimestamp, response
+    });
+    // Also update the intervention record
+    const intRecord = this.data.interventions.find(i => i.t === interventionTimestamp);
+    if (intRecord) intRecord.user_feedback = response;
+  }
+
+  logEvent(type, data) {
+    // Generic fallback for events that don't fit typed streams
+    if (!this.data._misc) this.data._misc = [];
+    this.data._misc.push({ t: Date.now(), s: this._elapsed(), type, ...data });
+  }
+
+  // --- Session end: compute summary ---
+
+  async endSession(engineSummary) {
+    this.data.meta.ended_at = new Date().toISOString();
+    this.data.meta.duration_min = engineSummary?.duration || Math.round(this._elapsed() / 60);
+
+    // Compute analytics summary
+    const tl = this.data.timeline;
+    this.data.summary = {
+      duration_min: this.data.meta.duration_min,
+      tracks_played: this.data.music.filter(m => m.event === 'play').length,
+      tracks_skipped_user: this.data.music.filter(m => m.reason === 'user_skip').length,
+      tracks_skipped_engine: this.data.music.filter(m => m.reason === 'engine_skip').length,
+      interventions_total: this.data.interventions.length,
+      interventions_by_cat: {},
+      interventions_positive: this.data.interventions.filter(i => i.outcome === 'positive').length,
+      interventions_neutral: this.data.interventions.filter(i => i.outcome === 'neutral').length,
+      interventions_negative: this.data.interventions.filter(i => i.outcome === 'negative').length,
+      blocked_reasons: engineSummary?.blockedReasons || [],
+      near_decisions: engineSummary?.nearDecisions || 0,
+      nudge_tolerance: engineSummary?.guestModel?.nudgeTolerance || 'MEDIUM',
+      nudge_receptivity: engineSummary?.guestModel?.nudgeReceptivity || 0.5,
+      calibration: engineSummary?.calibration || 'incomplete',
+      face_readings: this.data.face.length,
+      sensor_readings: this.data.sensors.length,
+      moments: this.data.moments.length,
+      user_feedback_count: this.data.nudge_feedback.length,
+      avg_energy: tl.length > 0 ? Math.round(tl.reduce((s, t) => s + t.e_val, 0) / tl.length * 100) / 100 : null,
+      avg_immersion: tl.length > 0 ? Math.round(tl.reduce((s, t) => s + t.i_val, 0) / tl.length * 100) / 100 : null,
+      energy_range: tl.length > 0 ? [
+        Math.round(Math.min(...tl.map(t => t.e_val)) * 100) / 100,
+        Math.round(Math.max(...tl.map(t => t.e_val)) * 100) / 100
+      ] : null,
+      immersion_range: tl.length > 0 ? [
+        Math.round(Math.min(...tl.map(t => t.i_val)) * 100) / 100,
+        Math.round(Math.max(...tl.map(t => t.i_val)) * 100) / 100
+      ] : null
+    };
+    // Intervention breakdown by category
+    for (const int of this.data.interventions) {
+      this.data.summary.interventions_by_cat[int.cat] = (this.data.summary.interventions_by_cat[int.cat] || 0) + 1;
+    }
+
+    // Final saves
+    if (this._autoSaveId) { clearInterval(this._autoSaveId); this._autoSaveId = null; }
+    if (this._githubSaveId) { clearInterval(this._githubSaveId); this._githubSaveId = null; }
+    this._saveLocal();
+    if (this.githubRepo && this.githubToken) {
+      await this._saveGitHub();
+    }
+    return this.data;
+  }
+
+  // --- Persistence ---
+
+  _saveLocal() {
     try {
-      const key = `me_session_${this.sessionId}`;
-      localStorage.setItem(key, JSON.stringify(this.events));
-      const index = JSON.parse(localStorage.getItem('me_sessions_index') || '[]');
-      if (!index.includes(this.sessionId)) {
-        index.push(this.sessionId);
-        localStorage.setItem('me_sessions_index', JSON.stringify(index));
+      localStorage.setItem(`me_v4_${this.data.session_id}`, JSON.stringify(this.data));
+      const index = JSON.parse(localStorage.getItem('me_v4_sessions') || '[]');
+      if (!index.includes(this.data.session_id)) {
+        index.push(this.data.session_id);
+        localStorage.setItem('me_v4_sessions', JSON.stringify(index));
       }
-    } catch (e) { /* storage full */ }
+    } catch (e) { /* storage full — oldest sessions could be pruned */ }
   }
 
-  _markSynced(sessionId, synced) {
-    try {
-      const syncMap = JSON.parse(localStorage.getItem('me_sessions_synced') || '{}');
-      syncMap[sessionId] = synced;
-      localStorage.setItem('me_sessions_synced', JSON.stringify(syncMap));
-    } catch (e) {}
-  }
-
-  async _saveToGitHub() {
+  async _saveGitHub() {
     if (!this.githubRepo || !this.githubToken || this._githubSaving) return false;
     this._githubSaving = true;
     try {
-      const filename = `data/sessions/${this.sessionId}.json`;
-      const content = btoa(unescape(encodeURIComponent(JSON.stringify(this.events, null, 2))));
+      const filename = `data/sessions/${this.data.session_id}.json`;
+      const content = btoa(unescape(encodeURIComponent(JSON.stringify(this.data))));
       const url = `https://api.github.com/repos/${this.githubRepo}/contents/${filename}`;
       const headers = { 'Authorization': `token ${this.githubToken}`, 'Content-Type': 'application/json' };
 
-      // Check if file exists (need SHA for updates)
-      let sha = this._fileShas[filename];
+      let sha = this._fileSha;
       if (!sha) {
         try {
           const existing = await fetch(url, { headers });
-          if (existing.ok) {
-            const data = await existing.json();
-            sha = data.sha;
-          }
+          if (existing.ok) sha = (await existing.json()).sha;
         } catch (e) {}
       }
 
-      const body = {
-        message: `Session ${this.sessionId} — ${this.events.length} events`,
-        content: content
-      };
+      const body = { message: `V4 ${this.data.session_id} — ${this.data.timeline.length} ticks, ${this.data.interventions.length} interventions`, content };
       if (sha) body.sha = sha;
 
       const resp = await fetch(url, { method: 'PUT', headers, body: JSON.stringify(body) });
       if (resp.ok) {
-        const result = await resp.json();
-        this._fileShas[filename] = result.content.sha;
+        this._fileSha = (await resp.json()).content.sha;
         this._githubSaving = false;
         return true;
       }
-      console.warn('GitHub save response:', resp.status);
     } catch (e) { console.warn('GitHub save failed:', e); }
     this._githubSaving = false;
     return false;
   }
 
-  // Sync any un-pushed sessions from localStorage to GitHub
+  // --- Static utilities ---
+
   static async syncPending(githubRepo, githubToken) {
     if (!githubRepo || !githubToken) return { synced: 0, failed: 0 };
-    const index = JSON.parse(localStorage.getItem('me_sessions_index') || '[]');
-    const syncMap = JSON.parse(localStorage.getItem('me_sessions_synced') || '{}');
+    const index = JSON.parse(localStorage.getItem('me_v4_sessions') || '[]');
     let synced = 0, failed = 0;
-
     for (const id of index) {
-      if (syncMap[id] === true) continue;  // already synced
-      const events = JSON.parse(localStorage.getItem(`me_session_${id}`) || '[]');
-      if (events.length === 0) continue;
-
+      const raw = localStorage.getItem(`me_v4_${id}`);
+      if (!raw) continue;
+      const data = JSON.parse(raw);
+      if (!data.summary) continue; // incomplete — skip
       try {
         const filename = `data/sessions/${id}.json`;
-        const content = btoa(unescape(encodeURIComponent(JSON.stringify(events, null, 2))));
+        const content = btoa(unescape(encodeURIComponent(raw)));
         const url = `https://api.github.com/repos/${githubRepo}/contents/${filename}`;
         const headers = { 'Authorization': `token ${githubToken}`, 'Content-Type': 'application/json' };
-
-        // Check if file already exists
         let sha = null;
-        try {
-          const existing = await fetch(url, { headers });
-          if (existing.ok) { sha = (await existing.json()).sha; }
-        } catch (e) {}
-
-        const body = { message: `Session ${id} — ${events.length} events (sync)`, content };
+        try { const ex = await fetch(url, { headers }); if (ex.ok) sha = (await ex.json()).sha; } catch (e) {}
+        const body = { message: `V4 ${id} (sync)`, content };
         if (sha) body.sha = sha;
-
         const resp = await fetch(url, { method: 'PUT', headers, body: JSON.stringify(body) });
-        if (resp.ok) {
-          syncMap[id] = true;
-          synced++;
-        } else { failed++; }
+        if (resp.ok) synced++; else failed++;
       } catch (e) { failed++; }
     }
-
-    localStorage.setItem('me_sessions_synced', JSON.stringify(syncMap));
     return { synced, failed };
   }
 
   static getAllSessions() {
-    const index = JSON.parse(localStorage.getItem('me_sessions_index') || '[]');
-    return index.map(id => ({
-      id,
-      events: JSON.parse(localStorage.getItem(`me_session_${id}`) || '[]')
-    }));
+    const index = JSON.parse(localStorage.getItem('me_v4_sessions') || '[]');
+    return index.map(id => JSON.parse(localStorage.getItem(`me_v4_${id}`) || 'null')).filter(Boolean);
   }
 
   static exportAll() {
-    const sessions = SessionLogger.getAllSessions();
+    const sessions = AnalyticsLogger.getAllSessions();
     const blob = new Blob([JSON.stringify(sessions, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
-    a.href = url; a.download = `me-sessions-${new Date().toISOString().slice(0, 10)}.json`;
+    a.href = url; a.download = `me-v4-${new Date().toISOString().slice(0, 10)}.json`;
     a.click(); URL.revokeObjectURL(url);
   }
 }
