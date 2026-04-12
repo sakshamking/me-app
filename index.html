@@ -741,8 +741,14 @@ async function startSensors() {
 // ==================== FACE DETECTION (face-api.js — TinyFaceDetector) ====================
 
 async function startFaceDetection() {
+  if (typeof faceapi === 'undefined') {
+    // face-api.js defer script not loaded yet, retry
+    setTimeout(startFaceDetection, 2000);
+    return;
+  }
+
   try {
-    const MODEL_URL = 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/weights';
+    const MODEL_URL = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/model/';
     await Promise.all([
       faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
       faceapi.nets.faceLandmark68TinyNet.loadFromUri(MODEL_URL),
