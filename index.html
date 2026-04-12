@@ -457,7 +457,14 @@ body {
 <canvas id="face-canvas"></canvas>
 
 <!-- ========== SCRIPTS ========== -->
-<!-- MediaPipe loaded via dynamic import in startFaceDetection() -->
+<!-- MediaPipe: static module import (dynamic import fails on iPhone Safari cross-origin) -->
+<script type="module">
+import { FaceLandmarker, FilesetResolver } from 'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/vision_bundle.mjs';
+window.FaceLandmarker = FaceLandmarker;
+window.FilesetResolver = FilesetResolver;
+window._mediapipeReady = true;
+console.log('MediaPipe module loaded');
+</script>
 <script src="https://www.youtube.com/iframe_api"></script>
 <script src="engine.js"></script>
 
@@ -742,10 +749,15 @@ async function startSensors() {
 let faceLandmarker = null;
 
 async function startFaceDetection() {
+  // Wait for MediaPipe module script to load (set by <script type="module"> in HTML)
+  if (!window._mediapipeReady) {
+    console.log('Waiting for MediaPipe module...');
+    setTimeout(startFaceDetection, 1000);
+    return;
+  }
+
   try {
-    // Dynamic import — MediaPipe tasks-vision ES module
-    const vision = await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/vision_bundle.mjs');
-    const { FaceLandmarker, FilesetResolver } = vision;
+    const { FaceLandmarker, FilesetResolver } = window;
 
     const filesetResolver = await FilesetResolver.forVisionTasks(
       'https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.22/wasm'
