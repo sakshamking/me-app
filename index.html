@@ -457,7 +457,7 @@ body {
 <canvas id="face-canvas"></canvas>
 
 <!-- ========== SCRIPTS ========== -->
-<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1657299874/face_mesh.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1633559619/face_mesh.js" crossorigin="anonymous"></script>
 <script src="https://www.youtube.com/iframe_api"></script>
 <script src="engine.js"></script>
 
@@ -754,7 +754,7 @@ async function startFaceDetection() {
   try {
     faceMeshInstance = new FaceMesh({
       locateFile: (file) => {
-        const url = `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1657299874/${file}`;
+        const url = `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1633559619/${file}`;
         faceStatus(`Loading: ${file}`);
         return url;
       }
