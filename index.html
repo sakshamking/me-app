@@ -742,29 +742,38 @@ async function startSensors() {
 let faceMeshInstance = null;
 
 async function startFaceDetection() {
+  const faceStatus = (msg) => console.log(`[FACE] ${msg}`);
+
   if (typeof FaceMesh === 'undefined') {
-    // face_mesh.js not loaded yet, retry
-    console.log('Waiting for MediaPipe Face Mesh script...');
+    faceStatus('⏳ Waiting for MediaPipe script to load from CDN...');
     setTimeout(startFaceDetection, 2000);
     return;
   }
+  faceStatus('✓ FaceMesh class found');
 
   try {
     faceMeshInstance = new FaceMesh({
-      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1657299874/${file}`
+      locateFile: (file) => {
+        const url = `https://cdn.jsdelivr.net/npm/@mediapipe/face_mesh@0.4.1657299874/${file}`;
+        faceStatus(`Loading: ${file}`);
+        return url;
+      }
     });
 
     faceMeshInstance.setOptions({
       selfieMode: true,
       maxNumFaces: 1,
-      refineLandmarks: true,  // 478 landmarks (includes iris)
+      refineLandmarks: true,
       minDetectionConfidence: 0.3,
       minTrackingConfidence: 0.3
     });
 
     faceAnalyzer = new FaceAnalyzer();
 
+    let onResultsCalls = 0;
     faceMeshInstance.onResults((results) => {
+      onResultsCalls++;
+      if (onResultsCalls <= 3) faceStatus(`onResults call #${onResultsCalls}, faces: ${results.multiFaceLandmarks ? results.multiFaceLandmarks.length : 0}`);
       if (!engine || !engine.active) return;
       if (results.multiFaceLandmarks && results.multiFaceLandmarks.length > 0) {
         const landmarks = results.multiFaceLandmarks[0];
@@ -772,41 +781,52 @@ async function startFaceDetection() {
         faceData.detectionConfidence = 0.8;
         if (!faceModelLoaded) {
           faceModelLoaded = true;
-          console.log('MediaPipe Face Mesh first detection — model active');
+          faceStatus('✓ First face detected — model active');
         }
         engine.ingestFaceData(faceData);
         if (logger) logger.logFace(faceData);
       }
     });
 
-    console.log('MediaPipe Face Mesh initialized, loading models on first frame...');
+    faceStatus('✓ FaceMesh instance created, WASM loading on first send...');
   } catch (e) {
-    console.warn('MediaPipe Face Mesh init failed:', e);
+    faceStatus(`✗ Init failed: ${e.message}`);
     return;
   }
 
   // Start camera
   try {
+    faceStatus('Requesting camera...');
     const stream = await navigator.mediaDevices.getUserMedia({
       video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 480 } }
     });
     const video = $('face-video');
     video.srcObject = stream;
     await new Promise(resolve => { video.onloadedmetadata = () => { video.play().then(resolve); }; });
+    faceStatus(`✓ Camera active — ${video.videoWidth}x${video.videoHeight}`);
 
+    let sendCount = 0;
+    let sendErrors = 0;
     async function runFaceLoop() {
       if (!engine || !engine.active) {
         faceDetectId = setTimeout(runFaceLoop, 3000);
         return;
       }
+      sendCount++;
       try {
         await faceMeshInstance.send({ image: video });
-      } catch (e) { /* skip frame — model may still be loading */ }
+      } catch (e) {
+        sendErrors++;
+        if (sendErrors <= 5) faceStatus(`✗ send() error #${sendErrors}: ${e.message || e}`);
+        if (sendErrors === 5) faceStatus('Suppressing further send errors...');
+      }
+      if (sendCount === 5) faceStatus(`Progress: ${sendCount} sends, ${sendErrors} errors, faceModel=${faceModelLoaded}`);
+      if (sendCount === 15) faceStatus(`Progress: ${sendCount} sends, ${sendErrors} errors, faceModel=${faceModelLoaded}`);
       faceDetectId = setTimeout(runFaceLoop, 2000);
     }
     faceDetectId = setTimeout(runFaceLoop, 1000);
   } catch (e) {
-    console.warn('Camera access denied:', e);
+    faceStatus(`✗ Camera denied: ${e.message}`);
   }
 }
 
